@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.sjtu.bwphoto.memory.Activities.FirstActivity">
+
+    <TextView
+        android:id="@+id/welcome"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="20dip"
+        android:text="欢迎使用Memory。"
+        android:textColor="@color/ivory"
+        android:textSize="22sp"/>
+
+    <ImageView
+        android:id="@+id/logo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/pale_xs"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="30dip"/>
+
+    <LinearLayout
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:weightSum = "5"
+        android:layout_above="@+id/loginp"
+        android:layout_centerHorizontal="true"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/register"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="注册"
+            android:textColor="@color/blue"
+            android:background="@drawable/shape"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="20dip"
+            android:layout_weight="3"
+            android:textSize="22sp"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/loginp"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:weightSum = "5"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/login"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/shape_nocolor"
+            style="?android:attr/borderlessButtonStyle"
+            android:text="登陆"
+            android:layout_below="@+id/register"
+            android:layout_gravity="center_horizontal"
+            android:textColor="@color/ivory"
+            android:layout_weight="3"
+            android:textSize="22sp"/>
+
+    </LinearLayout>
+
+</RelativeLayout>

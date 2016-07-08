@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="5dp">
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/card_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:foreground="?android:attr/selectableItemBackground"
+        android:clickable="true"
+        app:cardCornerRadius="3dp"
+        app:cardElevation="12dp"
+        app:cardBackgroundColor="#42000000">
+
+        <androidviewhover.BlurLayout
+            android:id="@+id/blur_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <RelativeLayout
+                android:id="@+id/msg_header"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/msg_photo"
+                    android:scaleType="centerCrop"
+                    android:layout_alignParentTop="true"
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp"
+                    android:src="@drawable/paris"/>
+
+                <TextView
+                    android:id="@+id/msg_position"
+                    android:layout_alignBottom="@id/msg_photo"
+                    android:maxLines="1"
+                    android:textSize="20sp"
+                    android:padding="5dp"
+                    android:textColor="#ffffff"
+                    android:gravity="center"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/scrim" />
+
+            </RelativeLayout>
+
+        </androidviewhover.BlurLayout>
+
+    </android.support.v7.widget.CardView>
+
+</RelativeLayout>

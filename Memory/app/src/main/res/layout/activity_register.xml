@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:background="@drawable/background"
+    tools:context="com.sjtu.bwphoto.memory.Activities.RegisterActivity">
+
+    <ImageView
+        android:id="@+id/minilogo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/pale_xs"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="20dip"/>
+
+    <RelativeLayout
+        android:id="@+id/register_view"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_marginLeft="15.0px"
+        android:layout_marginRight="15.0px"
+        android:layout_marginTop="62.0px"
+        android:paddingBottom="10.0px"
+        android:paddingTop="21.0px" >
+
+        <EditText
+            android:id="@+id/account"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginBottom="5.0px"
+            android:layout_marginLeft="5.0dip"
+            android:layout_marginRight="5.0dip"
+            android:layout_marginTop="5.0dip"
+            android:gravity="center"
+            android:inputType="text"
+            android:textColor="@color/ivory"
+            android:maxLength="10"
+            android:paddingLeft="45.0sp"
+            android:saveEnabled="true" />
+
+        <TextView
+            android:id="@+id/TextView01"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/account"
+            android:layout_alignLeft="@+id/account"
+            android:layout_alignTop="@+id/account"
+            android:layout_marginRight="15.0sp"
+            android:gravity="center_vertical"
+            android:paddingLeft="7.0sp"
+            android:text="@string/strAccInputLabel"
+            android:textColor="#ff3f3f3f"
+            android:textSize="16.0dip" />
+
+        <EditText
+            android:id="@+id/pwd"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/account"
+            android:layout_alignRight="@+id/account"
+            android:layout_below="@+id/account"
+            android:layout_marginRight="1.0dip"
+            android:gravity="center"
+            android:inputType="textPassword"
+            android:textColor="@color/ivory"
+            android:maxLength="16"
+            android:paddingLeft="45.0sp"
+            android:saveEnabled="true" />
+
+        <TextView
+            android:id="@+id/TextView02"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/pwd"
+            android:layout_alignRight="@+id/TextView01"
+            android:layout_alignTop="@+id/pwd"
+            android:gravity="center_vertical"
+            android:paddingLeft="7.0sp"
+            android:text="@string/strPswInputLabel"
+            android:textColor="#ff3f3f3f"
+            android:textSize="16.0dip" />
+
+
+    <EditText
+        android:id="@+id/email"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/pwd"
+        android:layout_alignRight="@+id/pwd"
+        android:layout_below="@+id/pwd"
+        android:layout_marginRight="1.0dip"
+        android:gravity="center"
+        android:inputType="text"
+        android:textColor="@color/ivory"
+        android:maxLength="10"
+        android:paddingLeft="45.0sp"
+        android:saveEnabled="true" />
+
+    <TextView
+        android:id="@+id/TextView03"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/email"
+        android:layout_alignRight="@+id/TextView02"
+        android:layout_alignTop="@+id/email"
+        android:gravity="center_vertical"
+        android:paddingLeft="7.0sp"
+        android:text="@string/strEmlInputLabel"
+        android:textColor="#ff3f3f3f"
+        android:textSize="16.0dip" />
+
+
+    <EditText
+        android:id="@+id/age"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/email"
+        android:layout_alignRight="@+id/email"
+        android:layout_below="@+id/email"
+        android:layout_marginRight="1.0dip"
+        android:gravity="center"
+        android:inputType="number"
+        android:textColor="@color/ivory"
+        android:maxLength="10"
+        android:paddingLeft="45.0sp"
+        android:saveEnabled="true" />
+
+    <TextView
+        android:id="@+id/TextView04"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/age"
+        android:layout_alignRight="@+id/TextView03"
+        android:layout_alignTop="@+id/age"
+        android:gravity="center_vertical"
+        android:paddingLeft="7.0sp"
+        android:text="@string/strAgeInputLabel"
+        android:textColor="#ff3f3f3f"
+        android:textSize="16.0dip" />
+
+
+        <EditText
+            android:id="@+id/birth"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/age"
+            android:layout_alignRight="@+id/age"
+            android:layout_below="@+id/age"
+            android:layout_marginRight="1.0dip"
+            android:gravity="center"
+            android:inputType="text"
+            android:textColor="@color/ivory"
+            android:hint="YYYY.MM.DD"
+            android:maxLength="10"
+            android:paddingLeft="45.0sp"
+            android:saveEnabled="true" />
+
+        <TextView
+            android:id="@+id/TextView05"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/birth"
+            android:layout_alignRight="@+id/TextView04"
+            android:layout_alignTop="@+id/birth"
+            android:gravity="center_vertical"
+            android:paddingLeft="7.0sp"
+            android:text="@string/strBirthInputLabel"
+            android:textColor="#ff3f3f3f"
+            android:textSize="16.0dip" />
+
+        <!--<DatePicker-->
+                 <!--android:id="@+id/dpPicker"-->
+                 <!--android:calendarViewShown="false"-->
+                 <!--android:layout_width="match_parent"-->
+                 <!--android:layout_height="wrap_content" />-->
+
+        <LinearLayout
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_below="@id/birth"
+            android:layout_centerHorizontal="true"
+            android:weightSum = "5"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/login_btn_register"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/birth"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="5.0px"
+            android:layout_marginLeft="5.0dip"
+            android:layout_marginRight="5.0dip"
+            android:layout_marginTop="5.0dip"
+            android:textColor="@color/ivory"
+            android:background="@drawable/shape_nocolor"
+            android:layout_weight="3"
+            android:textSize="20sp"
+            android:text="@string/register" />
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</RelativeLayout>

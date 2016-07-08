@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/loginRoot"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/background"
+    android:orientation="vertical" >
+
+    <ImageView
+        android:id="@+id/minilogo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="20dip"
+        android:src="@drawable/pale_xs"/>
+
+    <Button
+        android:id="@+id/loginToReg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="20dip"
+        android:layout_alignParentBottom="true"
+        style="?android:attr/borderlessButtonStyle"
+        android:background="@drawable/shape_nocolor"
+        android:text="注册"
+        android:textColor="@color/ivory"
+        android:textSize="15sp"/>
+
+    <TextView
+        android:id="@+id/loginTip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/login_view"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="20dip"
+        android:text="登陆 Memory。"
+        android:textSize="25sp"
+        android:textColor="@color/ivory"/>
+
+    <RelativeLayout
+        android:id="@+id/login_view"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_marginLeft="15.0px"
+        android:layout_marginRight="15.0px"
+        android:layout_marginTop="62.0px"
+        android:paddingBottom="10.0px"
+        android:paddingTop="21.0px" >
+
+        <EditText
+            android:id="@+id/login_edit_account"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginBottom="5.0px"
+            android:layout_marginLeft="10.0dip"
+            android:layout_marginRight="5.0dip"
+            android:layout_marginTop="5.0dip"
+            android:gravity="left"
+            android:inputType="text"
+            android:textColor="@color/ivory"
+            android:maxLength="10"
+            android:paddingLeft="60sp"
+            android:saveEnabled="true" />
+
+        <TextView
+            android:id="@+id/TextView01"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/login_edit_account"
+            android:layout_alignLeft="@+id/login_edit_account"
+            android:layout_alignTop="@+id/login_edit_account"
+            android:layout_marginRight="15.0sp"
+            android:gravity="center_vertical"
+            android:paddingLeft="7.0sp"
+            android:text="@string/strAccInputLabel"
+            android:textColor="@color/ivory"
+            android:textSize="16.0dip" />
+
+        <EditText
+            android:id="@+id/login_edit_pwd"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/login_edit_account"
+            android:layout_alignRight="@+id/login_edit_account"
+            android:layout_below="@+id/login_edit_account"
+            android:layout_marginRight="1.0dip"
+            android:gravity="left"
+            android:textColor="@color/ivory"
+            android:inputType="textPassword"
+            android:maxLength="16"
+            android:paddingLeft="60sp"
+            android:saveEnabled="true" />
+
+        <TextView
+            android:id="@+id/TextView02"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/login_edit_pwd"
+            android:layout_alignRight="@+id/TextView01"
+            android:layout_alignTop="@+id/login_edit_pwd"
+            android:gravity="center_vertical"
+            android:paddingLeft="7.0sp"
+            android:text="@string/strPswInputLabel"
+            android:textColor="@color/ivory"
+            android:textSize="16.0dip" />
+    </RelativeLayout>
+
+        <LinearLayout
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_below="@id/login_view"
+            android:layout_centerHorizontal="true"
+            android:weightSum = "5"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal">
+        <Button
+            android:id="@+id/login_btn_login"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/login_edit_pwd"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="30dip"
+            android:textColor="@color/ivory"
+            android:background="@drawable/shape_nocolor"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_weight="3"
+            android:textSize="20sp"
+            android:text="登 陆"/>
+        </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/login_success_view"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_marginLeft="15.0px"
+        android:layout_marginRight="15.0px"
+        android:layout_marginTop="62.0px"
+        android:background="@drawable/login_back"
+        android:paddingBottom="10.0px"
+        android:paddingTop="21.0px"
+        android:visibility="gone" >
+
+        <TextView
+            android:id="@+id/login_success_show"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:textColor="#ff3f3f3f"
+            android:textSize="20.0dip" />
+    </RelativeLayout>
+
+</RelativeLayout>
