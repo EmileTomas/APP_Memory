@@ -1,4 +1,4 @@
-package com.sjtu.bwphoto.memory.Class;
+package com.sjtu.bwphoto.memory.Class.Util;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.daimajia.androidanimations.library.Techniques;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.sjtu.bwphoto.memory.Class.Msg;
 import com.sjtu.bwphoto.memory.R;
 
 import java.util.List;

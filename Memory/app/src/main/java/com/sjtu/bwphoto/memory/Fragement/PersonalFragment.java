@@ -1,4 +1,4 @@
-package com.sjtu.bwphoto.memory.Class;
+package com.sjtu.bwphoto.memory.Fragement;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -11,10 +11,10 @@ import com.sjtu.bwphoto.memory.R;
 /**
  * Created by ly on 7/7/2016.
  */
-public class RecommendFragment extends Fragment {
+public class PersonalFragment extends Fragment{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_recommend, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_personal, container, false);
         return rootView;
     }
 }

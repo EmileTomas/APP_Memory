@@ -1,8 +1,12 @@
-package com.sjtu.bwphoto.memory.Class;
+package com.sjtu.bwphoto.memory.Class.Util;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+
+import com.sjtu.bwphoto.memory.Fragement.PersonalFragment;
+import com.sjtu.bwphoto.memory.Fragement.RecentFragment;
+import com.sjtu.bwphoto.memory.Fragement.RecommendFragment;
 
 /**
  * Created by ly on 7/6/2016.

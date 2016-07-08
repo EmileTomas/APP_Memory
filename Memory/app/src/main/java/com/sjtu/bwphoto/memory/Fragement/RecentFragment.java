@@ -1,4 +1,4 @@
-package com.sjtu.bwphoto.memory.Class;
+package com.sjtu.bwphoto.memory.Fragement;
 
 import android.os.Bundle;
 import android.os.Message;
@@ -12,6 +12,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.sjtu.bwphoto.memory.Class.Msg;
+import com.sjtu.bwphoto.memory.Class.Util.MsgRecycleAdapter;
 import com.sjtu.bwphoto.memory.R;
 
 import java.util.ArrayList;

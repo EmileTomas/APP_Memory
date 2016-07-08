@@ -1,23 +1,13 @@
 package com.sjtu.bwphoto.memory.Activities;
 
-import android.app.Activity;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.app.ActionBar;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.RecyclerView;
-import android.view.Window;
 
-import com.sjtu.bwphoto.memory.Class.Msg;
-import com.sjtu.bwphoto.memory.Class.MsgRecycleAdapter;
-import com.sjtu.bwphoto.memory.Class.TabsPagerAdapter;
+import com.sjtu.bwphoto.memory.Class.Util.TabsPagerAdapter;
 import com.sjtu.bwphoto.memory.R;
-
-import java.util.List;
-
-import androidviewhover.BlurLayout;
 
 public class MainActivity extends FragmentActivity implements ActionBar.TabListener{
     private String user_name;

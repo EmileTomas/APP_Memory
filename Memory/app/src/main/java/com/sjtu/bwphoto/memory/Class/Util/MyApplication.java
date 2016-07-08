@@ -1,4 +1,4 @@
-package com.sjtu.bwphoto.memory.Class;
+package com.sjtu.bwphoto.memory.Class.Util;
 
 import android.app.Application;
 import android.os.Environment;
