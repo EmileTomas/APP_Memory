@@ -1,44 +1,38 @@
 package com.sjtu.bwphoto.memory.Class.Util;
-
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-import com.sjtu.bwphoto.memory.Fragement.PersonalFragment;
-import com.sjtu.bwphoto.memory.Fragement.RecentFragment;
-import com.sjtu.bwphoto.memory.Fragement.RecommendFragment;
+import java.util.List;
 
-/**
- * Created by ly on 7/6/2016.
- */
+
 public class TabsPagerAdapter extends FragmentPagerAdapter {
 
-    public TabsPagerAdapter(FragmentManager fm) {
+    private List<Fragment> list_fragment;                         //fragment列表
+    private List<String> list_Title;                              //tab名的列表
+
+
+
+    public TabsPagerAdapter(FragmentManager fm, List<Fragment> list_fragment, List<String> list_Title) {
         super(fm);
+        this.list_fragment = list_fragment;
+        this.list_Title = list_Title;
     }
 
-    /*
-     * Fragment selection
-     */
     @Override
-    public Fragment getItem(int index) {
-
-        switch(index){
-            case 0:
-                return new RecentFragment();
-            case 1:
-                return new RecommendFragment();
-            case 2:
-                return new PersonalFragment();
-        }
-        return null;
+    public Fragment getItem(int position) {
+        return list_fragment.get(position);
     }
 
-    /*
-     * Return the item count which is equal to the number of tabs
-     */
     @Override
     public int getCount() {
-        return 3;
+        return list_Title.size();
+    }
+
+    //此方法用来显示tab上的名字
+    @Override
+    public CharSequence getPageTitle(int position) {
+
+        return list_Title.get(position % list_Title.size());
     }
 }

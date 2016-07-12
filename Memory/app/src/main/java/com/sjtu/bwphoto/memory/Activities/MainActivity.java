@@ -1,94 +1,82 @@
 package com.sjtu.bwphoto.memory.Activities;
 
-import android.app.FragmentTransaction;
 import android.os.Bundle;
+import android.renderscript.RenderScript;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
-import android.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
+import android.widget.TableLayout;
 
 import com.sjtu.bwphoto.memory.Class.Util.TabsPagerAdapter;
+import com.sjtu.bwphoto.memory.Fragement.PersonalFragment;
+import com.sjtu.bwphoto.memory.Fragement.RecentFragment;
+import com.sjtu.bwphoto.memory.Fragement.RecommendFragment;
 import com.sjtu.bwphoto.memory.R;
 
-public class MainActivity extends FragmentActivity implements ActionBar.TabListener{
+import java.util.ArrayList;
+
+public class MainActivity extends AppCompatActivity {
     private String user_name;
 
     // Tab titles
-    private String[] tabs = { "Recent", "Recommend", "Personal" };
+    private PersonalFragment personalFragment;
+    private RecentFragment recentFragment;
+    private RecommendFragment recommendFragment;
+    private ArrayList<Fragment> list_fragment;
+    private ArrayList<String> list_tab;
 
+    //widgets
+    private TabLayout tabLayout;
     private ViewPager viewPager;
     private TabsPagerAdapter tabsPagerAdapter;
-    private ActionBar actionBar;
-
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //requestWindowFeature(Window.FEATURE_ACTION_BAR);
-        //getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_main);
 
-
-        Bundle bundle = this.getIntent().getExtras();  //接收数据
+        //Receive Data from last activity
+        Bundle bundle = this.getIntent().getExtras();
         user_name = bundle.getString("userName");
 
-        // Initilization
-        viewPager = (ViewPager) findViewById(R.id.pager);
-        actionBar = getActionBar();
-        actionBar.setDisplayShowTitleEnabled(false);
-        actionBar.setDisplayShowHomeEnabled(false);
-        if (actionBar==null) System.out.println("Create ActionBar Fail !!!");
-        tabsPagerAdapter = new TabsPagerAdapter(getSupportFragmentManager());
-
-        viewPager.setAdapter(tabsPagerAdapter);
-        if(actionBar != null) {
-            actionBar.setHomeButtonEnabled(false);
-            // Specify that tabs should be displayed in the action bar.
-            actionBar.setNavigationMode(android.app.ActionBar.NAVIGATION_MODE_TABS);
-
-            // Adding Tabs
-            for (String tab : tabs) {
-                actionBar.addTab(actionBar.newTab().setText(tab).setTabListener(this));
-            }
-        }
-
-        /**
-         * on swiping the viewpager make respective tab selected
-         * */
-        viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-
-            @Override
-            public void onPageSelected(int position) {
-                // on changing the page
-                // make respected tab selected
-
-                if (actionBar != null) actionBar.setSelectedNavigationItem(position);
-            }
-
-            @Override
-            public void onPageScrolled(int arg0, float arg1, int arg2) {
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int arg0) {
-            }
-        });
-
+        initial_widget();
     }
 
-        @Override
-        public void onTabReselected(ActionBar.Tab tab, FragmentTransaction ft) {
-        }
+    private void initial_widget() {
+        tabLayout=(TabLayout) findViewById(R.id.tablayout);
+        viewPager =(ViewPager) findViewById(R.id.pager);
 
-        @Override
-        public void onTabSelected(ActionBar.Tab tab, FragmentTransaction ft) {
-            // on tab selected
-            // show respected fragment view
-            viewPager.setCurrentItem(tab.getPosition());
-        }
+        //initial fragments and organizes by list
+        personalFragment=new PersonalFragment();
+        recentFragment= new RecentFragment();
+        recommendFragment = new RecommendFragment();
+        list_fragment = new ArrayList<>();
+        list_fragment.add(recentFragment);
+        list_fragment.add(personalFragment);
+        list_fragment.add(recommendFragment);
 
-        @Override
-        public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction ft) {
-        }
+        //intial tab titles
+        list_tab =new ArrayList<>();
+        list_tab.add("Recent");
+        list_tab.add("Personal");
+        list_tab.add("Recommend");
 
+        //set mode of Tab
+        tabLayout.setTabMode(TabLayout.MODE_FIXED);
+
+        //set tabs
+        tabLayout.addTab(tabLayout.newTab().setText(list_tab.get(0)));
+        tabLayout.addTab(tabLayout.newTab().setText(list_tab.get(1)));
+        tabLayout.addTab(tabLayout.newTab().setText(list_tab.get(2)));
+
+        //set Adapter for ViewPager
+        tabsPagerAdapter = new TabsPagerAdapter(this.getSupportFragmentManager(),list_fragment,list_tab);
+        viewPager.setAdapter(tabsPagerAdapter);
+        //TabLayout加载viewpager
+        tabLayout.setupWithViewPager(viewPager);
+
+    }
 }

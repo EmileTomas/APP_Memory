@@ -38,14 +38,14 @@ public class FloatButton extends ImageButton {
         init(attrs);
     }
 
-    public FloatButton(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
+    public FloatButton(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+        super(context, attrs, defStyleAttr, defStyleRes);
         this.ctx = context;
         init(attrs);
     }
 
-    public FloatButton(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
+    public FloatButton(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
         this.ctx = context;
         init(attrs);
     }
