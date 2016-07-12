@@ -43,5 +43,41 @@
         app:headerLayout="@layout/nav_header_main"
         app:menu="@menu/activity_main_drawer" />
 
+    <com.sjtu.bwphoto.memory.Class.Util.FloatingActionsMenu
+        android:id="@+id/menuFAB"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        app:fab_addButtonColorNormal="@color/white"
+        app:fab_addButtonColorPressed="@color/white_pressed"
+        app:fab_addButtonPlusIconColor="@color/black"
+        app:fab_addButtonSize="mini">
+
+        <com.sjtu.bwphoto.memory.Class.Util.FloatingActionButton
+            android:id="@+id/cameraFAB"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:fab_colorNormal="@color/white"
+            app:fab_size="mini"
+            app:fab_icon="@drawable/ic_action_camera"
+            app:fab_colorPressed="@color/white_pressed"/>
+
+        <com.sjtu.bwphoto.memory.Class.Util.FloatingActionButton
+            android:id="@+id/albumFAB"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:fab_colorNormal="@color/white"
+            app:fab_size="mini"
+            app:fab_icon="@drawable/ic_action_picture"
+            app:fab_colorPressed="@color/white_pressed"/>
+
+    </com.sjtu.bwphoto.memory.Class.Util.FloatingActionsMenu>
+
+
+    <ImageView
+        android:id="@+id/mImageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
 </android.support.v4.widget.DrawerLayout>
