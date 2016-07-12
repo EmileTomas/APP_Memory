@@ -64,9 +64,6 @@ public class MainActivity extends AppCompatActivity {
         list_tab.add("Personal");
         list_tab.add("Recommend");
 
-        //set mode of Tab
-        tabLayout.setTabMode(TabLayout.MODE_FIXED);
-
         //set tabs
         tabLayout.addTab(tabLayout.newTab().setText(list_tab.get(0)));
         tabLayout.addTab(tabLayout.newTab().setText(list_tab.get(1)));
