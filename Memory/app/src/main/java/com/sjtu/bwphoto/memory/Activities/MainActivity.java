@@ -34,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
     static final int ALBUM_REQUEST_CODE = 2;
     static final int CROP_REQUEST_CODE = 3;
     private ImageView mImageView;
+
     // Tab titles
     private PersonalFragment personalFragment;
     private RecentFragment recentFragment;
@@ -56,31 +57,8 @@ public class MainActivity extends AppCompatActivity {
         Bundle bundle = this.getIntent().getExtras();
         user_name = bundle.getString("userName");
 
+        //for test
         mImageView = (ImageView) findViewById(R.id.mImageView);
-
-        // Floating Action Button
-        final FloatingActionsMenu menuMultipleActions = (FloatingActionsMenu) findViewById(R.id.menuFAB);
-
-        findViewById(R.id.cameraFAB).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //.makeText(MainActivity.this, "Clicked camera Floating Action Button", Toast.LENGTH_SHORT).show();
-                Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-                    startActivityForResult(takePictureIntent, CAMERA_REQUEST_CODE);
-                }
-            }
-        });
-
-        findViewById(R.id.albumFAB).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //Toast.makeText(MainActivity.this, "Clicked album Floating Action Button", Toast.LENGTH_SHORT).show();
-                Intent albumIntent = new Intent(Intent.ACTION_PICK, null);
-                albumIntent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
-                startActivityForResult(albumIntent, ALBUM_REQUEST_CODE);
-            }
-        });
 
         initial_widget();
     }
@@ -117,6 +95,30 @@ public class MainActivity extends AppCompatActivity {
         //TabLayout加载viewpager
         tabLayout.setupWithViewPager(viewPager,true);
 
+        // Floating Action Button
+        final FloatingActionsMenu menuMultipleActions = (FloatingActionsMenu) findViewById(R.id.menuFAB);
+
+        findViewById(R.id.cameraFAB).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //.makeText(MainActivity.this, "Clicked camera Floating Action Button", Toast.LENGTH_SHORT).show();
+                Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+                    startActivityForResult(takePictureIntent, CAMERA_REQUEST_CODE);
+                }
+            }
+        });
+
+        findViewById(R.id.albumFAB).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Toast.makeText(MainActivity.this, "Clicked album Floating Action Button", Toast.LENGTH_SHORT).show();
+                Intent albumIntent = new Intent(Intent.ACTION_PICK, null);
+                albumIntent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
+                startActivityForResult(albumIntent, ALBUM_REQUEST_CODE);
+            }
+        });
+
     }
 
     // Get the Thumbnail -- 显示拍到的照片
@@ -133,11 +135,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    /**
-     * 一个简易的裁剪
-     *
-     * @param uri
-     */
+    // a simple Crop
     private void startCrop(Uri uri) {
         Intent intent = new Intent("com.android.camera.action.CROP");//调用Android系统自带的一个图片剪裁页面,
         intent.setDataAndType(uri, IMAGE_UNSPECIFIED);
@@ -152,11 +150,9 @@ public class MainActivity extends AppCompatActivity {
         startActivityForResult(intent, CROP_REQUEST_CODE);
     }
 
-    /**
-     * 判断sdcard卡是否可用
-     * @return 布尔类型 true 可用 false 不可用
-     */
+    //if SD card is available
     private boolean isSDCardCanUser() {
         return Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED);
     }
+
 }
