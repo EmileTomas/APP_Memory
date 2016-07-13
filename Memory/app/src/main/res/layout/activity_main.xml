@@ -52,6 +52,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:gravity="bottom">
+
     <com.sjtu.bwphoto.memory.Class.Util.FloatingActionsMenu
         android:id="@+id/menuFAB"
         android:layout_width="wrap_content"

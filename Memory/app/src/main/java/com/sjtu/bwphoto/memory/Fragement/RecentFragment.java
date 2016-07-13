@@ -77,7 +77,6 @@ public class RecentFragment extends Fragment implements SwipeRefreshLayout.OnRef
                     Message msg = new Message();
                     msg.what = 0;
                     mHandler.sendMessageDelayed(msg, 2000);
-
                 }
             }
 
@@ -88,7 +87,7 @@ public class RecentFragment extends Fragment implements SwipeRefreshLayout.OnRef
             }
         });
 
-        //Update lastest Data
+        //Update Cards
 
         return rootView;
     }
@@ -102,6 +101,12 @@ public class RecentFragment extends Fragment implements SwipeRefreshLayout.OnRef
         //申请数据
     }
 
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        //store Cards
+    }
 
     private void initData() {
         Cards = new ArrayList<Msg>();
