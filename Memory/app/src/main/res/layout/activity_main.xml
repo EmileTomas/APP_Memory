@@ -17,21 +17,23 @@
         android:orientation="vertical"
         tools:context=".Activities.MainActivity">
 
-        <android.support.design.widget.TabLayout
-            android:id="@+id/tablayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="#09C7F7"
-            app:tabGravity="fill"
-            app:tabIndicatorColor="#60a8ef"
-            app:tabMode="fixed"
-            app:tabSelectedTextColor="#3bc246"
-            app:tabTextColor="#000000" />
 
         <android.support.v4.view.ViewPager xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/pager"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"></android.support.v4.view.ViewPager>
+            android:layout_height="match_parent">
+
+            <android.support.design.widget.TabLayout
+                android:id="@+id/tablayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#09C7F7"
+                app:tabGravity="fill"
+                app:tabIndicatorColor="#60a8ef"
+                app:tabMode="fixed"
+                app:tabSelectedTextColor="#3bc246"
+                app:tabTextColor="#000000" />
+        </android.support.v4.view.ViewPager>
     </LinearLayout>
 
     <android.support.design.widget.NavigationView
