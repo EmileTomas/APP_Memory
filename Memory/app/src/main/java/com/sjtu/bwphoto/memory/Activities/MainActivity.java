@@ -113,8 +113,10 @@ public class MainActivity extends AppCompatActivity {
         //set Adapter for ViewPager
         tabsPagerAdapter = new TabsPagerAdapter(this.getSupportFragmentManager(),list_fragment,list_tab);
         viewPager.setAdapter(tabsPagerAdapter);
+        viewPager.setOffscreenPageLimit(2);
+
         //TabLayout加载viewpager
-        tabLayout.setupWithViewPager(viewPager);
+        tabLayout.setupWithViewPager(viewPager,true);
 
     }
 

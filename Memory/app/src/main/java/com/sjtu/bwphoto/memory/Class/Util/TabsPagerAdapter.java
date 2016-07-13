@@ -1,7 +1,10 @@
 package com.sjtu.bwphoto.memory.Class.Util;
+import android.nfc.Tag;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.util.Log;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -21,6 +24,7 @@ public class TabsPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
+        Log.d("Frangment",""+position);
         return list_fragment.get(position);
     }
 
