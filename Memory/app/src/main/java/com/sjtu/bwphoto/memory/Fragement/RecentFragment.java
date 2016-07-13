@@ -27,14 +27,17 @@ import androidviewhover.BlurLayout;
  */
 public class RecentFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
-    private List<Msg> Cards;
+    private View rootView;
     private RecyclerView recyclerView;
     private MsgRecycleAdapter msgRecycleAdapter;
     private SwipeRefreshLayout swipeRefreshLayout;
+    private List<Msg> Cards;
+
     private int lastVisibleItem;
+    private boolean isCardEmpty=true;
     private boolean freushFlag = false;
-    private View rootView;
-    boolean flag = false;
+
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -55,11 +58,79 @@ public class RecentFragment extends Fragment implements SwipeRefreshLayout.OnRef
                 .applyDimension(TypedValue.COMPLEX_UNIT_DIP, 24, getResources()
                         .getDisplayMetrics()));
 
-        //reload data from last time
-        initData();
+        //restore data from last time
+        restoreData();
+
+        //if the database has data, load them and inital view
+        isCardEmpty=Cards.isEmpty();
+        if(!isCardEmpty) intialView();
+
+        //Ask the newest data from server
+        //if iscardEmpty is true, set as false and initial View
+
+        return rootView;
+    }
+
+    @Override
+    public void onRefresh() {
+        if (!isCardEmpty) {
+            swipeRefreshLayout.setRefreshing(true);
+            Message msg = new Message();
+            msg.what = 1;
+            mHandler.sendMessageDelayed(msg, 2000);
+            //申请数据
+        }
+    }
 
 
-        //initial Cards
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        //store Cards via Qtbase
+    }
+
+    private boolean restoreData() {
+        Cards = new ArrayList<Msg>();
+        Msg msg = new Msg("This is a Story about the future", "Paris", "drawable://" + R.drawable.paris);
+        Cards.add(msg);
+        Msg msg2 = new Msg("一个人的旅行，一个人的远方。在悉尼这座城市，享受恬静的海风，任时间流过。", "Sydeney", "drawable://" + R.drawable.sydeney);
+        Cards.add(msg2);
+        Msg msg3 = new Msg("This is a Story about the future", "GreatWall", "http://static.asiawebdirect.com/m/phuket/portals/www-singapore-com/homepage/attractions/all-attractions/pagePropertiesImage/singapore1.jpg");
+        Cards.add(msg3);
+        Msg msg4 = new Msg("This is a Story about the future", "Tokyo", "http://www.arrivalguides.com/s3/ag-images-eu/16/d8465238ff0e0298991405b8597d8da6.jpg");
+        Cards.add(msg4);
+        return true;
+    }
+
+    private android.os.Handler mHandler = new android.os.Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            if(!isCardEmpty) {
+                switch (msg.what) {
+                    case 0:
+                        // bottom
+                        freushFlag = false;
+                        Msg msg3 = new Msg("This is a Story about the future", "GreatWall", "drawable://" + R.drawable.greatwall);
+                        Cards.add(msg3);
+                        swipeRefreshLayout.setRefreshing(false);
+                        msgRecycleAdapter.notifyDataSetChanged();
+                        break;
+                    case 1:
+                        //上拉
+                        Msg msg2 = new Msg("一个人的旅行，一个人的远方。在悉尼这座城市，享受恬静的海风，任时间流过。", "Sydeney", "drawable://" + R.drawable.sydeney);
+                        Cards.add(0, msg2);
+                        swipeRefreshLayout.setRefreshing(false);
+                        msgRecycleAdapter.notifyDataSetChanged();
+                        break;
+                }
+            }
+        }
+
+    };
+
+
+    //This function should be called only when Cards is not empty
+    private void intialView(){
         final LinearLayoutManager layoutManager = new LinearLayoutManager(rootView.getContext());
         msgRecycleAdapter = new MsgRecycleAdapter(rootView.getContext(), Cards);
         recyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
@@ -67,7 +138,8 @@ public class RecentFragment extends Fragment implements SwipeRefreshLayout.OnRef
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(msgRecycleAdapter);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
+
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
@@ -86,60 +158,5 @@ public class RecentFragment extends Fragment implements SwipeRefreshLayout.OnRef
                 lastVisibleItem = layoutManager.findLastVisibleItemPosition();
             }
         });
-
-        //Update Cards
-
-        return rootView;
     }
-
-    @Override
-    public void onRefresh() {
-        swipeRefreshLayout.setRefreshing(true);
-        Message msg = new Message();
-        msg.what = 1;
-        mHandler.sendMessageDelayed(msg, 2000);
-        //申请数据
-    }
-
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        //store Cards
-    }
-
-    private void initData() {
-        Cards = new ArrayList<Msg>();
-        Msg msg = new Msg("This is a Story about the future", "Paris", "drawable://" + R.drawable.paris);
-        Cards.add(msg);
-        Msg msg2 = new Msg("一个人的旅行，一个人的远方。在悉尼这座城市，享受恬静的海风，任时间流过。", "Sydeney", "drawable://" + R.drawable.sydeney);
-        Cards.add(msg2);
-        Msg msg3 = new Msg("This is a Story about the future", "GreatWall", "drawable://" + R.drawable.greatwall);
-        Cards.add(msg3);
-        Msg msg4 = new Msg("This is a Story about the future", "Tokyo", "drawable://" + R.drawable.tokyo);
-        Cards.add(msg4);
-    }
-
-    private android.os.Handler mHandler = new android.os.Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-                case 0:
-                    // bottom
-                    freushFlag = false;
-                    Msg msg3 = new Msg("This is a Story about the future", "GreatWall", "drawable://" + R.drawable.greatwall);
-                    Cards.add(msg3);
-                    swipeRefreshLayout.setRefreshing(false);
-                    msgRecycleAdapter.notifyDataSetChanged();
-                    break;
-                case 1:
-                    //上拉
-                    Msg msg2 = new Msg("一个人的旅行，一个人的远方。在悉尼这座城市，享受恬静的海风，任时间流过。", "Sydeney", "drawable://" + R.drawable.sydeney);
-                    Cards.add(0, msg2);
-                    swipeRefreshLayout.setRefreshing(false);
-                    msgRecycleAdapter.notifyDataSetChanged();
-                    break;
-            }
-        }
-    };
 }
