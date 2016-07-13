@@ -34,7 +34,6 @@ public class MainActivity extends AppCompatActivity {
     static final int ALBUM_REQUEST_CODE = 2;
     static final int CROP_REQUEST_CODE = 3;
     private ImageView mImageView;
-
     // Tab titles
     private PersonalFragment personalFragment;
     private RecentFragment recentFragment;

@@ -25,7 +25,7 @@ public class MyApplication extends Application {
         config.diskCacheFileNameGenerator(new Md5FileNameGenerator());
         config.diskCacheSize(50 * 1024 * 1024); // 50 MiB
         config.tasksProcessingOrder(QueueProcessingType.LIFO);
-        config.diskCache(new UnlimitedDiskCache(new File(Environment.getExternalStorageDirectory()+"/target")));
+
         config.writeDebugLogs();
 
         ImageLoader.getInstance().init(config.build());

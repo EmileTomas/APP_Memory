@@ -36,18 +36,12 @@ public class RecentFragment extends Fragment implements SwipeRefreshLayout.OnRef
     private View rootView;
     boolean flag = false;
 
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
         rootView = inflater.inflate(R.layout.fragment_recent, container, false);
         BlurLayout.setGlobalDefaultDuration(800);
 
+        //initial swipeRefreshLayout
         swipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_Refresh);
         swipeRefreshLayout.setColorSchemeResources(
                 R.color.GoogleBlue,
@@ -56,16 +50,16 @@ public class RecentFragment extends Fragment implements SwipeRefreshLayout.OnRef
                 R.color.GoogleYellow
         );
         swipeRefreshLayout.setOnRefreshListener(this);
-
-
-        //第一次进入就显示加载进度条
         swipeRefreshLayout.setProgressViewOffset(false, 0, (int) TypedValue
                 .applyDimension(TypedValue.COMPLEX_UNIT_DIP, 24, getResources()
                         .getDisplayMetrics()));
 
-        //第一次加载
+
+        //reload data from last time
         initData();
-        //swipeRefreshLayout.setRefreshing(false);
+
+
+        //initial Cards
         final LinearLayoutManager layoutManager = new LinearLayoutManager(rootView.getContext());
         msgRecycleAdapter = new MsgRecycleAdapter(rootView.getContext(), Cards);
         recyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
@@ -73,8 +67,6 @@ public class RecentFragment extends Fragment implements SwipeRefreshLayout.OnRef
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(msgRecycleAdapter);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-
-
         recyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
@@ -95,6 +87,8 @@ public class RecentFragment extends Fragment implements SwipeRefreshLayout.OnRef
                 lastVisibleItem = layoutManager.findLastVisibleItemPosition();
             }
         });
+
+        //Update lastest Data
 
         return rootView;
     }
