@@ -52,25 +52,40 @@
         android:layout_below="@+id/add_title"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:weightSum="2"
+        android:weightSum="3"
         android:background="@color/aliceblue"
         android:orientation="vertical">
 
         <EditText
             android:id="@+id/edit_area"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="200dp"
             android:background="@null"
             android:layout_weight="1"
             android:gravity="top"
-            android:paddingBottom="5dip"
-            android:paddingTop="5dip"/>
+            android:hint="Memorize something ......"
+            android:paddingBottom="20dip"
+            android:paddingTop="20dip"
+            android:paddingLeft="20dip"
+            android:paddingRight="20dip"/>
+
+        <Switch
+            android:id="@+id/btn_public"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:showText="true"
+            android:splitTrack="true"
+            android:tr
+            android:textOn="public"
+            android:textOff="private"
+            />
 
         <ImageView
             android:id="@+id/pic_view"
-            android:layout_below="@+id/edit_area"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
+            android:layout_below="@+id/btn_public"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
             android:src="@drawable/tubiao"/>
 
     </LinearLayout>
