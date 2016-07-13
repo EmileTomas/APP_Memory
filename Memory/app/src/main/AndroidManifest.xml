@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.sjtu.bwphoto.memory">
 
+    <uses-sdk android:minSdkVersion="21" />
+
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
@@ -9,7 +11,8 @@
         android:name="android.hardware.camera"
         android:required="true" />
 
-    <uses-sdk android:minSdkVersion="21"></uses-sdk>
+    <android:uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <android:uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:name=".Class.Util.MyApplication"
@@ -21,14 +24,17 @@
         <activity android:name=".Activities.WelcomeActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Activities.MainActivity"
-            android:configChanges="orientation|keyboardHidden"/>
+        <activity
+            android:name=".Activities.MainActivity"
+            android:configChanges="orientation|keyboardHidden" />
         <activity android:name=".Activities.LoginActivity" />
         <activity android:name=".Activities.RegisterActivity" />
         <activity android:name=".Activities.FirstActivity" />
+        <activity android:name=".Activities.AddMemoryActivity"></activity>
     </application>
 
 </manifest>

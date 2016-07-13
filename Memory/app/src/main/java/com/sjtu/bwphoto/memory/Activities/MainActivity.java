@@ -60,6 +60,32 @@ public class MainActivity extends AppCompatActivity {
         //for test
         mImageView = (ImageView) findViewById(R.id.mImageView);
 
+        // Floating Action Button
+        final FloatingActionsMenu menuMultipleActions = (FloatingActionsMenu) findViewById(R.id.menuFAB);
+
+        findViewById(R.id.cameraFAB).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //.makeText(MainActivity.this, "Clicked camera Floating Action Button", Toast.LENGTH_SHORT).show();
+//                Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+//                if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+//                    startActivityForResult(takePictureIntent, CAMERA_REQUEST_CODE);
+//                }
+                Intent AddMemoryIntent = new Intent(MainActivity.this, AddMemoryActivity.class);
+                startActivity(AddMemoryIntent);
+            }
+        });
+
+        findViewById(R.id.albumFAB).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Toast.makeText(MainActivity.this, "Clicked album Floating Action Button", Toast.LENGTH_SHORT).show();
+                Intent albumIntent = new Intent(Intent.ACTION_PICK, null);
+                albumIntent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
+                startActivityForResult(albumIntent, ALBUM_REQUEST_CODE);
+            }
+        });
+
         initial_widget();
     }
 

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.sjtu.bwphoto.memory.Activities.AddMemoryActivity">
+
+    <TextView
+        android:id="@+id/add_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignBottom="@+id/btn_upload"
+        android:text="Add Memory"
+        android:gravity="center"
+        android:textAlignment="center"
+        android:textSize="20sp"
+        android:textColor="@color/ivory"
+        android:background="@drawable/background"/>
+
+    <Button
+        android:id="@+id/btn_upload"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:text="Upload"
+        android:textSize="12sp"
+        android:textColor="@color/ivory"
+        android:background="@drawable/shape_nocolor"
+        style="?android:attr/borderlessButtonStyle"/>
+
+    <Button
+        android:id="@+id/btn_cancle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/btn_upload"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:text="Cancle"
+        android:textSize="12sp"
+        android:textColor="@color/ivory"
+        android:background="@drawable/shape_nocolor"
+        style="?android:attr/borderlessButtonStyle"/>
+
+    <LinearLayout
+        android:id="@+id/edit_area_p"
+        android:layout_below="@+id/add_title"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:weightSum="2"
+        android:background="@color/aliceblue"
+        android:orientation="vertical">
+
+        <EditText
+            android:id="@+id/edit_area"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:layout_weight="1"
+            android:gravity="top"
+            android:paddingBottom="5dip"
+            android:paddingTop="5dip"/>
+
+        <ImageView
+            android:id="@+id/pic_view"
+            android:layout_below="@+id/edit_area"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:src="@drawable/tubiao"/>
+
+    </LinearLayout>
+
+
+</RelativeLayout>
