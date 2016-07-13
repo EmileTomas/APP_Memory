@@ -38,10 +38,11 @@ public class RecentFragment extends Fragment implements SwipeRefreshLayout.OnRef
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
         rootView = inflater.inflate(R.layout.fragment_recent, container, false);
         BlurLayout.setGlobalDefaultDuration(800);
 
-        //initial swipeRefreshLayout
+
         swipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_Refresh);
         swipeRefreshLayout.setColorSchemeResources(
                 R.color.GoogleBlue,
@@ -53,7 +54,6 @@ public class RecentFragment extends Fragment implements SwipeRefreshLayout.OnRef
         swipeRefreshLayout.setProgressViewOffset(false, 0, (int) TypedValue
                 .applyDimension(TypedValue.COMPLEX_UNIT_DIP, 24, getResources()
                         .getDisplayMetrics()));
-
 
         //reload data from last time
         initData();
