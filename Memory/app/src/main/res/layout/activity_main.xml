@@ -31,7 +31,8 @@
         <android.support.v4.view.ViewPager xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/pager"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"></android.support.v4.view.ViewPager>
+            android:layout_height="match_parent">
+        </android.support.v4.view.ViewPager>
     </LinearLayout>
 
     <android.support.design.widget.NavigationView
@@ -43,12 +44,16 @@
         app:headerLayout="@layout/nav_header_main"
         app:menu="@menu/activity_main_drawer" />
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="bottom">
     <com.sjtu.bwphoto.memory.Class.Util.FloatingActionsMenu
         android:id="@+id/menuFAB"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
+        android:layout_gravity="right|bottom"
         app:fab_addButtonColorNormal="@color/white"
         app:fab_addButtonColorPressed="@color/white_pressed"
         app:fab_addButtonPlusIconColor="@color/black"
@@ -73,6 +78,7 @@
             app:fab_colorPressed="@color/white_pressed"/>
 
     </com.sjtu.bwphoto.memory.Class.Util.FloatingActionsMenu>
+    </LinearLayout>
 
 
     <ImageView
