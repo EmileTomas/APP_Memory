@@ -17,7 +17,6 @@
         android:orientation="vertical"
         tools:context=".Activities.MainActivity">
 
-
         <android.support.v4.view.ViewPager xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/pager"
             android:layout_width="match_parent"
@@ -37,6 +36,7 @@
         </android.support.v4.view.ViewPager>
     </LinearLayout>
 
+    <!--侧边栏-->
     <android.support.design.widget.NavigationView
         android:id="@+id/nav_view"
         android:layout_width="wrap_content"
@@ -46,6 +46,7 @@
         app:headerLayout="@layout/nav_header_main"
         app:menu="@menu/activity_main_drawer" />
 
+    <!--Floating action button-->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -83,7 +84,7 @@
     </com.sjtu.bwphoto.memory.Class.Util.FloatingActionsMenu>
     </LinearLayout>
 
-
+    <!--相机相册图片预览-->
     <ImageView
         android:id="@+id/mImageView"
         android:layout_width="wrap_content"

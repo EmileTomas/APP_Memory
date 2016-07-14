@@ -3,12 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.sjtu.bwphoto.memory.Activities.AddMemoryActivity">
 
+    <!--Title-->
     <TextView
         android:id="@+id/add_title"
         android:layout_width="match_parent"
@@ -20,7 +17,7 @@
         android:textAlignment="center"
         android:textSize="20sp"
         android:textColor="@color/ivory"
-        android:background="@color/lightskyblue"/>
+        android:background="#09C7F7"/>
 
     <Button
         android:id="@+id/btn_upload"
@@ -47,6 +44,7 @@
         android:background="@drawable/shape_nocolor"
         style="?android:attr/borderlessButtonStyle"/>
 
+    <!--Title以下-->
     <LinearLayout
         android:id="@+id/edit_area_p"
         android:layout_below="@+id/add_title"
@@ -69,12 +67,14 @@
             android:paddingLeft="20dip"
             android:paddingRight="20dip"/>
 
+        <!--一条灰色的直线-->
         <ImageView
             android:id="@+id/line"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:src="@drawable/line"/>
 
+        <!--是否公开-->
         <RelativeLayout
             android:id="@+id/share"
             android:layout_width="match_parent"
@@ -103,6 +103,7 @@
                 android:textColor="@color/black"
                 android:textSize="18sp"/>
 
+            <!--开关按钮-->
             <Switch
                 android:id="@+id/btn_public"
                 android:layout_width="wrap_content"
@@ -117,14 +118,17 @@
                 android:switchMinWidth="80dp"
                 android:thumb="@drawable/thumb"
                 android:track="@drawable/track"/>
+
         </RelativeLayout>
 
+        <!--图片预览-->
         <ImageView
             android:id="@+id/pic_view"
             android:layout_below="@+id/edit_area"
             android:layout_width="120dp"
             android:layout_height="120dp"
             android:layout_marginTop="10dip"
+            android:layout_marginLeft="10dip"
             android:src="@drawable/tubiao"
             android:background="@drawable/square"/>
 

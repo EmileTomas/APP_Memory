@@ -8,14 +8,20 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Switch;
 
 import com.sjtu.bwphoto.memory.R;
 
 public class AddMemoryActivity extends Activity {
     private Button BtnUpload;
     private Button BtnCancle;
+    private Switch BtnPublic;
     private ImageView PicView;
+    private EditText Content;
+    private String MemContent;
+    private Boolean Sharable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,27 +32,52 @@ public class AddMemoryActivity extends Activity {
 
         BtnUpload = (Button) findViewById(R.id.btn_upload);
         BtnCancle = (Button) findViewById(R.id.btn_cancle);
+        BtnPublic = (Switch) findViewById(R.id.btn_public);
         PicView = (ImageView) findViewById(R.id.pic_view);
+        Content = (EditText) findViewById(R.id.edit_area);
 
-        BtnUpload.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(AddMemoryActivity.this, MainActivity.class);
-                startActivity(intent);
-            }
-        });
-
-        BtnCancle.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(AddMemoryActivity.this, MainActivity.class);
-                startActivity(intent);
-            }
-        });
+        BtnCancle.setOnClickListener(mListener);
+        BtnUpload.setOnClickListener(mListener);
 
         //注册OnlongClick监听器
         PicView.setOnLongClickListener(new PicOnLongClick());
 
+    }
+
+    /*
+     * Push Button to call function
+     */
+    View.OnClickListener mListener = new View.OnClickListener() {
+        public void onClick(View v) {
+            switch (v.getId()) {
+                case R.id.btn_cancle:
+                    upload();
+                    break;
+                case R.id.btn_upload:
+                    cancle();
+                    break;
+                case R.id.btn_public:
+                    set_share();
+                    break;
+            }
+        }
+    };
+
+    public void upload() {
+        MemContent =  Content.getText().toString().trim();
+        Intent intent = new Intent(AddMemoryActivity.this, MainActivity.class);
+        startActivity(intent);
+        AddMemoryActivity.this.finish();
+    }
+
+    public void cancle() {
+        Intent intent = new Intent(AddMemoryActivity.this, MainActivity.class);
+        startActivity(intent);
+        AddMemoryActivity.this.finish();
+    }
+
+    public void set_share() {
+        Sharable = true;
     }
 
     //长按图片放大
