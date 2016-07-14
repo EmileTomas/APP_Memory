@@ -54,8 +54,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         //Receive Data from last activity
-        //Bundle bundle = this.getIntent().getExtras();
-        //user_name = bundle.getString("userName");
+        Bundle bundle = this.getIntent().getExtras();
+        user_name = bundle.getString("userName");
+
 
         //for test
         mImageView = (ImageView) findViewById(R.id.mImageView);
@@ -155,6 +156,11 @@ public class MainActivity extends AppCompatActivity {
     //if SD card is available
     private boolean isSDCardCanUser() {
         return Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED);
+    }
+
+    //used by database
+    public String getUserAccount(){
+        return user_name;
     }
 
 }
