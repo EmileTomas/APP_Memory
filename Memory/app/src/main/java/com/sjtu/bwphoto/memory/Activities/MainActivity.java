@@ -54,8 +54,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         //Receive Data from last activity
-        Bundle bundle = this.getIntent().getExtras();
-        user_name = bundle.getString("userName");
+        //Bundle bundle = this.getIntent().getExtras();
+        //user_name = bundle.getString("userName");
 
         //for test
         mImageView = (ImageView) findViewById(R.id.mImageView);
