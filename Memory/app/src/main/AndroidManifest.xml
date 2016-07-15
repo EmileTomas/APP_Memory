@@ -34,7 +34,8 @@
         <activity android:name=".Activities.LoginActivity" />
         <activity android:name=".Activities.RegisterActivity" />
         <activity android:name=".Activities.FirstActivity" />
-        <activity android:name=".Activities.AddMemoryActivity"></activity>
+        <activity android:name=".Activities.AddMemoryActivity" />
+        <activity android:name=".Activities.CropperActivity"></activity>
     </application>
 
 </manifest>
