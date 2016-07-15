@@ -1,4 +1,4 @@
-package com.sjtu.bwphoto.memory.Class;
+package com.sjtu.bwphoto.memory.Class.Datebase;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
@@ -24,7 +24,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 + "rankNum integer,"
                 + "location text,"
                 +  "memoryText text,"
-                +  "imageUrl text)";
+                +  "imageURL text)";
 
     public static final  String CREATE_VIEW_STORE_PAGE2= "create table Page2("
             + "id integer primary key autoincrement,"
@@ -40,7 +40,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + "rankNum integer,"
             + "location text,"
             +  "memoryText text,"
-            +  "imageUrl text)";
+            +  "imageURL text)";
 
     private Context mcontext;
 
@@ -55,7 +55,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL(CREATE_VIEW_STORE_PAGE1);
         sqLiteDatabase.execSQL(CREATE_VIEW_STORE_PAGE2);
         sqLiteDatabase.execSQL(CREATE_VIEW_STORE_PAGE3);
-        Toast.makeText(mcontext,"Create succeed",Toast.LENGTH_SHORT).show();
     }
 
     @Override

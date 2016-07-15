@@ -5,7 +5,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Message;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -18,13 +17,15 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.sjtu.bwphoto.memory.Activities.MainActivity;
-import com.sjtu.bwphoto.memory.Class.DatabaseHelper;
+import com.sjtu.bwphoto.memory.Class.Datebase.DatabaseHelper;
+import com.sjtu.bwphoto.memory.Class.Datebase.DatabaseManager;
 import com.sjtu.bwphoto.memory.Class.Msg;
 import com.sjtu.bwphoto.memory.Class.Util.MsgRecycleAdapter;
 import com.sjtu.bwphoto.memory.R;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 import androidviewhover.BlurLayout;
 
@@ -40,7 +41,7 @@ import androidviewhover.BlurLayout;
  *
  * load_more_data in the handler should create a thread for it;
  *
- * Ondestory should also create a thread for it ;
+ *
  */
 public class RecentFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
     private final int INITIAL_VIEW=0;
@@ -60,7 +61,9 @@ public class RecentFragment extends Fragment implements SwipeRefreshLayout.OnRef
 
     private int lastVisibleItem;
     private boolean isCardEmpty=true;
-    private boolean freushFlag = false;
+    private boolean fetchDataSuccess = false;
+    private boolean initializeViewSuccess=false;
+    private boolean freushFlag=false;
 
 
 
@@ -70,6 +73,8 @@ public class RecentFragment extends Fragment implements SwipeRefreshLayout.OnRef
         BlurLayout.setGlobalDefaultDuration(800);
 
         databaseHelper=new DatabaseHelper(getContext(),"AppDatabase.db",null,1);
+        DatabaseManager.initializeInstance(databaseHelper);
+
 
         swipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_Refresh);
         swipeRefreshLayout.setColorSchemeResources(
@@ -92,7 +97,7 @@ public class RecentFragment extends Fragment implements SwipeRefreshLayout.OnRef
 
     @Override
     public void onRefresh() {
-        if (!isCardEmpty) {
+        if(!freushFlag) {
             swipeRefreshLayout.setRefreshing(true);
             new RefreshDataThread().start();
         }
@@ -102,27 +107,12 @@ public class RecentFragment extends Fragment implements SwipeRefreshLayout.OnRef
     @Override
     public void onDestroy() {
         super.onDestroy();
-        sqLiteDatabase=databaseHelper.getWritableDatabase();
-        //DeletePreviousData
-        sqLiteDatabase.delete("Page1",null,null);
-        //store Cards via Qtbase
-        ContentValues values=new ContentValues();
-        for(int i=0;i<Cards.size();++i)
-        {
-            values.put("account",userAccount);
-            values.put("rankNum",i);
-            values.put("location",Cards.get(i).getMap_position());
-            values.put("memoryText",Cards.get(i).getContent());
-            values.put("imageURL",Cards.get(i).getImageUrl());
-
-            sqLiteDatabase.insert("Page1",null,values);
-            values.clear();
-        }
-        sqLiteDatabase.close();
+        new StoreDataThread().start();
     }
 
 
-    class  RestoreDataThread extends Thread {
+
+    class RestoreDataThread extends Thread {
         @Override
         public void run() {
             super.run();
@@ -131,51 +121,121 @@ public class RecentFragment extends Fragment implements SwipeRefreshLayout.OnRef
             restoreData();
             isCardEmpty = Cards.isEmpty();   //if the database has data, load them and inital view
             if (!isCardEmpty) {
+                initializeViewSuccess=true;
                 Message msg = new Message();
                 msg.what = INITIAL_VIEW;
                 mHandler.sendMessage(msg);
+            }
+
+            try {
+                Thread.currentThread().sleep(2000);//阻断2秒
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
 
             //FreshData from server
-            fetchData();
-            if (isCardEmpty) {
-                Message msg = new Message();
-                isCardEmpty = false;
-                msg.what = INITIAL_VIEW;
-                mHandler.sendMessage(msg);
-            }
+            fetchDataFirstTime();
+        }
+    }
 
-            //Notify the data has been updated, notice here may be a bug if view was not initial before the msg was send
+    class RefreshDataThread extends Thread {
+        @Override
+        public void run() {
+            super.run();
+
+            //if fetch data failure last time, freshData from server
+            if(!fetchDataSuccess) fetchDataFirstTime();
+            else fetchDataNew();
+
+        }
+    }
+
+    class StoreDataThread extends Thread{
+        @Override
+        public void run() {
+            super.run();
+            sqLiteDatabase=DatabaseManager.getInstance().openDatabase();
+            //DeletePreviousData
+            sqLiteDatabase.delete("Page1","account=?",new String[]{userAccount});
+            //store Cards via Qtbase
+            ContentValues values=new ContentValues();
+            for(int i=0;i<Cards.size();++i)
+            {
+                values.put("account",userAccount);
+                values.put("rankNum",i);
+                values.put("location",Cards.get(i).getMap_position());
+                values.put("memoryText",Cards.get(i).getContent());
+                values.put("imageURL",Cards.get(i).getImageUrl());
+
+                sqLiteDatabase.insert("Page1",null,values);
+                values.clear();
+            }
+            DatabaseManager.getInstance().closeDatabase();
+        }
+    }
+
+    private void restoreData() {
+        sqLiteDatabase=DatabaseManager.getInstance().openDatabase();
+        Cards = new ArrayList<Msg>();
+        Cursor cursor=sqLiteDatabase.query("Page1",null,"account=?",new String[]{userAccount},null,null,null);
+        if(cursor.moveToFirst()){
+            do{
+                int rankNum=cursor.getInt(cursor.getColumnIndex("rankNum"));
+                String location=cursor.getString(cursor.getColumnIndex("location"));
+                String memoryText=cursor.getString(cursor.getColumnIndex("memoryText"));
+                String imageURL=cursor.getString(cursor.getColumnIndex("imageURL"));
+                Msg Card=new Msg(memoryText,location,imageURL);
+                Cards.add(Card);
+            }while(cursor.moveToNext());
+        }
+        cursor.close();
+        DatabaseManager.getInstance().closeDatabase();
+    }
+
+    private void fetchDataFirstTime(){
+        //if(ConnectServer) return false; //conenct Severfaiure
+        //else:
+        //  Clear Cards
+        //  Receive data and store it to Cards
+        //  return true;
+        Cards.clear();
+        Msg Card4 = new Msg("This is a Story about the future", "Tokyo", "http://www.arrivalguides.com/s3/ag-images-eu/16/d8465238ff0e0298991405b8597d8da6.jpg");
+        Cards.add(0,Card4);
+        Msg Card3 = new Msg("This is a Story about the future", "GreatWall", "http://static.asiawebdirect.com/m/phuket/portals/www-singapore-com/homepage/attractions/all-attractions/pagePropertiesImage/singapore1.jpg");
+        Cards.add(0,Card3);
+        Msg Card2 = new Msg("一个人的旅行，一个人的远方。在悉尼这座城市，享受恬静的海风，任时间流过。", "Sydeney", "drawable://" + R.drawable.sydeney);
+        Cards.add(0,Card2);
+        Msg Card1 = new Msg("This is a Story about the future", "Paris", "drawable://" + R.drawable.paris);
+        Cards.add(0,Card1);
+        fetchDataSuccess=true;
+        isCardEmpty=false;
+
+        if(!initializeViewSuccess){
+            initializeViewSuccess=true;
+            Message msg = new Message();
+            msg.what = INITIAL_VIEW;
+            mHandler.sendMessage(msg);
+        }
+        else{
             Message msg = new Message();
             msg.what = NOTIFY_CARDS_CHANGE;
             mHandler.sendMessage(msg);
         }
     }
 
-    private void restoreData() {
-        sqLiteDatabase=databaseHelper.getWritableDatabase();
-        Cards = new ArrayList<Msg>();
-        Cursor cursor=sqLiteDatabase.query("Page1",null,"account=?",new String[]{userAccount},null,null,null);
-        if(cursor.moveToFirst()){
-            do{
-                int rankNum=cursor.getInt(cursor.getColumnIndex("rankNum"));
-                Log.d("Restore from database", "restoreData: "+rankNum);
-            }while(cursor.moveToNext());
-        }
-        cursor.close();
-    }
+    private void fetchDataNew(){
+        //fetchData success part
+        Msg Card1 = new Msg("This is a Story about the future", "Paris", "drawable://" + R.drawable.paris);
+        Cards.add(0,Card1);
 
-    private void fetchData(){
-        Msg msg4 = new Msg("This is a Story about the future", "Tokyo", "http://www.arrivalguides.com/s3/ag-images-eu/16/d8465238ff0e0298991405b8597d8da6.jpg");
-        Cards.add(0,msg4);
-        Msg msg3 = new Msg("This is a Story about the future", "GreatWall", "http://static.asiawebdirect.com/m/phuket/portals/www-singapore-com/homepage/attractions/all-attractions/pagePropertiesImage/singapore1.jpg");
-        Cards.add(0,msg3);
-        Msg msg2 = new Msg("一个人的旅行，一个人的远方。在悉尼这座城市，享受恬静的海风，任时间流过。", "Sydeney", "drawable://" + R.drawable.sydeney);
-        Cards.add(0,msg2);
-        Msg msg = new Msg("This is a Story about the future", "Paris", "drawable://" + R.drawable.paris);
-        Cards.add(0,msg);
-    }
 
+        //Notify the data has been updated
+        freushFlag=false;
+        Message msg = new Message();
+        msg.what = NOTIFY_CARDS_CHANGE;
+        mHandler.sendMessageDelayed(msg,2000);
+
+    }
     //This function will be called only when Cards is not empty
     private void intialView(){
         final LinearLayoutManager layoutManager = new LinearLayoutManager(rootView.getContext());
@@ -207,21 +267,6 @@ public class RecentFragment extends Fragment implements SwipeRefreshLayout.OnRef
         });
     }
 
-    class  RefreshDataThread extends Thread {
-        @Override
-        public void run() {
-            super.run();
-
-            //FreshData from server
-            fetchData();
-
-            //Notify the data has been updated
-            Message msg = new Message();
-            msg.what = NOTIFY_CARDS_CHANGE;
-            mHandler.sendMessageDelayed(msg,2000);
-        }
-    }
-
     private android.os.Handler mHandler = new android.os.Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -250,7 +295,7 @@ public class RecentFragment extends Fragment implements SwipeRefreshLayout.OnRef
         }
 
     };
-    public String getUserAccount(){
+    private String getUserAccount(){
         MainActivity activity = (MainActivity) getActivity();
         return activity.getUserAccount();
     }
