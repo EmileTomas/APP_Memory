@@ -90,7 +90,7 @@ public class LoginActivity extends Activity {
                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                 Bundle bundle = new Bundle();
                 bundle.putString("userName",userName);
-                intent.putExtras(bundle);
+            intent.putExtras(bundle);
                 startActivity(intent);
                 LoginActivity.this.finish();
             //}

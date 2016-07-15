@@ -22,6 +22,7 @@ public class AddMemoryActivity extends Activity {
     private EditText Content;
     private String MemContent;
     private Boolean Sharable;
+    private String userName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +30,10 @@ public class AddMemoryActivity extends Activity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_add_memory);
+
+        //Receive Data from last activity
+        Bundle bundle = this.getIntent().getExtras();
+        userName = bundle.getString("userName");
 
         BtnUpload = (Button) findViewById(R.id.btn_upload);
         BtnCancle = (Button) findViewById(R.id.btn_cancle);
@@ -66,12 +71,18 @@ public class AddMemoryActivity extends Activity {
     public void upload() {
         MemContent =  Content.getText().toString().trim();
         Intent intent = new Intent(AddMemoryActivity.this, MainActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString("userName",userName);
+        intent.putExtras(bundle);
         startActivity(intent);
         AddMemoryActivity.this.finish();
     }
 
     public void cancle() {
         Intent intent = new Intent(AddMemoryActivity.this, MainActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString("userName",userName);
+        intent.putExtras(bundle);
         startActivity(intent);
         AddMemoryActivity.this.finish();
     }

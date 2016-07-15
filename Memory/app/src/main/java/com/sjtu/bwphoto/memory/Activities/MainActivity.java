@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
         //Receive Data from last activity
         Bundle bundle = this.getIntent().getExtras();
         user_name = bundle.getString("userName");
-
+        System.out.println(user_name);
 
         //for test
         mImageView = (ImageView) findViewById(R.id.mImageView);
@@ -108,6 +108,9 @@ public class MainActivity extends AppCompatActivity {
 //                    startActivityForResult(takePictureIntent, CAMERA_REQUEST_CODE);
 //                }
                 Intent AddMemoryIntent = new Intent(MainActivity.this, AddMemoryActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putString("userName",user_name);
+                AddMemoryIntent.putExtras(bundle);
                 startActivity(AddMemoryIntent);
             }
         });
@@ -118,6 +121,9 @@ public class MainActivity extends AppCompatActivity {
                 //Toast.makeText(MainActivity.this, "Clicked album Floating Action Button", Toast.LENGTH_SHORT).show();
                 Intent albumIntent = new Intent(Intent.ACTION_PICK, null);
                 albumIntent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
+                Bundle bundle = new Bundle();
+                bundle.putString("userName",user_name);
+                albumIntent.putExtras(bundle);
                 startActivityForResult(albumIntent, ALBUM_REQUEST_CODE);
             }
         });
