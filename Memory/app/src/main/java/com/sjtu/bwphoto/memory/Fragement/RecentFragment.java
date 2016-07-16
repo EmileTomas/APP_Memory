@@ -45,9 +45,8 @@ import androidviewhover.BlurLayout;
  */
 public class RecentFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
     private final int INITIAL_VIEW=0;
-    private final int REFRESH_DATA=1;
-    private final int LOAD_MORE_DATA=2;
-    private final int NOTIFY_CARDS_CHANGE=3;
+    private final int LOAD_MORE_DATA=1;
+    private final int NOTIFY_CARDS_CHANGE=2;
 
     private View rootView;
     private RecyclerView recyclerView;
@@ -64,7 +63,6 @@ public class RecentFragment extends Fragment implements SwipeRefreshLayout.OnRef
     private boolean fetchDataSuccess = false;
     private boolean initializeViewSuccess=false;
     private boolean freushFlag=false;
-
 
 
     @Override
@@ -110,8 +108,6 @@ public class RecentFragment extends Fragment implements SwipeRefreshLayout.OnRef
         new StoreDataThread().start();
     }
 
-
-
     class RestoreDataThread extends Thread {
         @Override
         public void run() {
@@ -128,7 +124,7 @@ public class RecentFragment extends Fragment implements SwipeRefreshLayout.OnRef
             }
 
             try {
-                Thread.currentThread().sleep(2000);//阻断2秒
+                Thread.currentThread().sleep(2000);//阻断2秒 模仿访问服务器
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -143,9 +139,9 @@ public class RecentFragment extends Fragment implements SwipeRefreshLayout.OnRef
         public void run() {
             super.run();
 
-            //if fetch data failure last time, freshData from server
-            if(!fetchDataSuccess) fetchDataFirstTime();
-            else fetchDataNew();
+
+            if(!fetchDataSuccess) fetchDataFirstTime();  //if fetch data failure last time, freshData from server
+            else fetchDataNew();                         //else fetch data new from sever
 
         }
     }
@@ -233,7 +229,7 @@ public class RecentFragment extends Fragment implements SwipeRefreshLayout.OnRef
         freushFlag=false;
         Message msg = new Message();
         msg.what = NOTIFY_CARDS_CHANGE;
-        mHandler.sendMessageDelayed(msg,2000);
+        mHandler.sendMessageDelayed(msg,3000);
 
     }
     //This function will be called only when Cards is not empty
