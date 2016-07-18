@@ -195,7 +195,7 @@ public class RecentFragment extends Fragment implements SwipeRefreshLayout.OnRef
         //  Receive data and store it to Cards
         //  return true;
         Cards.clear();
-        Msg Card4 = new Msg("This is a Story about the future", "Tokyo", "http://www.arrivalguides.com/s3/ag-images-eu/16/d8465238ff0e0298991405b8597d8da6.jpg");
+        Msg Card4 = new Msg("This is a Story about the future", "Tokyo", "http://10.189.158.36:8080/identity/profile");
         Cards.add(0,Card4);
         Msg Card3 = new Msg("This is a Story about the future", "GreatWall", "http://static.asiawebdirect.com/m/phuket/portals/www-singapore-com/homepage/attractions/all-attractions/pagePropertiesImage/singapore1.jpg");
         Cards.add(0,Card3);

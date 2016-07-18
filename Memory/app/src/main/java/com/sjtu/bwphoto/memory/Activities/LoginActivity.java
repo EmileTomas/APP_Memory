@@ -82,22 +82,22 @@ public class LoginActivity extends Activity {
             String userPwd = mPwd.getText().toString().trim();
             User mUser = new User(userName,userPwd);
             System.out.println(url.url+"/login");
-            //String result = restTp.postForObject(url.url+"/login", mUser, String.class);
-            //System.out.println(result.toString());
-            //System.out.println(userName);
-            //if (result.contains("success")) {
+            String result = restTp.postForObject(url.url+"/login", mUser, String.class);
+            System.out.println(result.toString());
+            System.out.println(userName);
+            if (result.contains("success")) {
                 Toast.makeText(this, getString(R.string.login_sucess), Toast.LENGTH_SHORT).show(); //simple information display
                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                 Bundle bundle = new Bundle();
                 bundle.putString("userName",userName);
-            intent.putExtras(bundle);
+                intent.putExtras(bundle);
                 startActivity(intent);
                 LoginActivity.this.finish();
-            //}
-            //else {
+            }
+            else {
                 //login failed,user does't exist
-                //Toast.makeText(this, getString(R.string.login_fail),Toast.LENGTH_SHORT).show();
-            //}
+                Toast.makeText(this, getString(R.string.login_fail),Toast.LENGTH_SHORT).show();
+            }
         }
     }
 

@@ -84,10 +84,4 @@
     </com.sjtu.bwphoto.memory.Class.Util.FloatingActionsMenu>
     </LinearLayout>
 
-    <!--相机相册图片预览-->
-    <ImageView
-        android:id="@+id/mImageView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
 </android.support.v4.widget.DrawerLayout>
