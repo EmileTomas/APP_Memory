@@ -3,6 +3,7 @@ package com.sjtu.bwphoto.memory.Activities;
 import android.content.Intent;
 import android.graphics.Bitmap;
 
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Calendar;
@@ -145,11 +146,11 @@ public class MainActivity extends AppCompatActivity {
                     takePictureIntent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
                     startActivityForResult(takePictureIntent, CAMERA_REQUEST_CODE);
                 }
-                Intent AddMemoryIntent = new Intent(MainActivity.this, AddMemoryActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putString("userName",user_name);
-                AddMemoryIntent.putExtras(bundle);
-                startActivity(AddMemoryIntent);
+//                Intent AddMemoryIntent = new Intent(MainActivity.this, AddMemoryActivity.class);
+//                Bundle bundle = new Bundle();
+//                bundle.putString("userName",user_name);
+//                AddMemoryIntent.putExtras(bundle);
+//                startActivity(AddMemoryIntent);
             }
         });
 
@@ -175,14 +176,13 @@ public class MainActivity extends AppCompatActivity {
             Bitmap imageBitmap = BitmapFactory.decodeFile(fileName);
             if (imageBitmap == null) System.out.println("Bitmap null!!!!!");
             File file = new File(fileName);
-            FileOutputStream out = null;
+            FileInputStream out = null;
             try {
-                out = new FileOutputStream(file);
+                out = new FileInputStream(file);
             }catch (FileNotFoundException e) {
                 e.printStackTrace();
             }finally {
                 try {
-                    out.flush();
                     out.close();
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -193,6 +193,9 @@ public class MainActivity extends AppCompatActivity {
 //            else System.out.println("upload Fail!!!!!");
             //跳转至裁剪
             Intent intent = new Intent(MainActivity.this, CropperActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putString("fileName",fileName);
+            intent.putExtras(bundle);
             startActivity(intent);
             MainActivity.this.finish();
         }

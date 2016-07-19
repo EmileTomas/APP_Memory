@@ -2,6 +2,7 @@ package com.sjtu.bwphoto.memory.Activities;
 
 import android.app.Activity;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
@@ -18,6 +19,7 @@ import com.sjtu.bwphoto.memory.Class.Util.CropImageView;
 import com.sjtu.bwphoto.memory.R;
 
 public class CropperActivity extends Activity {
+    private String fileName;
 
     // Private Constants ///////////////////////////////////////////////////////////////////////////
 
@@ -30,7 +32,7 @@ public class CropperActivity extends Activity {
 
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_cropper);
 
         // Initialize Views.
         final ToggleButton fixedAspectRatioToggleButton = (ToggleButton) findViewById(R.id.fixedAspectRatioToggle);
@@ -42,6 +44,14 @@ public class CropperActivity extends Activity {
         final CropImageView cropImageView = (CropImageView) findViewById(R.id.CropImageView);
         final ImageView croppedImageView = (ImageView) findViewById(R.id.croppedImageView);
         final Button cropButton = (Button) findViewById(R.id.Button_crop);
+
+        //modify image source
+        Bundle bundle = this.getIntent().getExtras();
+        fileName = bundle.getString("fileName");
+        System.out.println(fileName);
+        Bitmap imageBitmap = BitmapFactory.decodeFile(fileName);
+        if (imageBitmap == null) System.out.println("Bitmap null 2 !!!!!");
+        cropImageView.setImageBitmap(imageBitmap);
 
         // Initializes fixedAspectRatio toggle button.
         fixedAspectRatioToggleButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
