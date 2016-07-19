@@ -188,9 +188,13 @@ public class MainActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
             }
-            String result = restTp.postForObject(url.url+"/identity/profile", out, String.class);
-            if (result.contains("success")) System.out.println("upload Success!!!!!");
-            else System.out.println("upload Fail!!!!!");
+//            String result = restTp.postForObject(url.url+"/identity/profile", out, String.class);
+//            if (result.contains("success")) System.out.println("upload Success!!!!!");
+//            else System.out.println("upload Fail!!!!!");
+            //跳转至裁剪
+            Intent intent = new Intent(MainActivity.this, CropperActivity.class);
+            startActivity(intent);
+            MainActivity.this.finish();
         }
         if (requestCode == ALBUM_REQUEST_CODE && requestCode == RESULT_OK) {
             if (data == null) return;
