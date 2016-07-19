@@ -7,6 +7,7 @@
     <string name="strEmlInputLabel">邮 箱： </string>
     <string name="strAgeInputLabel">年 龄： </string>
     <string name="strBirthInputLabel">生 日： </string>
+    <string name="strContentInputLabel">简 介： </string>
     <string name="login">登 录</string>
     <string name="register">注 册</string>
     <string name="cancle">取 消</string>
@@ -15,6 +16,8 @@
     <string name="pwd_empty">密码为空，请重新输入！</string>
     <string name="email_empty">邮箱为空，请重新输入！</string>
     <string name="age_empty">年龄为空，请重新输入！</string>
+    <string name="birth_empty">生日为空，请重新输入！</string>
+    <string name="content_empty">输入内容为空，请重新输入！</string>
     <string name="email_invalid">邮箱不存在，请重新输入！</string>
     <string name="register_fail">注册用户失败，请重新尝试！</string>
     <string name="register_sucess">注册成功！</string>

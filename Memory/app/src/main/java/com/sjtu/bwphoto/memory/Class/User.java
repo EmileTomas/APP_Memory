@@ -25,6 +25,8 @@ public class User {
     private String birth;
     @JsonProperty
     private Timestamp time;
+    @JsonProperty
+    private String content;
 
     @JsonCreator  //构造器
     public User(@JsonProperty("name") String name,  //生成json时重命名为name
@@ -38,12 +40,15 @@ public class User {
                 @JsonProperty("password") String pwd,
                 @JsonProperty("email") String email,
                 @JsonProperty("age") int age,
-                @JsonProperty("birth") String birth) {
+                @JsonProperty("birth") String birth,
+                @JsonProperty("content") String content) {
         this.name = name;
         this.pwd = pwd;
+        this.role = 1;
         this.email = email;
         this.age = age;
         this.birth = birth;
+        this.content = content;
     }
 
     public String getName() {
@@ -100,6 +105,14 @@ public class User {
 
     public void setBirth(String birth) {
         this.birth = birth;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
     }
 
 

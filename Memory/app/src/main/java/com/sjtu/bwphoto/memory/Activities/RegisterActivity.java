@@ -29,6 +29,8 @@ public class RegisterActivity extends Activity {
     private EditText mEmail;
     private EditText mAge;
     private EditText mBirth;
+    private EditText mContent;
+
     //private DatePicker datePicker;
 
     private Button mRegisterButton;
@@ -68,6 +70,7 @@ public class RegisterActivity extends Activity {
         mEmail = (EditText) findViewById(R.id.email);
         mAge = (EditText) findViewById(R.id.age);
         mBirth = (EditText) findViewById(R.id.birth);
+        mContent = (EditText) findViewById(R.id.content);
 
         mRegisterButton = (Button) findViewById(R.id.login_btn_register);
         mRegisterButton.setOnClickListener(mListener);
@@ -95,7 +98,8 @@ public class RegisterActivity extends Activity {
             String userEmail = mEmail.getText().toString().trim();
             int userAge = Integer.parseInt(mAge.getText().toString());
             String userBirth = mBirth.getText().toString().trim();
-            User mUser = new User(userName,userPwd,userEmail,userAge,userBirth);
+            String userContent = mContent.getText().toString();
+            User mUser = new User(userName,userPwd,userEmail,userAge,userBirth,userContent);
             String result = restTp.postForObject(url.url+"/identity/reg", mUser, String.class);
             System.out.println(result);
             if (result.contains("success")){
@@ -125,6 +129,14 @@ public class RegisterActivity extends Activity {
             return false;
         } else if (mAge.getText().toString().trim().equals("")) {
             Toast.makeText(this, getString(R.string.age_empty),
+                    Toast.LENGTH_SHORT).show();
+            return false;
+        } else if (mBirth.getText().toString().trim().equals("")) {
+            Toast.makeText(this, getString(R.string.birth_empty),
+                    Toast.LENGTH_SHORT).show();
+            return false;
+        } else if (mContent.getText().toString().trim().equals("")) {
+            Toast.makeText(this, getString(R.string.content_empty),
                     Toast.LENGTH_SHORT).show();
             return false;
         } /*else if (mEmail.getText().toString().contains("@")) {

@@ -176,6 +176,34 @@
             android:textColor="#ff3f3f3f"
             android:textSize="16.0dip" />
 
+        <EditText
+            android:id="@+id/content"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/birth"
+            android:layout_alignRight="@+id/birth"
+            android:layout_below="@+id/birth"
+            android:layout_marginRight="1.0dip"
+            android:gravity="center"
+            android:inputType="text"
+            android:textColor="@color/ivory"
+            android:maxLength="10"
+            android:paddingLeft="45.0sp"
+            android:saveEnabled="true" />
+
+        <TextView
+            android:id="@+id/TextView06"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/content"
+            android:layout_alignRight="@+id/TextView05"
+            android:layout_alignTop="@+id/content"
+            android:gravity="center_vertical"
+            android:paddingLeft="7.0sp"
+            android:text="@string/strContentInputLabel"
+            android:textColor="#ff3f3f3f"
+            android:textSize="16.0dip" />
+
         <!--<DatePicker-->
                  <!--android:id="@+id/dpPicker"-->
                  <!--android:calendarViewShown="false"-->
@@ -185,7 +213,7 @@
         <LinearLayout
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:layout_below="@id/birth"
+            android:layout_below="@id/content"
             android:layout_centerHorizontal="true"
             android:weightSum = "5"
             android:gravity="center_horizontal"
@@ -195,7 +223,7 @@
             android:id="@+id/login_btn_register"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/birth"
+            android:layout_below="@id/content"
             android:layout_centerHorizontal="true"
             android:layout_gravity="center_horizontal"
             android:layout_marginBottom="5.0px"

@@ -12,7 +12,10 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Switch;
 
+import com.sjtu.bwphoto.memory.Class.ServerUrl;
 import com.sjtu.bwphoto.memory.R;
+
+import org.springframework.web.client.RestTemplate;
 
 public class AddMemoryActivity extends Activity {
     private Button BtnUpload;
@@ -23,6 +26,9 @@ public class AddMemoryActivity extends Activity {
     private String MemContent;
     private Boolean Sharable;
     private String userName;
+
+    private final static ServerUrl url = new ServerUrl();
+    private static RestTemplate restTp = new RestTemplate();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +76,9 @@ public class AddMemoryActivity extends Activity {
 
     public void upload() {
         MemContent =  Content.getText().toString().trim();
+        String result = restTp.postForObject(url.url+"/resources/{resource_id}/words", MemContent, String.class);
+        if (result.contains("success")) System.out.println("upload word Success!!!!!");
+        else System.out.println("upload word Fail!!!!!");
         Intent intent = new Intent(AddMemoryActivity.this, MainActivity.class);
         Bundle bundle = new Bundle();
         bundle.putString("userName",userName);
