@@ -88,7 +88,7 @@ public class AddMemoryActivity extends Activity {
     }
 
     public void set_share() {
-        Sharable = true;
+        Sharable = BtnPublic.getShowText();
     }
 
     //长按图片放大

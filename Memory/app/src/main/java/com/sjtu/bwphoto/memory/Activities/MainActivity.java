@@ -145,11 +145,11 @@ public class MainActivity extends AppCompatActivity {
                     takePictureIntent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
                     startActivityForResult(takePictureIntent, CAMERA_REQUEST_CODE);
                 }
-//                Intent AddMemoryIntent = new Intent(MainActivity.this, CropperActivity.class);
-//                Bundle bundle = new Bundle();
-//                bundle.putString("userName",user_name);
-//                AddMemoryIntent.putExtras(bundle);
-//                startActivity(AddMemoryIntent);
+                Intent AddMemoryIntent = new Intent(MainActivity.this, AddMemoryActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putString("userName",user_name);
+                AddMemoryIntent.putExtras(bundle);
+                startActivity(AddMemoryIntent);
             }
         });
 
@@ -175,28 +175,22 @@ public class MainActivity extends AppCompatActivity {
             Bitmap imageBitmap = BitmapFactory.decodeFile(fileName);
             if (imageBitmap == null) System.out.println("Bitmap null!!!!!");
             File file = new File(fileName);
-            String result = restTp.postForObject(url.url+"/identity/profile", file, String.class);
+            FileOutputStream out = null;
+            try {
+                out = new FileOutputStream(file);
+            }catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }finally {
+                try {
+                    out.flush();
+                    out.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            String result = restTp.postForObject(url.url+"/identity/profile", out, String.class);
             if (result.contains("success")) System.out.println("upload Success!!!!!");
             else System.out.println("upload Fail!!!!!");
-//            new DateFormat();
-//            String name = DateFormat.format("yyyyMMdd_hhmmss", Calendar.getInstance(Locale.CHINA)) + ".jpg";
-//            Toast.makeText(this, name, Toast.LENGTH_LONG).show();
-//            String fileName = "/sdcard/DCIM/Camera/"+name;
-//            FileOutputStream out = null;
-//            try {
-//                out = new FileOutputStream(fileName);
-//                imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);// 把数据写入文件
-//            }catch (FileNotFoundException e){
-//                e.printStackTrace();
-//                Toast.makeText(this, "FileNotFoundException", Toast.LENGTH_LONG).show();
-//            }finally {
-//                try {
-//                    out.flush();
-//                    out.close();
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-//            }
         }
         if (requestCode == ALBUM_REQUEST_CODE && requestCode == RESULT_OK) {
             if (data == null) return;
