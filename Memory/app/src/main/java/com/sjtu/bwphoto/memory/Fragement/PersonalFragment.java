@@ -222,7 +222,7 @@ public class PersonalFragment extends Fragment implements SwipeRefreshLayout.OnR
     //This function will be called only when Cards is not empty
     private void intialView(){
         final LinearLayoutManager layoutManager = new LinearLayoutManager(rootView.getContext());
-        msgRecycleAdapter = new MsgRecycleAdapter(rootView.getContext(), Cards);
+        msgRecycleAdapter = new MsgRecycleAdapter(rootView.getContext(), Cards,rootView);
         recyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(layoutManager);

@@ -166,8 +166,8 @@ public class MainActivity extends AppCompatActivity {
                 startActivityForResult(albumIntent, ALBUM_REQUEST_CODE);
             }
         });
-
     }
+
 
     // Get the Thumbnail -- 显示拍到的照片
     @Override
@@ -273,4 +273,11 @@ public class MainActivity extends AppCompatActivity {
         return mediaFile;
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        if(viewPager.getCurrentItem()==0)
+            recentFragment.setCommentInvisible();
+
+    }
 }

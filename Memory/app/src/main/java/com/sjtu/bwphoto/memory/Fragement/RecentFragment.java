@@ -1,5 +1,6 @@
 package com.sjtu.bwphoto.memory.Fragement;
 
+import android.app.Service;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -15,6 +16,10 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 
 import com.sjtu.bwphoto.memory.Activities.MainActivity;
 import com.sjtu.bwphoto.memory.Class.Datebase.DatabaseHelper;
@@ -41,6 +46,7 @@ import androidviewhover.BlurLayout;
  *
  * load_more_data in the handler should create a thread for it;
  *
+ *  when comment, you can add an thread for it to pop the keyboard.
  *
  */
 public class RecentFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
@@ -53,6 +59,10 @@ public class RecentFragment extends Fragment implements SwipeRefreshLayout.OnRef
     private MsgRecycleAdapter msgRecycleAdapter;
     private SwipeRefreshLayout swipeRefreshLayout;
     private List<Msg> Cards;
+    private LinearLayout commentLayout;
+    private EditText commentTextEdit;
+    private Button commentSendButton;
+    private InputMethodManager imm;
 
     private String userAccount;
     private DatabaseHelper databaseHelper;
@@ -195,7 +205,7 @@ public class RecentFragment extends Fragment implements SwipeRefreshLayout.OnRef
         //  Receive data and store it to Cards
         //  return true;
         Cards.clear();
-        Msg Card4 = new Msg("This is a Story about the future", "Tokyo", "http://10.189.158.36:8080/identity/profile");
+        Msg Card4 = new Msg("This is a Story about the future", "Tokyo", "http://www.arrivalguides.com/s3/ag-images-eu/16/d8465238ff0e0298991405b8597d8da6.jpg");
         Cards.add(0,Card4);
         Msg Card3 = new Msg("This is a Story about the future", "GreatWall", "http://static.asiawebdirect.com/m/phuket/portals/www-singapore-com/homepage/attractions/all-attractions/pagePropertiesImage/singapore1.jpg");
         Cards.add(0,Card3);
@@ -235,7 +245,7 @@ public class RecentFragment extends Fragment implements SwipeRefreshLayout.OnRef
     //This function will be called only when Cards is not empty
     private void intialView(){
         final LinearLayoutManager layoutManager = new LinearLayoutManager(rootView.getContext());
-        msgRecycleAdapter = new MsgRecycleAdapter(rootView.getContext(), Cards);
+        msgRecycleAdapter = new MsgRecycleAdapter(rootView.getContext(), Cards,rootView);
         recyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(layoutManager);
@@ -261,6 +271,13 @@ public class RecentFragment extends Fragment implements SwipeRefreshLayout.OnRef
                 lastVisibleItem = layoutManager.findLastVisibleItemPosition();
             }
         });
+
+
+        commentLayout = (LinearLayout) rootView.findViewById(R.id.commentView);
+        commentTextEdit = (EditText) rootView.findViewById(R.id.commentBox);
+        commentSendButton=(Button) rootView.findViewById(R.id.send);
+        imm = (InputMethodManager) commentTextEdit.getContext().getSystemService(Service.INPUT_METHOD_SERVICE);
+
     }
 
     private android.os.Handler mHandler = new android.os.Handler() {
@@ -294,6 +311,11 @@ public class RecentFragment extends Fragment implements SwipeRefreshLayout.OnRef
     private String getUserAccount(){
         MainActivity activity = (MainActivity) getActivity();
         return activity.getUserAccount();
+    }
+
+    public void setCommentInvisible(){
+        commentLayout.setVisibility(View.GONE);
+        imm.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS);
     }
 }
 
