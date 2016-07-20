@@ -3,6 +3,8 @@ package com.sjtu.bwphoto.memory.Activities;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.BitmapRegionDecoder;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
@@ -17,6 +19,11 @@ import android.widget.ToggleButton;
 
 import com.sjtu.bwphoto.memory.Class.Util.CropImageView;
 import com.sjtu.bwphoto.memory.R;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
 public class CropperActivity extends Activity {
     private String fileName;
@@ -49,9 +56,40 @@ public class CropperActivity extends Activity {
         Bundle bundle = this.getIntent().getExtras();
         fileName = bundle.getString("fileName");
         System.out.println(fileName);
-        Bitmap imageBitmap = BitmapFactory.decodeFile(fileName);
-        if (imageBitmap == null) System.out.println("Bitmap null 2 !!!!!");
-        cropImageView.setImageBitmap(imageBitmap);
+        BitmapFactory.Options tmpOptions = new BitmapFactory.Options();
+        tmpOptions.inJustDecodeBounds = true;
+        File file = new File(fileName);
+        FileInputStream out = null;
+        try {
+            out = new FileInputStream(file);
+        }catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }finally {
+            try {
+                out.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        BitmapFactory.decodeStream(out, null, tmpOptions);
+        //int width = tmpOptions.outWidth;  //获得图片的宽、高
+        //int height = tmpOptions.outHeight;
+        BitmapRegionDecoder bitmapRegionDecoder = null;
+        try {
+            bitmapRegionDecoder = BitmapRegionDecoder.newInstance(fileName, false);
+            if (bitmapRegionDecoder == null) System.out.println("bitmapRegionDecoder null !!!!!");
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inPreferredConfig = Bitmap.Config.RGB_565;
+        options.inSampleSize = 2;
+        int width = bitmapRegionDecoder.getWidth();
+        int height = bitmapRegionDecoder.getHeight();
+        Bitmap bitmap = bitmapRegionDecoder.decodeRegion(new Rect(0,0,width,height),options);
+        //Bitmap imageBitmap = BitmapFactory.decodeFile(fileName);
+        //if (imageBitmap == null) System.out.println("Bitmap null 2 !!!!!");
+        cropImageView.setImageBitmap(bitmap);
 
         // Initializes fixedAspectRatio toggle button.
         fixedAspectRatioToggleButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
