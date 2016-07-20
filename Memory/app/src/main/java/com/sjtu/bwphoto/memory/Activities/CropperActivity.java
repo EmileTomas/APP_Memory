@@ -1,6 +1,7 @@
 package com.sjtu.bwphoto.memory.Activities;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.BitmapRegionDecoder;
@@ -20,13 +21,16 @@ import android.widget.ToggleButton;
 import com.sjtu.bwphoto.memory.Class.Util.CropImageView;
 import com.sjtu.bwphoto.memory.R;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.OutputStream;
 
 public class CropperActivity extends Activity {
     private String fileName;
+    private String userName;
 
     // Private Constants ///////////////////////////////////////////////////////////////////////////
 
@@ -55,6 +59,7 @@ public class CropperActivity extends Activity {
         //modify image source
         Bundle bundle = this.getIntent().getExtras();
         fileName = bundle.getString("fileName");
+        userName = bundle.getString("userName");
         System.out.println(fileName);
         BitmapRegionDecoder bitmapRegionDecoder = null;
         try {
@@ -152,6 +157,15 @@ public class CropperActivity extends Activity {
             public void onClick(View v) {
                 final Bitmap croppedImage = cropImageView.getCroppedImage();
                 croppedImageView.setImageBitmap(croppedImage);
+                Intent intent = new Intent(CropperActivity.this, AddMemoryActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putString("userName",userName);
+//                OutputStream out = new ByteArrayOutputStream();
+//                croppedImage.compress(Bitmap.CompressFormat.JPEG,30,out);
+//                intent.putExtra("Image",croppedImage);
+                intent.putExtras(bundle);
+                startActivity(intent);
+                CropperActivity.this.finish();
             }
         });
     }

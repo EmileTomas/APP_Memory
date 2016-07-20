@@ -14,7 +14,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.provider.Settings;
 import android.renderscript.RenderScript;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -141,10 +140,19 @@ public class MainActivity extends AppCompatActivity {
                 if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
                     new DateFormat();
                     String name = DateFormat.format("yyyyMMdd_hhmmss", Calendar.getInstance(Locale.CHINA)) + ".jpg";
+                    //System.out.println(name);
+                    String state = Environment.getExternalStorageState();
+                    String filehead = "/sdcard/DCIM/Camera";
+                    File dir = new File(filehead);
+                    if (!dir.exists()) dir.mkdir();
                     fileName = "/sdcard/DCIM/Camera/"+name;
-                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(new File(fileName)));
-                    takePictureIntent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
-                    startActivityForResult(takePictureIntent, CAMERA_REQUEST_CODE);
+                    if (state.equals(Environment.MEDIA_MOUNTED)) {
+                        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(new File(fileName)));
+                        takePictureIntent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
+                        startActivityForResult(takePictureIntent, CAMERA_REQUEST_CODE);
+                    }else{
+                        Toast.makeText(MainActivity.this, "没有SD卡", Toast.LENGTH_LONG).show();
+                    }
                 }
 //                Intent AddMemoryIntent = new Intent(MainActivity.this, AddMemoryActivity.class);
 //                Bundle bundle = new Bundle();
@@ -173,6 +181,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == CAMERA_REQUEST_CODE && resultCode == RESULT_OK) {
+//            Uri uri = null;
+//            if (data!=null) uri = data.getData();
+//            else System.out.println("data == null !!!!!!!");
+//            if (uri != null) {
+//                System.out.println(uri.getPath());
+//            }
             Bitmap imageBitmap = BitmapFactory.decodeFile(fileName);
             if (imageBitmap == null) System.out.println("Bitmap null!!!!!");
             File file = new File(fileName);
@@ -195,6 +209,7 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(MainActivity.this, CropperActivity.class);
             Bundle bundle = new Bundle();
             bundle.putString("fileName",fileName);
+            bundle.putString("userName",user_name);
             intent.putExtras(bundle);
             startActivity(intent);
             MainActivity.this.finish();

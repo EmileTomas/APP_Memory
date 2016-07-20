@@ -2,6 +2,8 @@ package com.sjtu.bwphoto.memory.Activities;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -26,6 +28,7 @@ public class AddMemoryActivity extends Activity {
     private String MemContent;
     private Boolean Sharable;
     private String userName;
+    private Bitmap cropped;
 
     private final static ServerUrl url = new ServerUrl();
     private static RestTemplate restTp = new RestTemplate();
@@ -40,6 +43,11 @@ public class AddMemoryActivity extends Activity {
         //Receive Data from last activity
         Bundle bundle = this.getIntent().getExtras();
         userName = bundle.getString("userName");
+//        Intent intent=getIntent();
+//        if(intent!=null) {
+//            System.out.println("add memory reached");
+//            cropped = intent.getParcelableExtra("Image");
+//        }
 
         BtnUpload = (Button) findViewById(R.id.btn_upload);
         BtnCancle = (Button) findViewById(R.id.btn_cancle);
@@ -50,6 +58,7 @@ public class AddMemoryActivity extends Activity {
         BtnCancle.setOnClickListener(mListener);
         BtnUpload.setOnClickListener(mListener);
 
+        //PicView.setImageBitmap(cropped);
         //注册OnlongClick监听器
         PicView.setOnLongClickListener(new PicOnLongClick());
 
