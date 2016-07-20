@@ -56,24 +56,6 @@ public class CropperActivity extends Activity {
         Bundle bundle = this.getIntent().getExtras();
         fileName = bundle.getString("fileName");
         System.out.println(fileName);
-        BitmapFactory.Options tmpOptions = new BitmapFactory.Options();
-        tmpOptions.inJustDecodeBounds = true;
-        File file = new File(fileName);
-        FileInputStream out = null;
-        try {
-            out = new FileInputStream(file);
-        }catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }finally {
-            try {
-                out.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        BitmapFactory.decodeStream(out, null, tmpOptions);
-        //int width = tmpOptions.outWidth;  //获得图片的宽、高
-        //int height = tmpOptions.outHeight;
         BitmapRegionDecoder bitmapRegionDecoder = null;
         try {
             bitmapRegionDecoder = BitmapRegionDecoder.newInstance(fileName, false);
