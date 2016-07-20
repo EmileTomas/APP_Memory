@@ -32,6 +32,7 @@ import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.sjtu.bwphoto.memory.Class.ServerUrl;
+import com.sjtu.bwphoto.memory.Class.Util.FloatingActionButton;
 import com.sjtu.bwphoto.memory.Class.Util.FloatingActionsMenu;
 import com.sjtu.bwphoto.memory.Class.Util.TabsPagerAdapter;
 import com.sjtu.bwphoto.memory.Fragement.PersonalFragment;
@@ -75,6 +76,7 @@ public class MainActivity extends AppCompatActivity {
     private TabLayout tabLayout;
     private ViewPager viewPager;
     private TabsPagerAdapter tabsPagerAdapter;
+    private FloatingActionsMenu menuMultipleActions;
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -96,6 +98,7 @@ public class MainActivity extends AppCompatActivity {
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
+
     }
 
     private void initial_widget() {
@@ -131,7 +134,7 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.setupWithViewPager(viewPager, true);
 
         // Floating Action Button
-        final FloatingActionsMenu menuMultipleActions = (FloatingActionsMenu) findViewById(R.id.menuFAB);
+        menuMultipleActions = (FloatingActionsMenu) findViewById(R.id.menuFAB);
 
         findViewById(R.id.cameraFAB).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -225,11 +228,6 @@ public class MainActivity extends AppCompatActivity {
         return Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED);
     }
 
-    //used by database
-    public String getUserAccount() {
-        return user_name;
-    }
-
     /**
      * Create a file Uri for saving an image or video
      */
@@ -273,11 +271,21 @@ public class MainActivity extends AppCompatActivity {
         return mediaFile;
     }
 
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        if(viewPager.getCurrentItem()==0)
-            recentFragment.setCommentInvisible();
 
+    //used by database
+    public String getUserAccount() {
+        return user_name;
+    }
+
+    //used by MsgRecyleAdapter and fragments
+    public void setFABState(int state){
+        if(state==1)
+            menuMultipleActions.setVisibility(View.GONE);
+        else if(state==2)
+            menuMultipleActions.setVisibility(View.VISIBLE);
+    }
+
+    public RecentFragment getRecentFragment(){
+        return recentFragment;
     }
 }

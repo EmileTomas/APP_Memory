@@ -1,39 +1,49 @@
 package com.sjtu.bwphoto.memory.Class.Util;
 
+import android.app.Service;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.daimajia.androidanimations.library.Techniques;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.sjtu.bwphoto.memory.Activities.MainActivity;
 import com.sjtu.bwphoto.memory.Class.Msg;
+import com.sjtu.bwphoto.memory.Class.Util.Util_Cropper.Handle;
+import com.sjtu.bwphoto.memory.Fragement.RecentFragment;
 import com.sjtu.bwphoto.memory.R;
 
 import java.util.List;
+import java.util.logging.Handler;
+import java.util.logging.LogRecord;
 
 import androidviewhover.BlurLayout;
 
 /**
  * Created by Administrator on 2016/7/4.
  */
-public class MsgRecycleAdapter extends RecyclerView.Adapter<MsgRecycleAdapter.CardViewHolder> {
+public class MsgRecycleAdapterForComment extends RecyclerView.Adapter<MsgRecycleAdapterForComment.CardViewHolder> {
 
     private List<Msg> Cards;
-    private Context mContext;
+    private RecentFragment mContext;
     private LayoutInflater inflater;
     private View rootView;
+    private final int GONE = 1;
 
-    public MsgRecycleAdapter(Context context, List<Msg> Cards, View rootView) {
-        this.mContext = context;
+    public MsgRecycleAdapterForComment(RecentFragment mContext, List<Msg> Cards, View rootView) {
+        this.mContext = mContext;
         this.Cards = Cards;
         this.rootView = rootView;
-        inflater = LayoutInflater.from(context);
+        inflater = LayoutInflater.from(rootView.getContext());
     }
 
     @Override
@@ -84,6 +94,21 @@ public class MsgRecycleAdapter extends RecyclerView.Adapter<MsgRecycleAdapter.Ca
 
             mSampleLayout.addChildAppearAnimator(hover, R.id.content, Techniques.BounceIn);
             mSampleLayout.addChildDisappearAnimator(hover, R.id.content, Techniques.FadeOutUp);
+
+            final InputMethodManager imm;
+            final EditText editText = (EditText) rootView.findViewById(R.id.commentBox);
+            final LinearLayout linearLayout = (LinearLayout) rootView.findViewById(R.id.commentView);
+            final FloatingActionButton FAB = (FloatingActionButton) rootView.findViewById(R.id.menuFAB);
+            imm = (InputMethodManager) editText.getContext().getSystemService(Service.INPUT_METHOD_SERVICE);
+            hover.findViewById(R.id.cat).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    linearLayout.setVisibility(View.VISIBLE);
+                    editText.requestFocus();
+                    mContext.setFABState(GONE);
+                    imm.showSoftInput(editText, 0);
+                }
+            });
         }
     }
 
