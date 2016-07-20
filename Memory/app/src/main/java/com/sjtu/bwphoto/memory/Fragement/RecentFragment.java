@@ -4,6 +4,7 @@ import android.app.Service;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.media.Image;
 import android.os.Bundle;
 import android.os.Message;
 import android.support.v4.app.Fragment;
@@ -14,18 +15,21 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.sjtu.bwphoto.memory.Activities.MainActivity;
 import com.sjtu.bwphoto.memory.Class.Datebase.DatabaseHelper;
 import com.sjtu.bwphoto.memory.Class.Datebase.DatabaseManager;
 import com.sjtu.bwphoto.memory.Class.Msg;
-import com.sjtu.bwphoto.memory.Class.Util.MsgRecycleAdapter;
+import com.sjtu.bwphoto.memory.Class.Util.FloatingActionButton;
+import com.sjtu.bwphoto.memory.Class.Util.MsgRecycleAdapterForComment;
 import com.sjtu.bwphoto.memory.R;
 
 import java.util.ArrayList;
@@ -38,41 +42,46 @@ import androidviewhover.BlurLayout;
  * Created by ly on 7/7/2016.
  * Place need to change:
  * Function
- *      fectchData() should be modified as web access Code
- *
+ * fectchData() should be modified as web access Code
+ * <p/>
  * class
- *      RefreshDataThread
- *          mHandler.sendMessageDelayed(msg,1000); remove 1000
- *
+ * RefreshDataThread
+ * mHandler.sendMessageDelayed(msg,1000); remove 1000
+ * <p/>
  * load_more_data in the handler should create a thread for it;
- *
- *  when comment, you can add an thread for it to pop the keyboard.
- *
+ * <p/>
+ * when comment, you can add an thread for it to pop the keyboard.
  */
 public class RecentFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
-    private final int INITIAL_VIEW=0;
-    private final int LOAD_MORE_DATA=1;
-    private final int NOTIFY_CARDS_CHANGE=2;
+    private final int INITIAL_VIEW = 0;
+    private final int LOAD_MORE_DATA = 1;
+    private final int NOTIFY_CARDS_CHANGE = 2;
+    private final int SET_FAB=3;
+    private final int GONE = 1;
+    private final int VISIBLE = 2;
 
     private View rootView;
     private RecyclerView recyclerView;
-    private MsgRecycleAdapter msgRecycleAdapter;
+    private MsgRecycleAdapterForComment msgRecycleAdapter;
     private SwipeRefreshLayout swipeRefreshLayout;
     private List<Msg> Cards;
     private LinearLayout commentLayout;
+    private ImageView outside;
     private EditText commentTextEdit;
     private Button commentSendButton;
+    private FloatingActionButton FAB;
     private InputMethodManager imm;
+    private MainActivity mainActivity;
 
     private String userAccount;
     private DatabaseHelper databaseHelper;
     private SQLiteDatabase sqLiteDatabase;
 
     private int lastVisibleItem;
-    private boolean isCardEmpty=true;
+    private boolean isCardEmpty = true;
     private boolean fetchDataSuccess = false;
-    private boolean initializeViewSuccess=false;
-    private boolean freushFlag=false;
+    private boolean initializeViewSuccess = false;
+    private boolean freushFlag = false;
 
 
     @Override
@@ -80,9 +89,8 @@ public class RecentFragment extends Fragment implements SwipeRefreshLayout.OnRef
         rootView = inflater.inflate(R.layout.fragment_recent, container, false);
         BlurLayout.setGlobalDefaultDuration(800);
 
-        databaseHelper=new DatabaseHelper(getContext(),"AppDatabase.db",null,1);
+        databaseHelper = new DatabaseHelper(getContext(), "AppDatabase.db", null, 1);
         DatabaseManager.initializeInstance(databaseHelper);
-
 
         swipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_Refresh);
         swipeRefreshLayout.setColorSchemeResources(
@@ -97,7 +105,8 @@ public class RecentFragment extends Fragment implements SwipeRefreshLayout.OnRef
                         .getDisplayMetrics()));
 
         //restore data from last time and refresh data
-        userAccount=getUserAccount();
+        mainActivity = (MainActivity) getActivity();
+        userAccount = getUserAccount();
         new RestoreDataThread().start();
 
         return rootView;
@@ -105,7 +114,7 @@ public class RecentFragment extends Fragment implements SwipeRefreshLayout.OnRef
 
     @Override
     public void onRefresh() {
-        if(!freushFlag) {
+        if (!freushFlag) {
             swipeRefreshLayout.setRefreshing(true);
             new RefreshDataThread().start();
         }
@@ -127,7 +136,7 @@ public class RecentFragment extends Fragment implements SwipeRefreshLayout.OnRef
             restoreData();
             isCardEmpty = Cards.isEmpty();   //if the database has data, load them and inital view
             if (!isCardEmpty) {
-                initializeViewSuccess=true;
+                initializeViewSuccess = true;
                 Message msg = new Message();
                 msg.what = INITIAL_VIEW;
                 mHandler.sendMessage(msg);
@@ -150,30 +159,30 @@ public class RecentFragment extends Fragment implements SwipeRefreshLayout.OnRef
             super.run();
 
 
-            if(!fetchDataSuccess) fetchDataFirstTime();  //if fetch data failure last time, freshData from server
+            if (!fetchDataSuccess)
+                fetchDataFirstTime();  //if fetch data failure last time, freshData from server
             else fetchDataNew();                         //else fetch data new from sever
 
         }
     }
 
-    class StoreDataThread extends Thread{
+    class StoreDataThread extends Thread {
         @Override
         public void run() {
             super.run();
-            sqLiteDatabase=DatabaseManager.getInstance().openDatabase();
+            sqLiteDatabase = DatabaseManager.getInstance().openDatabase();
             //DeletePreviousData
-            sqLiteDatabase.delete("Page1","account=?",new String[]{userAccount});
+            sqLiteDatabase.delete("Page1", "account=?", new String[]{userAccount});
             //store Cards via Qtbase
-            ContentValues values=new ContentValues();
-            for(int i=0;i<Cards.size();++i)
-            {
-                values.put("account",userAccount);
-                values.put("rankNum",i);
-                values.put("location",Cards.get(i).getMap_position());
-                values.put("memoryText",Cards.get(i).getContent());
-                values.put("imageURL",Cards.get(i).getImageUrl());
+            ContentValues values = new ContentValues();
+            for (int i = 0; i < Cards.size(); ++i) {
+                values.put("account", userAccount);
+                values.put("rankNum", i);
+                values.put("location", Cards.get(i).getMap_position());
+                values.put("memoryText", Cards.get(i).getContent());
+                values.put("imageURL", Cards.get(i).getImageUrl());
 
-                sqLiteDatabase.insert("Page1",null,values);
+                sqLiteDatabase.insert("Page1", null, values);
                 values.clear();
             }
             DatabaseManager.getInstance().closeDatabase();
@@ -181,24 +190,24 @@ public class RecentFragment extends Fragment implements SwipeRefreshLayout.OnRef
     }
 
     private void restoreData() {
-        sqLiteDatabase=DatabaseManager.getInstance().openDatabase();
+        sqLiteDatabase = DatabaseManager.getInstance().openDatabase();
         Cards = new ArrayList<Msg>();
-        Cursor cursor=sqLiteDatabase.query("Page1",null,"account=?",new String[]{userAccount},null,null,null);
-        if(cursor.moveToFirst()){
-            do{
-                int rankNum=cursor.getInt(cursor.getColumnIndex("rankNum"));
-                String location=cursor.getString(cursor.getColumnIndex("location"));
-                String memoryText=cursor.getString(cursor.getColumnIndex("memoryText"));
-                String imageURL=cursor.getString(cursor.getColumnIndex("imageURL"));
-                Msg Card=new Msg(memoryText,location,imageURL);
+        Cursor cursor = sqLiteDatabase.query("Page1", null, "account=?", new String[]{userAccount}, null, null, null);
+        if (cursor.moveToFirst()) {
+            do {
+                int rankNum = cursor.getInt(cursor.getColumnIndex("rankNum"));
+                String location = cursor.getString(cursor.getColumnIndex("location"));
+                String memoryText = cursor.getString(cursor.getColumnIndex("memoryText"));
+                String imageURL = cursor.getString(cursor.getColumnIndex("imageURL"));
+                Msg Card = new Msg(memoryText, location, imageURL);
                 Cards.add(Card);
-            }while(cursor.moveToNext());
+            } while (cursor.moveToNext());
         }
         cursor.close();
         DatabaseManager.getInstance().closeDatabase();
     }
 
-    private void fetchDataFirstTime(){
+    private void fetchDataFirstTime() {
         //if(ConnectServer) return false; //conenct Severfaiure
         //else:
         //  Clear Cards
@@ -206,46 +215,47 @@ public class RecentFragment extends Fragment implements SwipeRefreshLayout.OnRef
         //  return true;
         Cards.clear();
         Msg Card4 = new Msg("This is a Story about the future", "Tokyo", "http://www.arrivalguides.com/s3/ag-images-eu/16/d8465238ff0e0298991405b8597d8da6.jpg");
-        Cards.add(0,Card4);
+        Cards.add(0, Card4);
         Msg Card3 = new Msg("This is a Story about the future", "GreatWall", "http://static.asiawebdirect.com/m/phuket/portals/www-singapore-com/homepage/attractions/all-attractions/pagePropertiesImage/singapore1.jpg");
-        Cards.add(0,Card3);
+        Cards.add(0, Card3);
         Msg Card2 = new Msg("一个人的旅行，一个人的远方。在悉尼这座城市，享受恬静的海风，任时间流过。", "Sydeney", "drawable://" + R.drawable.sydeney);
-        Cards.add(0,Card2);
+        Cards.add(0, Card2);
         Msg Card1 = new Msg("This is a Story about the future", "Paris", "drawable://" + R.drawable.paris);
-        Cards.add(0,Card1);
-        fetchDataSuccess=true;
-        isCardEmpty=false;
+        Cards.add(0, Card1);
+        fetchDataSuccess = true;
+        isCardEmpty = false;
 
-        if(!initializeViewSuccess){
-            initializeViewSuccess=true;
+        if (!initializeViewSuccess) {
+            initializeViewSuccess = true;
             Message msg = new Message();
             msg.what = INITIAL_VIEW;
             mHandler.sendMessage(msg);
-        }
-        else{
+        } else {
             Message msg = new Message();
             msg.what = NOTIFY_CARDS_CHANGE;
             mHandler.sendMessage(msg);
         }
     }
 
-    private void fetchDataNew(){
+    private void fetchDataNew() {
         //fetchData success part
         Msg Card1 = new Msg("This is a Story about the future", "Paris", "drawable://" + R.drawable.paris);
-        Cards.add(0,Card1);
+        Cards.add(0, Card1);
 
 
         //Notify the data has been updated
-        freushFlag=false;
+        freushFlag = false;
         Message msg = new Message();
         msg.what = NOTIFY_CARDS_CHANGE;
-        mHandler.sendMessageDelayed(msg,3000);
+        mHandler.sendMessageDelayed(msg, 3000);
 
     }
+
     //This function will be called only when Cards is not empty
-    private void intialView(){
+    private void intialView() {
+
         final LinearLayoutManager layoutManager = new LinearLayoutManager(rootView.getContext());
-        msgRecycleAdapter = new MsgRecycleAdapter(rootView.getContext(), Cards,rootView);
+        msgRecycleAdapter = new MsgRecycleAdapterForComment(mainActivity.getRecentFragment(), Cards, rootView);
         recyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(layoutManager);
@@ -272,12 +282,22 @@ public class RecentFragment extends Fragment implements SwipeRefreshLayout.OnRef
             }
         });
 
-
+        //Here has some problem 可以通过创建新的View将之消费点击事件
         commentLayout = (LinearLayout) rootView.findViewById(R.id.commentView);
         commentTextEdit = (EditText) rootView.findViewById(R.id.commentBox);
-        commentSendButton=(Button) rootView.findViewById(R.id.send);
+        outside = (ImageView) rootView.findViewById(R.id.outside);
+        commentSendButton = (Button) rootView.findViewById(R.id.sendButton);
+        FAB = (FloatingActionButton) rootView.findViewById(R.id.menuFAB);
         imm = (InputMethodManager) commentTextEdit.getContext().getSystemService(Service.INPUT_METHOD_SERVICE);
+        outside.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                commentLayout.setVisibility(View.GONE);
+                setFABState(VISIBLE);
+                imm.hideSoftInputFromWindow(commentTextEdit.getWindowToken(), 0);
 
+            }
+        });
     }
 
     private android.os.Handler mHandler = new android.os.Handler() {
@@ -294,8 +314,8 @@ public class RecentFragment extends Fragment implements SwipeRefreshLayout.OnRef
                     msgRecycleAdapter.notifyDataSetChanged();
                     break;
 
-                case LOAD_MORE_DATA  :
-                    if(!isCardEmpty) {
+                case LOAD_MORE_DATA:
+                    if (!isCardEmpty) {
                         // bottom
                         freushFlag = false;
                         Msg msg3 = new Msg("This is a Story about the future", "GreatWall", "drawable://" + R.drawable.greatwall);
@@ -304,18 +324,26 @@ public class RecentFragment extends Fragment implements SwipeRefreshLayout.OnRef
                         msgRecycleAdapter.notifyDataSetChanged();
                     }
                     break;
+                case SET_FAB:
+                    mainActivity.setFABState(VISIBLE);
             }
         }
 
     };
-    private String getUserAccount(){
-        MainActivity activity = (MainActivity) getActivity();
-        return activity.getUserAccount();
+
+    private String getUserAccount() {
+
+        return mainActivity.getUserAccount();
     }
 
-    public void setCommentInvisible(){
-        commentLayout.setVisibility(View.GONE);
-        imm.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS);
+    public void setFABState(int state) {
+        if(state==GONE) mainActivity.setFABState(state);
+        else if(state==VISIBLE)
+        {
+            Message msg = new Message();
+            msg.what = SET_FAB;
+            mHandler.sendMessageDelayed(msg,100);
+        }
     }
 }
 
