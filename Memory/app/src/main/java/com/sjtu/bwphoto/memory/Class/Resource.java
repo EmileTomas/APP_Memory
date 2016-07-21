@@ -13,7 +13,7 @@ import java.sql.Timestamp;
 public class Resource {
     @JsonProperty
     private int id;
-    @JsonProperty
+    @JsonProperty("username")
     private String name;
     @JsonProperty
     private String content;
@@ -23,48 +23,52 @@ public class Resource {
     private int image_id;
     @JsonProperty
     private Timestamp timestamp;
+    @JsonProperty
+    private String status;
 
-    @JsonCreator
-    public Resource(@JsonProperty("id") int id,
-                @JsonProperty("name") String name) {
-        this.id = id;
-        this.name = name;
-    }
-
-    @JsonCreator
-    public Resource(@JsonProperty("id") int id,
-                    @JsonProperty("name") String name,
-                    @JsonProperty("memory_id") int memory_id,
-                    @JsonProperty("image_id") int image_id) {
-        this.id = id;
-        this.name = name;
-        this.memory_id = memory_id;
-        this.image_id = image_id;
-    }
-
-    @JsonCreator
-    public Resource(@JsonProperty("id") int id,
-                    @JsonProperty("content") String content,
-                    @JsonProperty("timestamp") Timestamp timestamp) {
-        this.id = id;
-        this.content = content;
-        this.timestamp = timestamp;
-    }
-
-    @JsonCreator
-    public Resource(@JsonProperty("id") int id,
-                    @JsonProperty("name") String name,
-                    @JsonProperty("memory_id") int memory_id,
-                    @JsonProperty("image_id") int image_id,
-                    @JsonProperty("content") String content,
-                    @JsonProperty("timestamp") Timestamp timestamp) {
-        this.id = id;
-        this.name = name;
-        this.memory_id = memory_id;
-        this.image_id = image_id;
-        this.content = content;
-        this.timestamp = timestamp;
-    }
+//    public Resource(@JsonProperty("status") char status,
+//                    @JsonProperty("id") int id,
+//                @JsonProperty("name") String name) {
+//        this.status = status;
+//        this.id = id;
+//        this.name = name;
+//    }
+//
+//    public Resource(@JsonProperty("status") char status,
+//            @JsonProperty("id") int id,
+//                    @JsonProperty("name") String name,
+//                    @JsonProperty("memory_id") int memory_id,
+//                    @JsonProperty("image_id") int image_id) {
+//        this.status = status;
+//        this.id = id;
+//        this.name = name;
+//        this.memory_id = memory_id;
+//        this.image_id = image_id;
+//    }
+//
+//    public Resource(@JsonProperty("status") char status,
+//            @JsonProperty("id") int id,
+//                    @JsonProperty("content") String content,
+//                    @JsonProperty("timestamp") Timestamp timestamp) {
+//        this.status = status;
+//        this.id = id;
+//        this.content = content;
+//        this.timestamp = timestamp;
+//    }
+//
+//    public Resource(@JsonProperty("id") int id,
+//                    @JsonProperty("name") String name,
+//                    @JsonProperty("memory_id") int memory_id,
+//                    @JsonProperty("image_id") int image_id,
+//                    @JsonProperty("content") String content,
+//                    @JsonProperty("timestamp") Timestamp timestamp) {
+//        this.id = id;
+//        this.name = name;
+//        this.memory_id = memory_id;
+//        this.image_id = image_id;
+//        this.content = content;
+//        this.timestamp = timestamp;
+//    }
 
     public int getId() {
         return id;
@@ -115,5 +119,14 @@ public class Resource {
     public void setTimestamp(Timestamp timestamp) {
         this.timestamp = timestamp;
     }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
 
 }

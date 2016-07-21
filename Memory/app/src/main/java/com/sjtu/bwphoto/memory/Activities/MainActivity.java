@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Calendar;
 
 import android.graphics.BitmapFactory;
@@ -43,6 +44,8 @@ import com.sjtu.bwphoto.memory.Fragement.RecentFragment;
 import com.sjtu.bwphoto.memory.Fragement.RecommendFragment;
 import com.sjtu.bwphoto.memory.R;
 
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.File;
@@ -57,7 +60,6 @@ import java.util.Locale;
 public class MainActivity extends AppCompatActivity {
     private String user_name;
     private final static ServerUrl url = new ServerUrl();
-    //private static RestTemplate restTp = new RestTemplate();
     private Resource resource;
     private int res_id;
 
@@ -145,11 +147,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 User tmp = new User();
-                //resource = restTp.postForObject(url.url+"/resources",tmp, Resource.class);
-                String result = RestUtil.getSession().getForObject(url.url+"/resources", String.class);
-                System.out.println(result);
-                //res_id = resource.getId();
-                //System.out.println(res_id);
+//                String result = RestUtil.postForObject(url.url+"/resources",null, String.class);
+//                System.out.println(result);
+                resource = RestUtil.postForObject(url.url+"/resources",null, Resource.class);
+                res_id = resource.getId();
+                System.out.println(res_id);
                 Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                 if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
                     new DateFormat();
@@ -200,20 +202,24 @@ public class MainActivity extends AppCompatActivity {
             Bitmap imageBitmap = BitmapFactory.decodeFile(fileName);
             if (imageBitmap == null) System.out.println("Bitmap null!!!!!");
             File file = new File(fileName);
-            FileInputStream out = null;
-            try {
-                out = new FileInputStream(file);
-            }catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }finally {
-                try {
-                    out.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            String result = RestUtil.getSession().postForObject(url.url+"/resources/"+res_id+"/image", out, String.class);
+            InputStream out = null;
+//            try {
+//                out = new FileInputStream(file);
+//                System.out.println("22222222222");
+//            }catch (FileNotFoundException e) {
+//                e.printStackTrace();
+//                System.out.println("3333333333333");
+//            }
+//            }finally {
+//                try {
+//                    out.close();
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+            String result = RestUtil.uploadFile(url.url+"/resources/"+res_id+"/image", new FileSystemResource(file), fileName,String.class);
             System.out.println(url.url+"/resources/"+res_id+"/image");
+            System.out.println(result);
             if (result.contains("success")) System.out.println("upload image Success!!!!!");
             else System.out.println("upload image Fail!!!!!");
             //跳转至裁剪

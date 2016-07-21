@@ -14,6 +14,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Switch;
 
+import com.sjtu.bwphoto.memory.Class.RestUtil;
 import com.sjtu.bwphoto.memory.Class.ServerUrl;
 import com.sjtu.bwphoto.memory.R;
 
@@ -32,7 +33,6 @@ public class AddMemoryActivity extends Activity {
     private int res_id;
 
     private final static ServerUrl url = new ServerUrl();
-    private static RestTemplate restTp = new RestTemplate();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,7 +88,7 @@ public class AddMemoryActivity extends Activity {
     public void upload() {
         MemContent =  Content.getText().toString().trim();
         res_id = 1;
-        String result = restTp.postForObject(url.url+"/resources/"+res_id+"/words", MemContent, String.class);
+        String result = RestUtil.postForObject(url.url+"/resources/"+res_id+"/words", MemContent, String.class);
         System.out.println(url.url+"/resources/"+res_id+"/words");
         if (result.contains("success")) System.out.println("upload word Success!!!!!");
         else System.out.println("upload word Fail!!!!!");

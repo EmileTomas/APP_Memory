@@ -25,7 +25,6 @@ public class LoginActivity extends Activity {
     private EditText mPwd;
     private Button mLoginButton;
     private Button mRegisterButton;
-    //private static RestTemplate restTp = new RestTemplate();
     private final static ServerUrl url = new ServerUrl();
 
     /** Called when the activity is first created. */
@@ -81,7 +80,7 @@ public class LoginActivity extends Activity {
             String userPwd = mPwd.getText().toString().trim();
             User mUser = new User(userName,userPwd);
             System.out.println(url.url+"/login");
-            String result = RestUtil.getSession().postForObject(url.url+"/login", mUser, String.class);
+            String result = RestUtil.postForObject(url.url+"/login", mUser, String.class);
             System.out.println(result.toString());
             System.out.println(userName);
             if (result.contains("success")) {
