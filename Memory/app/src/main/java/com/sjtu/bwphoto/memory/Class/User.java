@@ -29,6 +29,10 @@ public class User {
     private String content;
 
     @JsonCreator  //构造器
+    public User() {
+    }
+
+    @JsonCreator  //构造器
     public User(@JsonProperty("name") String name,  //生成json时重命名为name
                 @JsonProperty("password") String pwd) {
         this.name = name;

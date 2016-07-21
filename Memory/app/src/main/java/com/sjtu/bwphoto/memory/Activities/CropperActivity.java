@@ -31,6 +31,7 @@ import java.io.OutputStream;
 public class CropperActivity extends Activity {
     private String fileName;
     private String userName;
+    private int res_id;
 
     // Private Constants ///////////////////////////////////////////////////////////////////////////
 
@@ -60,6 +61,7 @@ public class CropperActivity extends Activity {
         Bundle bundle = this.getIntent().getExtras();
         fileName = bundle.getString("fileName");
         userName = bundle.getString("userName");
+        res_id = bundle.getInt("res_id");
         System.out.println(fileName);
         BitmapRegionDecoder bitmapRegionDecoder = null;
         try {
@@ -160,6 +162,7 @@ public class CropperActivity extends Activity {
                 Intent intent = new Intent(CropperActivity.this, AddMemoryActivity.class);
                 Bundle bundle = new Bundle();
                 bundle.putString("userName",userName);
+                bundle.putInt("res_id",res_id);
 //                OutputStream out = new ByteArrayOutputStream();
 //                croppedImage.compress(Bitmap.CompressFormat.JPEG,30,out);
 //                intent.putExtra("Image",croppedImage);

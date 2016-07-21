@@ -14,6 +14,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.sjtu.bwphoto.memory.Class.RestUtil;
 import com.sjtu.bwphoto.memory.Class.ServerUrl;
 import com.sjtu.bwphoto.memory.Class.User;
 import com.sjtu.bwphoto.memory.R;
@@ -35,7 +36,7 @@ public class RegisterActivity extends Activity {
 
     private Button mRegisterButton;
     private View registerView;
-    private static RestTemplate restTp = new RestTemplate();
+    //private static RestTemplate restTp = new RestTemplate();
     private final static ServerUrl url = new ServerUrl();
 
     @Override
@@ -100,7 +101,7 @@ public class RegisterActivity extends Activity {
             String userBirth = mBirth.getText().toString().trim();
             String userContent = mContent.getText().toString();
             User mUser = new User(userName,userPwd,userEmail,userAge,userBirth,userContent);
-            String result = restTp.postForObject(url.url+"/identity/reg", mUser, String.class);
+            String result = RestUtil.getSession().postForObject(url.url+"/identity/reg", mUser, String.class);
             System.out.println(result);
             if (result.contains("success")){
                 Toast.makeText(this, getString(R.string.register_sucess),Toast.LENGTH_SHORT).show();

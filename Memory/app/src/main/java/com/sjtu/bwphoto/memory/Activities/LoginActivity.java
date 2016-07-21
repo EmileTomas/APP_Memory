@@ -13,6 +13,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.sjtu.bwphoto.memory.Class.RestUtil;
 import com.sjtu.bwphoto.memory.Class.ServerUrl;
 import com.sjtu.bwphoto.memory.Class.User;
 import com.sjtu.bwphoto.memory.R;
@@ -24,7 +25,7 @@ public class LoginActivity extends Activity {
     private EditText mPwd;
     private Button mLoginButton;
     private Button mRegisterButton;
-    private static RestTemplate restTp = new RestTemplate();
+    //private static RestTemplate restTp = new RestTemplate();
     private final static ServerUrl url = new ServerUrl();
 
     /** Called when the activity is first created. */
@@ -80,10 +81,10 @@ public class LoginActivity extends Activity {
             String userPwd = mPwd.getText().toString().trim();
             User mUser = new User(userName,userPwd);
             System.out.println(url.url+"/login");
-//            String result = restTp.postForObject(url.url+"/login", mUser, String.class);
-//            System.out.println(result.toString());
-//            System.out.println(userName);
-//            if (result.contains("success")) {
+            String result = RestUtil.getSession().postForObject(url.url+"/login", mUser, String.class);
+            System.out.println(result.toString());
+            System.out.println(userName);
+            if (result.contains("success")) {
                 Toast.makeText(this, getString(R.string.login_sucess), Toast.LENGTH_SHORT).show(); //simple information display
                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                 Bundle bundle = new Bundle();
@@ -91,11 +92,11 @@ public class LoginActivity extends Activity {
                 intent.putExtras(bundle);
                 startActivity(intent);
                 LoginActivity.this.finish();
-//            }
-//            else {
-//                //login failed,user does't exist
-//                Toast.makeText(this, getString(R.string.login_fail),Toast.LENGTH_SHORT).show();
-//            }
+            }
+            else {
+                //login failed,user does't exist
+                Toast.makeText(this, getString(R.string.login_fail),Toast.LENGTH_SHORT).show();
+            }
         }
     }
 

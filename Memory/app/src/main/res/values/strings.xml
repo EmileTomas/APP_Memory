@@ -26,6 +26,7 @@
     <string name="name_already_exist">用户名已存在，请重新输入！</string>
     <string name="user_login_sucess">Welcome to Memory！</string>
     <string name="title_activity_settings2">Settings</string>
+    <string name="xzzurl">http://192.168.10.187:8080</string>
 
     <!--Cropper-->
     <string name="fixedAspectRatio">fixedAspectRatio =\u0020</string>

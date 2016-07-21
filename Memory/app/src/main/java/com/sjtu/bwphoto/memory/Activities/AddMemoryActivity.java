@@ -29,6 +29,7 @@ public class AddMemoryActivity extends Activity {
     private Boolean Sharable;
     private String userName;
     private Bitmap cropped;
+    private int res_id;
 
     private final static ServerUrl url = new ServerUrl();
     private static RestTemplate restTp = new RestTemplate();
@@ -43,6 +44,7 @@ public class AddMemoryActivity extends Activity {
         //Receive Data from last activity
         Bundle bundle = this.getIntent().getExtras();
         userName = bundle.getString("userName");
+        res_id = bundle.getInt("res_id");
 //        Intent intent=getIntent();
 //        if(intent!=null) {
 //            System.out.println("add memory reached");
@@ -85,7 +87,9 @@ public class AddMemoryActivity extends Activity {
 
     public void upload() {
         MemContent =  Content.getText().toString().trim();
-        String result = restTp.postForObject(url.url+"/resources/{resource_id}/words", MemContent, String.class);
+        res_id = 1;
+        String result = restTp.postForObject(url.url+"/resources/"+res_id+"/words", MemContent, String.class);
+        System.out.println(url.url+"/resources/"+res_id+"/words");
         if (result.contains("success")) System.out.println("upload word Success!!!!!");
         else System.out.println("upload word Fail!!!!!");
         Intent intent = new Intent(AddMemoryActivity.this, MainActivity.class);

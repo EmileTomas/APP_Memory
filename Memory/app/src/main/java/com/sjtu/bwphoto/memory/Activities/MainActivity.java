@@ -32,7 +32,9 @@ import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.sjtu.bwphoto.memory.Class.Resource;
+import com.sjtu.bwphoto.memory.Class.RestUtil;
 import com.sjtu.bwphoto.memory.Class.ServerUrl;
+import com.sjtu.bwphoto.memory.Class.User;
 import com.sjtu.bwphoto.memory.Class.Util.FloatingActionButton;
 import com.sjtu.bwphoto.memory.Class.Util.FloatingActionsMenu;
 import com.sjtu.bwphoto.memory.Class.Util.TabsPagerAdapter;
@@ -55,7 +57,7 @@ import java.util.Locale;
 public class MainActivity extends AppCompatActivity {
     private String user_name;
     private final static ServerUrl url = new ServerUrl();
-    private static RestTemplate restTp = new RestTemplate();
+    //private static RestTemplate restTp = new RestTemplate();
     private Resource resource;
     private int res_id;
 
@@ -142,9 +144,12 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.cameraFAB).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                resource = restTp.postForObject(url.url+"/resources",null, Resource.class);
-//                res_id = resource.getId();
-//                System.out.println(res_id);
+                User tmp = new User();
+                //resource = restTp.postForObject(url.url+"/resources",tmp, Resource.class);
+                String result = RestUtil.getSession().getForObject(url.url+"/resources", String.class);
+                System.out.println(result);
+                //res_id = resource.getId();
+                //System.out.println(res_id);
                 Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                 if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
                     new DateFormat();
@@ -207,14 +212,16 @@ public class MainActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
             }
-//            String result = restTp.postForObject(url.url+"/identity/profile", out, String.class);
-//            if (result.contains("success")) System.out.println("upload Success!!!!!");
-//            else System.out.println("upload Fail!!!!!");
+            String result = RestUtil.getSession().postForObject(url.url+"/resources/"+res_id+"/image", out, String.class);
+            System.out.println(url.url+"/resources/"+res_id+"/image");
+            if (result.contains("success")) System.out.println("upload image Success!!!!!");
+            else System.out.println("upload image Fail!!!!!");
             //跳转至裁剪
             Intent intent = new Intent(MainActivity.this, CropperActivity.class);
             Bundle bundle = new Bundle();
             bundle.putString("fileName",fileName);
             bundle.putString("userName",user_name);
+            bundle.putInt("res_id",res_id);
             intent.putExtras(bundle);
             startActivity(intent);
             MainActivity.this.finish();

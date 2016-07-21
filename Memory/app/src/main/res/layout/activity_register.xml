@@ -158,7 +158,7 @@
             android:gravity="center"
             android:inputType="text"
             android:textColor="@color/ivory"
-            android:hint="YYYY.MM.DD"
+            android:hint="YYYY-MM-DD"
             android:maxLength="10"
             android:paddingLeft="45.0sp"
             android:saveEnabled="true" />
