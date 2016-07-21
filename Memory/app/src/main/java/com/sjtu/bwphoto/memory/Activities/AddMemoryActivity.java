@@ -14,6 +14,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Switch;
 
+import com.sjtu.bwphoto.memory.Class.Resource;
 import com.sjtu.bwphoto.memory.Class.RestUtil;
 import com.sjtu.bwphoto.memory.Class.ServerUrl;
 import com.sjtu.bwphoto.memory.R;
@@ -73,10 +74,10 @@ public class AddMemoryActivity extends Activity {
         public void onClick(View v) {
             switch (v.getId()) {
                 case R.id.btn_cancle:
-                    upload();
+                    cancle();
                     break;
                 case R.id.btn_upload:
-                    cancle();
+                    upload();
                     break;
                 case R.id.btn_public:
                     set_share();
@@ -87,8 +88,10 @@ public class AddMemoryActivity extends Activity {
 
     public void upload() {
         MemContent =  Content.getText().toString().trim();
-        res_id = 1;
-        String result = RestUtil.postForObject(url.url+"/resources/"+res_id+"/words", MemContent, String.class);
+        Resource resource = new Resource();
+        resource.setContent(MemContent);
+        resource.setId(res_id);
+        String result = RestUtil.postForObject(url.url+"/resources/"+res_id+"/words", resource, String.class);
         System.out.println(url.url+"/resources/"+res_id+"/words");
         if (result.contains("success")) System.out.println("upload word Success!!!!!");
         else System.out.println("upload word Fail!!!!!");
