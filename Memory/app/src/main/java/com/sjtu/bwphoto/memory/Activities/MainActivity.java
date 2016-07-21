@@ -1,6 +1,7 @@
 package com.sjtu.bwphoto.memory.Activities;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 
 import java.io.FileInputStream;
@@ -30,6 +31,7 @@ import android.widget.Toast;
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.sjtu.bwphoto.memory.Class.Resource;
 import com.sjtu.bwphoto.memory.Class.ServerUrl;
 import com.sjtu.bwphoto.memory.Class.Util.FloatingActionButton;
 import com.sjtu.bwphoto.memory.Class.Util.FloatingActionsMenu;
@@ -54,6 +56,8 @@ public class MainActivity extends AppCompatActivity {
     private String user_name;
     private final static ServerUrl url = new ServerUrl();
     private static RestTemplate restTp = new RestTemplate();
+    private Resource resource;
+    private int res_id;
 
     // Camera Album
     private static final String IMAGE_UNSPECIFIED = "image/*";
@@ -81,7 +85,6 @@ public class MainActivity extends AppCompatActivity {
      * See https://g.co/AppIndexing/AndroidStudio for more information.
      */
     private GoogleApiClient client;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -135,21 +138,24 @@ public class MainActivity extends AppCompatActivity {
         // Floating Action Button
         menuMultipleActions = (FloatingActionsMenu) findViewById(R.id.menuFAB);
 
+        // Click camera button
         findViewById(R.id.cameraFAB).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Toast.makeText(MainActivity.this, "Clicked camera Floating Action Button", Toast.LENGTH_SHORT).show();
+//                resource = restTp.postForObject(url.url+"/resources",null, Resource.class);
+//                res_id = resource.getId();
+//                System.out.println(res_id);
                 Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                 if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
                     new DateFormat();
                     String name = DateFormat.format("yyyyMMdd_hhmmss", Calendar.getInstance(Locale.CHINA)) + ".jpg";
-                    //System.out.println(name);
+                    System.out.println(name);
                     String state = Environment.getExternalStorageState();
                     String filehead = "/sdcard/DCIM/Camera";
                     File dir = new File(filehead);
                     if (!dir.exists()) dir.mkdir();
                     fileName = "/sdcard/DCIM/Camera/"+name;
-                    if (state.equals(Environment.MEDIA_MOUNTED)) {
+                    if (isSDCardCanUse()) {
                         takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(new File(fileName)));
                         takePictureIntent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
                         startActivityForResult(takePictureIntent, CAMERA_REQUEST_CODE);
@@ -157,23 +163,18 @@ public class MainActivity extends AppCompatActivity {
                         Toast.makeText(MainActivity.this, "没有SD卡", Toast.LENGTH_LONG).show();
                     }
                 }
-//                Intent AddMemoryIntent = new Intent(MainActivity.this, AddMemoryActivity.class);
-//                Bundle bundle = new Bundle();
-//                bundle.putString("userName",user_name);
-//                AddMemoryIntent.putExtras(bundle);
-//                startActivity(AddMemoryIntent);
             }
         });
 
+        // Click album button
         findViewById(R.id.albumFAB).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Toast.makeText(MainActivity.this, "Clicked album Floating Action Button", Toast.LENGTH_SHORT).show();
                 Intent albumIntent = new Intent(Intent.ACTION_PICK, null);
                 albumIntent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
-                Bundle bundle = new Bundle();
-                bundle.putString("userName", user_name);
-                albumIntent.putExtras(bundle);
+//                Bundle bundle = new Bundle();
+//                bundle.putString("userName", user_name);
+//                albumIntent.putExtras(bundle);
                 startActivityForResult(albumIntent, ALBUM_REQUEST_CODE);
             }
         });
@@ -183,6 +184,7 @@ public class MainActivity extends AppCompatActivity {
     // Get the Thumbnail -- 显示拍到的照片
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // Camera part
         if (requestCode == CAMERA_REQUEST_CODE && resultCode == RESULT_OK) {
 //            Uri uri = null;
 //            if (data!=null) uri = data.getData();
@@ -217,29 +219,48 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
             MainActivity.this.finish();
         }
+
+        // Album part
         if (requestCode == ALBUM_REQUEST_CODE && requestCode == RESULT_OK) {
-            if (data == null) return;
-            startCrop(data.getData());
+            if (data == null) {
+                System.out.println("main acti : data == null");
+                return;
+            }
+            //跳转至裁剪
+            Intent intent = new Intent(MainActivity.this, CropperActivity.class);
+            Bundle bundle = new Bundle();
+            Uri originalUri = data.getData();  //获得图片的uri
+            String[] proj = {MediaStore.Images.Media.DATA};
+            Cursor cursor = managedQuery(originalUri, proj, null, null, null);
+            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            cursor.moveToFirst();
+            String path = cursor.getString(column_index);
+            System.out.println("main acti path:"+path);
+            bundle.putString("fileName",path);
+            bundle.putString("userName",user_name);
+            intent.putExtras(bundle);
+            startActivity(intent);
+            MainActivity.this.finish();
         }
     }
 
     // a simple Crop
-    private void startCrop(Uri uri) {
-        Intent intent = new Intent("com.android.camera.action.CROP");//调用Android系统自带的一个图片剪裁页面,
-        intent.setDataAndType(uri, IMAGE_UNSPECIFIED);
-        intent.putExtra("crop", "true");//进行修剪
-        // aspectX aspectY 是宽高的比例
-        intent.putExtra("aspectX", 1);
-        intent.putExtra("aspectY", 1);
-        // outputX outputY 是裁剪图片宽高
-        intent.putExtra("outputX", 300);
-        intent.putExtra("outputY", 500);
-        intent.putExtra("return-data", true);
-        startActivityForResult(intent, CROP_REQUEST_CODE);
-    }
+//    private void startCrop(Uri uri) {
+//        Intent intent = new Intent("com.android.camera.action.CROP");//调用Android系统自带的一个图片剪裁页面,
+//        intent.setDataAndType(uri, IMAGE_UNSPECIFIED);
+//        intent.putExtra("crop", "true");//进行修剪
+//        // aspectX aspectY 是宽高的比例
+//        intent.putExtra("aspectX", 1);
+//        intent.putExtra("aspectY", 1);
+//        // outputX outputY 是裁剪图片宽高
+//        intent.putExtra("outputX", 300);
+//        intent.putExtra("outputY", 500);
+//        intent.putExtra("return-data", true);
+//        startActivityForResult(intent, CROP_REQUEST_CODE);
+//    }
 
     //if SD card is available
-    private boolean isSDCardCanUser() {
+    private boolean isSDCardCanUse() {
         return Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED);
     }
 
