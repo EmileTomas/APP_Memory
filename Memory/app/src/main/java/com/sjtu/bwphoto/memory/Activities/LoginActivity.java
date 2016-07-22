@@ -13,6 +13,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.sjtu.bwphoto.memory.Class.AuthImageDownloader;
 import com.sjtu.bwphoto.memory.Class.RestUtil;
 import com.sjtu.bwphoto.memory.Class.ServerUrl;
 import com.sjtu.bwphoto.memory.Class.User;
@@ -83,6 +86,14 @@ public class LoginActivity extends Activity {
             String result = RestUtil.postForObject(url.url+"/login", mUser, String.class);
             System.out.println(result.toString());
             System.out.println(userName);
+
+            // config the default imageloader
+            ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(getApplicationContext())
+                    .imageDownloader(new AuthImageDownloader(getApplicationContext()))
+                    .build();
+            ImageLoader.getInstance().destroy();
+            ImageLoader.getInstance().init(config);
+
             if (result.contains("success")) {
                 Toast.makeText(this, getString(R.string.login_sucess), Toast.LENGTH_SHORT).show(); //simple information display
                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);

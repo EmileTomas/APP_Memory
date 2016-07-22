@@ -1,9 +1,6 @@
 package com.sjtu.bwphoto.memory.Class;
 
-import com.sjtu.bwphoto.memory.Class.Util.CookieRestTp;
-
 import org.springframework.core.io.FileSystemResource;
-import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -11,6 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.Map;
 
 /**
  * Created by ly on 7/21/2016.
@@ -44,12 +43,27 @@ public class RestUtil {
 
     public static <T> T getForObject(String url, Class<T> clazz)
     {
-        return (T)restTemplate.exchange(
+        ResponseEntity re = restTemplate.exchange(
                 url,
                 HttpMethod.GET,
                 new HttpEntity(headers),
                 clazz
-        ).getBody();
+        );
+        HttpHeaders res = re.getHeaders();
+        if(res.get("Set-Cookie") != null)
+        {
+            String cookie = res.get("Set-Cookie").get(0);
+            cookie = cookie.substring(0, cookie.indexOf(';'));
+            if(headers.containsKey("Cookie"))
+            {
+                headers.set("Cookie", cookie);
+            }
+            else
+            {
+                headers.add("Cookie", cookie);
+            }
+        }
+        return (T)re.getBody();
     }
 
     public static <T> T uploadFile(String url, FileSystemResource isr, String filename, Class<T> clazz)
@@ -64,5 +78,10 @@ public class RestUtil {
                 httpEntity,
                 clazz
         ).getBody();
+    }
+
+    public static Map<String, String> getAuth()
+    {
+        return headers.toSingleValueMap();
     }
 }

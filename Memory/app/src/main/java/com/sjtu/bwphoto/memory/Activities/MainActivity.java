@@ -1,5 +1,6 @@
 package com.sjtu.bwphoto.memory.Activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -8,6 +9,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Calendar;
 
 import android.graphics.BitmapFactory;
@@ -32,6 +34,10 @@ import android.widget.Toast;
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.sjtu.bwphoto.memory.Class.AuthImageDownloader;
 import com.sjtu.bwphoto.memory.Class.Resource;
 import com.sjtu.bwphoto.memory.Class.RestUtil;
 import com.sjtu.bwphoto.memory.Class.ServerUrl;
@@ -200,9 +206,11 @@ public class MainActivity extends AppCompatActivity {
 //                System.out.println(uri.getPath());
 //            }
             Bitmap imageBitmap = BitmapFactory.decodeFile(fileName);
+//            OutputStream out = null;
+//            imageBitmap.compress(Bitmap.CompressFormat.JPEG,50,out);
             if (imageBitmap == null) System.out.println("Bitmap null!!!!!");
             File file = new File(fileName);
-            InputStream out = null;
+//            InputStream out = null;
 //            try {
 //                out = new FileInputStream(file);
 //                System.out.println("22222222222");

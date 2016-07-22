@@ -16,8 +16,11 @@ import android.widget.TextView;
 import com.daimajia.androidanimations.library.Techniques;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.sjtu.bwphoto.memory.Activities.MainActivity;
+import com.sjtu.bwphoto.memory.Class.AuthImageDownloader;
 import com.sjtu.bwphoto.memory.Class.Msg;
+import com.sjtu.bwphoto.memory.Class.RestUtil;
 import com.sjtu.bwphoto.memory.Class.Util.Util_Cropper.Handle;
 import com.sjtu.bwphoto.memory.Fragement.RecentFragment;
 import com.sjtu.bwphoto.memory.R;
@@ -73,6 +76,7 @@ public class MsgRecycleAdapterForComment extends RecyclerView.Adapter<MsgRecycle
                 .cacheInMemory(true)
                 .cacheOnDisk(true)
                 .bitmapConfig(Bitmap.Config.RGB_565)
+                .extraForDownloader(RestUtil.getAuth())
                 .build();
         ImageLoader.getInstance().displayImage(msg.getImageUrl(), holder.imageView, options);
         holder.textView.setText(msg.getMap_position());

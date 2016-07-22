@@ -28,6 +28,7 @@ import com.sjtu.bwphoto.memory.Activities.MainActivity;
 import com.sjtu.bwphoto.memory.Class.Datebase.DatabaseHelper;
 import com.sjtu.bwphoto.memory.Class.Datebase.DatabaseManager;
 import com.sjtu.bwphoto.memory.Class.Msg;
+import com.sjtu.bwphoto.memory.Class.ServerUrl;
 import com.sjtu.bwphoto.memory.Class.Util.FloatingActionButton;
 import com.sjtu.bwphoto.memory.Class.Util.MsgRecycleAdapterForComment;
 import com.sjtu.bwphoto.memory.R;
@@ -59,6 +60,7 @@ public class RecentFragment extends Fragment implements SwipeRefreshLayout.OnRef
     private final int SET_FAB=3;
     private final int GONE = 1;
     private final int VISIBLE = 2;
+    private final static ServerUrl url = new ServerUrl();;
 
     private View rootView;
     private RecyclerView recyclerView;
@@ -214,7 +216,7 @@ public class RecentFragment extends Fragment implements SwipeRefreshLayout.OnRef
         //  Receive data and store it to Cards
         //  return true;
         Cards.clear();
-        Msg Card4 = new Msg("This is a Story about the future", "Tokyo", "http://www.arrivalguides.com/s3/ag-images-eu/16/d8465238ff0e0298991405b8597d8da6.jpg");
+        Msg Card4 = new Msg("This is a Story about the future", "Tokyo", url.url+"/resources/1/image");
         Cards.add(0, Card4);
         Msg Card3 = new Msg("This is a Story about the future", "GreatWall", "http://static.asiawebdirect.com/m/phuket/portals/www-singapore-com/homepage/attractions/all-attractions/pagePropertiesImage/singapore1.jpg");
         Cards.add(0, Card3);
