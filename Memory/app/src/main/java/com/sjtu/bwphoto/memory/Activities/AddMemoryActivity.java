@@ -3,6 +3,7 @@ package com.sjtu.bwphoto.memory.Activities;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -30,6 +31,7 @@ public class AddMemoryActivity extends Activity {
     private String MemContent;
     private Boolean Sharable;
     private String userName;
+    private String croppedName;
     private Bitmap cropped;
     private int res_id;
 
@@ -46,6 +48,12 @@ public class AddMemoryActivity extends Activity {
         Bundle bundle = this.getIntent().getExtras();
         userName = bundle.getString("userName");
         res_id = bundle.getInt("res_id");
+        croppedName = bundle.getString("croppedName");
+
+        System.out.println("Add memory activity: "+croppedName);
+        cropped = BitmapFactory.decodeFile(croppedName);
+        if (cropped == null) System.out.println("Add memory activity: cropped image not get!!!!!!!!!");
+
 //        Intent intent=getIntent();
 //        if(intent!=null) {
 //            System.out.println("add memory reached");
@@ -61,7 +69,7 @@ public class AddMemoryActivity extends Activity {
         BtnCancle.setOnClickListener(mListener);
         BtnUpload.setOnClickListener(mListener);
 
-        //PicView.setImageBitmap(cropped);
+        PicView.setImageBitmap(cropped);
         //注册OnlongClick监听器
         PicView.setOnLongClickListener(new PicOnLongClick());
 

@@ -199,17 +199,22 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         // Camera part
         if (requestCode == CAMERA_REQUEST_CODE && resultCode == RESULT_OK) {
+            //useless
 //            Uri uri = null;
 //            if (data!=null) uri = data.getData();
 //            else System.out.println("data == null !!!!!!!");
 //            if (uri != null) {
 //                System.out.println(uri.getPath());
 //            }
-            Bitmap imageBitmap = BitmapFactory.decodeFile(fileName);
+//            Bitmap imageBitmap = BitmapFactory.decodeFile(fileName);
 //            OutputStream out = null;
 //            imageBitmap.compress(Bitmap.CompressFormat.JPEG,50,out);
-            if (imageBitmap == null) System.out.println("Bitmap null!!!!!");
-            File file = new File(fileName);
+//            if (imageBitmap == null) System.out.println("Bitmap null!!!!!");
+
+            //上传图片
+//            File file = new File(fileName);
+
+            //useless
 //            InputStream out = null;
 //            try {
 //                out = new FileInputStream(file);
@@ -225,11 +230,14 @@ public class MainActivity extends AppCompatActivity {
 //                    e.printStackTrace();
 //                }
 //            }
-            String result = RestUtil.uploadFile(url.url+"/resources/"+res_id+"/image", new FileSystemResource(file), fileName,String.class);
-            System.out.println(url.url+"/resources/"+res_id+"/image");
-            System.out.println(result);
-            if (result.contains("success")) System.out.println("upload image Success!!!!!");
-            else System.out.println("upload image Fail!!!!!");
+
+            //上传图片
+//            String result = RestUtil.uploadFile(url.url+"/resources/"+res_id+"/image", new FileSystemResource(file), fileName,String.class);
+//            System.out.println(url.url+"/resources/"+res_id+"/image");
+//            System.out.println(result);
+//            if (result.contains("success")) System.out.println("upload image Success!!!!!");
+//            else System.out.println("upload image Fail!!!!!");
+
             //跳转至裁剪
             Intent intent = new Intent(MainActivity.this, CropperActivity.class);
             Bundle bundle = new Bundle();

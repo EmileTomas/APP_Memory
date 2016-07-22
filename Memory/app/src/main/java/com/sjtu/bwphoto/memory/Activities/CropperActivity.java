@@ -7,6 +7,8 @@ import android.graphics.BitmapFactory;
 import android.graphics.BitmapRegionDecoder;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
@@ -18,20 +20,29 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
+import com.sjtu.bwphoto.memory.Class.RestUtil;
+import com.sjtu.bwphoto.memory.Class.ServerUrl;
 import com.sjtu.bwphoto.memory.Class.Util.CropImageView;
 import com.sjtu.bwphoto.memory.R;
+
+import org.springframework.core.io.FileSystemResource;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Calendar;
+import java.util.Locale;
 
 public class CropperActivity extends Activity {
     private String fileName;
+    private String croppedName;
     private String userName;
     private int res_id;
+    private final static ServerUrl url = new ServerUrl();
 
     // Private Constants ///////////////////////////////////////////////////////////////////////////
 
@@ -159,9 +170,33 @@ public class CropperActivity extends Activity {
             public void onClick(View v) {
                 final Bitmap croppedImage = cropImageView.getCroppedImage();
                 croppedImageView.setImageBitmap(croppedImage);
+                new DateFormat();
+                croppedName = DateFormat.format("yyyyMMdd_hhmmss", Calendar.getInstance(Locale.CHINA)) + "_cropped.jpg";
+                System.out.println(croppedName);
+                File file = new File("/sdcard/DCIM/Camera/", croppedName);
+                croppedName = "/sdcard/DCIM/Camera/"+croppedName;
+                try {
+                    FileOutputStream out = new FileOutputStream(file);
+                    croppedImage.compress(Bitmap.CompressFormat.JPEG, 90, out);
+                    System.out.println("cropped image saved !!!!!");
+                    out.flush();
+                    out.close();
+                } catch (FileNotFoundException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+                String result = RestUtil.uploadFile(url.url+"/resources/"+res_id+"/image", new FileSystemResource(file), fileName,String.class);
+                System.out.println(url.url+"/resources/"+res_id+"/image");
+                System.out.println(result);
+                if (result.contains("success")) System.out.println("upload cropped image Success !!!!!");
+                else System.out.println("upload cropped image Fail !!!!!");
                 Intent intent = new Intent(CropperActivity.this, AddMemoryActivity.class);
                 Bundle bundle = new Bundle();
                 bundle.putString("userName",userName);
+                bundle.putString("croppedName",croppedName);
                 bundle.putInt("res_id",res_id);
 //                OutputStream out = new ByteArrayOutputStream();
 //                croppedImage.compress(Bitmap.CompressFormat.JPEG,30,out);
