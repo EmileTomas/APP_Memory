@@ -28,6 +28,8 @@ import com.sjtu.bwphoto.memory.Activities.MainActivity;
 import com.sjtu.bwphoto.memory.Class.Datebase.DatabaseHelper;
 import com.sjtu.bwphoto.memory.Class.Datebase.DatabaseManager;
 import com.sjtu.bwphoto.memory.Class.Msg;
+import com.sjtu.bwphoto.memory.Class.Resource;
+import com.sjtu.bwphoto.memory.Class.RestUtil;
 import com.sjtu.bwphoto.memory.Class.ServerUrl;
 import com.sjtu.bwphoto.memory.Class.Util.FloatingActionButton;
 import com.sjtu.bwphoto.memory.Class.Util.MsgRecycleAdapterForComment;
@@ -241,7 +243,11 @@ public class RecentFragment extends Fragment implements SwipeRefreshLayout.OnRef
 
     private void fetchDataNew() {
         //fetchData success part
-        Msg Card1 = new Msg("This is a Story about the future", "Paris", "drawable://" + R.drawable.paris);
+        //Msg Card1 = new Msg("This is a Story about the future", "Paris", "drawable://" + R.drawable.paris);
+        List<Resource> resource = RestUtil.getForObject(url.url+"/resources/latest", List.class);
+        int res_id = 20;
+        System.out.println(res_id);
+        Msg Card1 = new Msg(url.url+"/resources/"+res_id+"/words", "New", url.url+"/resources/"+res_id+"/image");
         Cards.add(0, Card1);
 
 

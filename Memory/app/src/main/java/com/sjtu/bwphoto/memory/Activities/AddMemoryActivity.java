@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -22,16 +23,23 @@ import com.sjtu.bwphoto.memory.R;
 
 import org.springframework.web.client.RestTemplate;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
+
 public class AddMemoryActivity extends Activity {
     private Button BtnUpload;
     private Button BtnCancle;
     private Switch BtnPublic;
     private ImageView PicView;
+    private ImageView FullView;
     private EditText Content;
     private String MemContent;
     private Boolean Sharable;
     private String userName;
     private String croppedName;
+    private Uri imageUri;
     private Bitmap cropped;
     private int res_id;
 
@@ -49,10 +57,21 @@ public class AddMemoryActivity extends Activity {
         userName = bundle.getString("userName");
         res_id = bundle.getInt("res_id");
         croppedName = bundle.getString("croppedName");
+        imageUri = this.getIntent().getData();
 
-        System.out.println("Add memory activity: "+croppedName);
-        cropped = BitmapFactory.decodeFile(croppedName);
-        if (cropped == null) System.out.println("Add memory activity: cropped image not get!!!!!!!!!");
+        try {
+            InputStream in = getContentResolver().openInputStream(imageUri);
+            cropped = BitmapFactory.decodeStream(in);
+            in.close();
+        } catch (FileNotFoundException e){
+            e.printStackTrace();
+        } catch (IOException e){
+            e.printStackTrace();
+        }
+
+//        System.out.println("Add memory activity: "+croppedName);
+//        cropped = BitmapFactory.decodeFile(croppedName);
+//        if (cropped == null) System.out.println("Add memory activity: cropped image not get!!!!!!!!!");
 
 //        Intent intent=getIntent();
 //        if(intent!=null) {
@@ -64,6 +83,7 @@ public class AddMemoryActivity extends Activity {
         BtnCancle = (Button) findViewById(R.id.btn_cancle);
         BtnPublic = (Switch) findViewById(R.id.btn_public);
         PicView = (ImageView) findViewById(R.id.pic_view);
+        FullView = (ImageView) findViewById(R.id.view_full);
         Content = (EditText) findViewById(R.id.edit_area);
 
         BtnCancle.setOnClickListener(mListener);
@@ -128,6 +148,7 @@ public class AddMemoryActivity extends Activity {
     private class PicOnLongClick implements View.OnLongClickListener {
         @Override
         public boolean onLongClick(View view){
+            FullView.setImageBitmap(cropped);
             return true;
         }
     }

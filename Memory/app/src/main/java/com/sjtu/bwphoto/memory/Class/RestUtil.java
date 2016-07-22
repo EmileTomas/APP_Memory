@@ -49,20 +49,6 @@ public class RestUtil {
                 new HttpEntity(headers),
                 clazz
         );
-        HttpHeaders res = re.getHeaders();
-        if(res.get("Set-Cookie") != null)
-        {
-            String cookie = res.get("Set-Cookie").get(0);
-            cookie = cookie.substring(0, cookie.indexOf(';'));
-            if(headers.containsKey("Cookie"))
-            {
-                headers.set("Cookie", cookie);
-            }
-            else
-            {
-                headers.add("Cookie", cookie);
-            }
-        }
         return (T)re.getBody();
     }
 

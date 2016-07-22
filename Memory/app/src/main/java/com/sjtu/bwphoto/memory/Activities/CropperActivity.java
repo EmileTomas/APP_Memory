@@ -6,7 +6,9 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.BitmapRegionDecoder;
 import android.graphics.Rect;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.View;
@@ -33,12 +35,15 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URI;
 import java.util.Calendar;
 import java.util.Locale;
 
 public class CropperActivity extends Activity {
     private String fileName;
+    private Uri imageUri;
     private String croppedName;
     private String userName;
     private int res_id;
@@ -73,23 +78,40 @@ public class CropperActivity extends Activity {
         fileName = bundle.getString("fileName");
         userName = bundle.getString("userName");
         res_id = bundle.getInt("res_id");
-        System.out.println(fileName);
-        BitmapRegionDecoder bitmapRegionDecoder = null;
+
+        //20160722try=======
+        imageUri = this.getIntent().getData();
+        System.out.println("CropperA : imageuri :"+imageUri);
+        Bitmap bitmap2 = null;
         try {
-            bitmapRegionDecoder = BitmapRegionDecoder.newInstance(fileName, false);
-            if (bitmapRegionDecoder == null) System.out.println("bitmapRegionDecoder null !!!!!");
-        }catch (IOException e){
+            InputStream in = getContentResolver().openInputStream(imageUri);
+            bitmap2 = BitmapFactory.decodeStream(in);
+            in.close();
+        } catch (FileNotFoundException e){
+            e.printStackTrace();
+        } catch (IOException e){
             e.printStackTrace();
         }
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inPreferredConfig = Bitmap.Config.RGB_565;
-        options.inSampleSize = 2;
-        int width = bitmapRegionDecoder.getWidth();
-        int height = bitmapRegionDecoder.getHeight();
-        Bitmap bitmap = bitmapRegionDecoder.decodeRegion(new Rect(0,0,width,height),options);
-        //Bitmap imageBitmap = BitmapFactory.decodeFile(fileName);
-        //if (imageBitmap == null) System.out.println("Bitmap null 2 !!!!!");
-        cropImageView.setImageBitmap(bitmap);
+        if (bitmap2 == null) System.out.println("bitmap2 null !!!!!!!!!!!!!");
+        //========================
+
+        // origin
+//        BitmapRegionDecoder bitmapRegionDecoder = null;
+//        try {
+//            bitmapRegionDecoder = BitmapRegionDecoder.newInstance(fileName, false);
+//            if (bitmapRegionDecoder == null) System.out.println("bitmapRegionDecoder null !!!!!");
+//        }catch (IOException e){
+//            e.printStackTrace();
+//        }
+//        BitmapFactory.Options options = new BitmapFactory.Options();
+//        options.inPreferredConfig = Bitmap.Config.RGB_565;
+//        options.inSampleSize = 2;
+//        int width = bitmapRegionDecoder.getWidth();  // 图片长宽
+//        int height = bitmapRegionDecoder.getHeight();
+//        Bitmap bitmap = bitmapRegionDecoder.decodeRegion(new Rect(0,0,width,height),options);
+
+        // 传送bitmap
+        cropImageView.setImageBitmap(bitmap2);
 
         // Initializes fixedAspectRatio toggle button.
         fixedAspectRatioToggleButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -170,13 +192,23 @@ public class CropperActivity extends Activity {
             public void onClick(View v) {
                 final Bitmap croppedImage = cropImageView.getCroppedImage();
                 croppedImageView.setImageBitmap(croppedImage);
+                //生成图片名
                 new DateFormat();
                 croppedName = DateFormat.format("yyyyMMdd_hhmmss", Calendar.getInstance(Locale.CHINA)) + "_cropped.jpg";
                 System.out.println(croppedName);
-                File file = new File("/sdcard/DCIM/Camera/", croppedName);
-                croppedName = "/sdcard/DCIM/Camera/"+croppedName;
+
+                //--------tongyong-----------
+                File output = new File(Environment.getExternalStorageDirectory(),croppedName);  //获取sd卡根目录
                 try {
-                    FileOutputStream out = new FileOutputStream(file);
+                    if (output.exists()){
+                        output.delete();
+                    }
+                    output.createNewFile();
+                } catch (IOException e){
+                    e.printStackTrace();
+                }
+                try {
+                    FileOutputStream out = new FileOutputStream(output);  //存储裁剪图
                     croppedImage.compress(Bitmap.CompressFormat.JPEG, 90, out);
                     System.out.println("cropped image saved !!!!!");
                     out.flush();
@@ -188,7 +220,28 @@ public class CropperActivity extends Activity {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
-                String result = RestUtil.uploadFile(url.url+"/resources/"+res_id+"/image", new FileSystemResource(file), fileName,String.class);
+                //--------------------------
+
+//                File file = new File("/sdcard/DCIM/Camera/", croppedName);
+//                croppedName = "/sdcard/DCIM/Camera/"+croppedName;
+//                try {
+//                    FileOutputStream out = new FileOutputStream(file);
+//                    croppedImage.compress(Bitmap.CompressFormat.JPEG, 100, out);
+//                    System.out.println("cropped image saved !!!!!");
+//                    out.flush();
+//                    out.close();
+//                } catch (FileNotFoundException e) {
+//                    // TODO Auto-generated catch block
+//                    e.printStackTrace();
+//                } catch (IOException e) {
+//                    // TODO Auto-generated catch block
+//                    e.printStackTrace();
+//                }
+
+                //modified
+                //String result = RestUtil.uploadFile(url.url+"/resources/"+res_id+"/image", new FileSystemResource(file), fileName,String.class);
+                String result = RestUtil.uploadFile(url.url+"/resources/"+res_id+"/image", new FileSystemResource(output), croppedName,String.class);
+
                 System.out.println(url.url+"/resources/"+res_id+"/image");
                 System.out.println(result);
                 if (result.contains("success")) System.out.println("upload cropped image Success !!!!!");
@@ -196,11 +249,10 @@ public class CropperActivity extends Activity {
                 Intent intent = new Intent(CropperActivity.this, AddMemoryActivity.class);
                 Bundle bundle = new Bundle();
                 bundle.putString("userName",userName);
+                imageUri = Uri.fromFile(output);
+                intent.setData(imageUri);
                 bundle.putString("croppedName",croppedName);
                 bundle.putInt("res_id",res_id);
-//                OutputStream out = new ByteArrayOutputStream();
-//                croppedImage.compress(Bitmap.CompressFormat.JPEG,30,out);
-//                intent.putExtra("Image",croppedImage);
                 intent.putExtras(bundle);
                 startActivity(intent);
                 CropperActivity.this.finish();

@@ -81,6 +81,15 @@
             app:fab_icon="@drawable/ic_action_picture"
             app:fab_colorPressed="@color/white_pressed"/>
 
+        <com.sjtu.bwphoto.memory.Class.Util.FloatingActionButton
+            android:id="@+id/bcodeFAB"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:fab_colorNormal="@color/white"
+            app:fab_size="mini"
+            app:fab_icon="@drawable/ic_action_barcode_1"
+            app:fab_colorPressed="@color/white_pressed"/>
+
     </com.sjtu.bwphoto.memory.Class.Util.FloatingActionsMenu>
     </LinearLayout>
 

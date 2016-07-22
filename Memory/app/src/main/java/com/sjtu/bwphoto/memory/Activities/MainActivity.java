@@ -77,6 +77,7 @@ public class MainActivity extends AppCompatActivity {
     public static final int MEDIA_TYPE_IMAGE = 1;
     public static final int MEDIA_TYPE_VIDEO = 2;
     private String fileName;
+    private Uri imageUri;
 
     // Tab titles
     private PersonalFragment personalFragment;
@@ -152,29 +153,48 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.cameraFAB).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                User tmp = new User();
-//                String result = RestUtil.postForObject(url.url+"/resources",null, String.class);
-//                System.out.println(result);
+                //获取resource id
                 resource = RestUtil.postForObject(url.url+"/resources",null, Resource.class);
                 res_id = resource.getId();
                 System.out.println(res_id);
                 Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
                 if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+                    //生成文件名
                     new DateFormat();
                     String name = DateFormat.format("yyyyMMdd_hhmmss", Calendar.getInstance(Locale.CHINA)) + ".jpg";
                     System.out.println(name);
-                    String state = Environment.getExternalStorageState();
-                    String filehead = "/sdcard/DCIM/Camera";
-                    File dir = new File(filehead);
-                    if (!dir.exists()) dir.mkdir();
-                    fileName = "/sdcard/DCIM/Camera/"+name;
+
+                    //------------------------通用位置---------------------
                     if (isSDCardCanUse()) {
-                        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(new File(fileName)));
-                        takePictureIntent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
-                        startActivityForResult(takePictureIntent, CAMERA_REQUEST_CODE);
+                        File output = new File(Environment.getExternalStorageDirectory(),name);  //获取sd卡根目录
+                        try {
+                            if (output.exists()){
+                                output.delete();
+                            }
+                            output.createNewFile();
+                        } catch (IOException e){
+                            e.printStackTrace();
+                        }
+                        imageUri = Uri.fromFile(output);
+                        Intent takePicIntent = new Intent("android.media.action.IMAGE_CAPTURE");
+                        takePicIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);  //设置输出地址
+                        startActivityForResult(takePicIntent, CAMERA_REQUEST_CODE);  //启动相机  返回CAMERA_REQUEST_CODE
                     }else{
                         Toast.makeText(MainActivity.this, "没有SD卡", Toast.LENGTH_LONG).show();
                     }
+                    //---------------------------------------------------------------
+
+                    //----------------store in /sdcard/DCIM/Camera-------------------
+//                    fileName = "/sdcard/DCIM/Camera/" + name;
+//                    if (isSDCardCanUse()) {
+//                        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(new File(fileName)));
+//                        takePictureIntent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
+//                        startActivityForResult(takePictureIntent, CAMERA_REQUEST_CODE);
+//                    }else{
+//                        Toast.makeText(MainActivity.this, "没有SD卡", Toast.LENGTH_LONG).show();
+//                    }
+                    //---------------------------------------------------------------
                 }
             }
         });
@@ -185,108 +205,66 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent albumIntent = new Intent(Intent.ACTION_PICK, null);
                 albumIntent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
-//                Bundle bundle = new Bundle();
-//                bundle.putString("userName", user_name);
-//                albumIntent.putExtras(bundle);
                 startActivityForResult(albumIntent, ALBUM_REQUEST_CODE);
             }
         });
+
+        // Click bar code button
+        findViewById(R.id.bcodeFAB).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+            }
+        });
+
     }
 
-
-    // Get the Thumbnail -- 显示拍到的照片
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        // Camera part
-        if (requestCode == CAMERA_REQUEST_CODE && resultCode == RESULT_OK) {
-            //useless
-//            Uri uri = null;
-//            if (data!=null) uri = data.getData();
-//            else System.out.println("data == null !!!!!!!");
-//            if (uri != null) {
-//                System.out.println(uri.getPath());
-//            }
-//            Bitmap imageBitmap = BitmapFactory.decodeFile(fileName);
-//            OutputStream out = null;
-//            imageBitmap.compress(Bitmap.CompressFormat.JPEG,50,out);
-//            if (imageBitmap == null) System.out.println("Bitmap null!!!!!");
+        switch (requestCode) {
+            case CAMERA_REQUEST_CODE:
+                if (resultCode == RESULT_OK) {
+                    //跳转至裁剪
+                    Intent intent = new Intent(MainActivity.this, CropperActivity.class);
+                    Bundle bundle = new Bundle();
+                    fileName="what";
+                    bundle.putString("fileName", fileName);
+                    intent.setData(imageUri);
+                    bundle.putString("userName", user_name);
+                    bundle.putInt("res_id", res_id);
+                    intent.putExtras(bundle);
+                    startActivity(intent);
+                    MainActivity.this.finish();
+                }
+                break;
 
-            //上传图片
-//            File file = new File(fileName);
+            case ALBUM_REQUEST_CODE:
+                if (requestCode == RESULT_OK) {
+                    if (data == null) {
+                        System.out.println("main acti : data == null");
+                        return;
+                    }
+                    //跳转至裁剪
+                    Intent intent = new Intent(MainActivity.this, CropperActivity.class);
+                    Bundle bundle = new Bundle();
+                    Uri originalUri = data.getData();  //获得图片的uri
+                    String[] proj = {MediaStore.Images.Media.DATA};
+                    Cursor cursor = managedQuery(originalUri, proj, null, null, null);
+                    int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+                    cursor.moveToFirst();
+                    String path = cursor.getString(column_index);
+                    System.out.println("main acti path:"+path);
+                    bundle.putString("fileName",path);
+                    bundle.putString("userName",user_name);
+                    intent.putExtras(bundle);
+                    startActivity(intent);
+                    MainActivity.this.finish();
+                }
+                break;
 
-            //useless
-//            InputStream out = null;
-//            try {
-//                out = new FileInputStream(file);
-//                System.out.println("22222222222");
-//            }catch (FileNotFoundException e) {
-//                e.printStackTrace();
-//                System.out.println("3333333333333");
-//            }
-//            }finally {
-//                try {
-//                    out.close();
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-
-            //上传图片
-//            String result = RestUtil.uploadFile(url.url+"/resources/"+res_id+"/image", new FileSystemResource(file), fileName,String.class);
-//            System.out.println(url.url+"/resources/"+res_id+"/image");
-//            System.out.println(result);
-//            if (result.contains("success")) System.out.println("upload image Success!!!!!");
-//            else System.out.println("upload image Fail!!!!!");
-
-            //跳转至裁剪
-            Intent intent = new Intent(MainActivity.this, CropperActivity.class);
-            Bundle bundle = new Bundle();
-            bundle.putString("fileName",fileName);
-            bundle.putString("userName",user_name);
-            bundle.putInt("res_id",res_id);
-            intent.putExtras(bundle);
-            startActivity(intent);
-            MainActivity.this.finish();
-        }
-
-        // Album part
-        if (requestCode == ALBUM_REQUEST_CODE && requestCode == RESULT_OK) {
-            if (data == null) {
-                System.out.println("main acti : data == null");
-                return;
-            }
-            //跳转至裁剪
-            Intent intent = new Intent(MainActivity.this, CropperActivity.class);
-            Bundle bundle = new Bundle();
-            Uri originalUri = data.getData();  //获得图片的uri
-            String[] proj = {MediaStore.Images.Media.DATA};
-            Cursor cursor = managedQuery(originalUri, proj, null, null, null);
-            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-            cursor.moveToFirst();
-            String path = cursor.getString(column_index);
-            System.out.println("main acti path:"+path);
-            bundle.putString("fileName",path);
-            bundle.putString("userName",user_name);
-            intent.putExtras(bundle);
-            startActivity(intent);
-            MainActivity.this.finish();
+            default:
+                break;
         }
     }
-
-    // a simple Crop
-//    private void startCrop(Uri uri) {
-//        Intent intent = new Intent("com.android.camera.action.CROP");//调用Android系统自带的一个图片剪裁页面,
-//        intent.setDataAndType(uri, IMAGE_UNSPECIFIED);
-//        intent.putExtra("crop", "true");//进行修剪
-//        // aspectX aspectY 是宽高的比例
-//        intent.putExtra("aspectX", 1);
-//        intent.putExtra("aspectY", 1);
-//        // outputX outputY 是裁剪图片宽高
-//        intent.putExtra("outputX", 300);
-//        intent.putExtra("outputY", 500);
-//        intent.putExtra("return-data", true);
-//        startActivityForResult(intent, CROP_REQUEST_CODE);
-//    }
 
     //if SD card is available
     private boolean isSDCardCanUse() {
@@ -335,7 +313,6 @@ public class MainActivity extends AppCompatActivity {
 
         return mediaFile;
     }
-
 
     //used by database
     public String getUserAccount() {
