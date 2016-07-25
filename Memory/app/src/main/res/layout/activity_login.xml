@@ -6,6 +6,7 @@
     android:background="@drawable/background"
     android:orientation="vertical" >
 
+    <!--logo-->
     <ImageView
         android:id="@+id/minilogo"
         android:layout_width="wrap_content"
@@ -15,6 +16,7 @@
         android:layout_marginTop="20dip"
         android:src="@drawable/pale_xs"/>
 
+    <!--右下角注册按钮-->
     <Button
         android:id="@+id/loginToReg"
         android:layout_width="wrap_content"
@@ -28,6 +30,7 @@
         android:textColor="@color/ivory"
         android:textSize="15sp"/>
 
+    <!--文字提示-->
     <TextView
         android:id="@+id/loginTip"
         android:layout_width="wrap_content"
@@ -39,6 +42,7 @@
         android:textSize="25sp"
         android:textColor="@color/ivory"/>
 
+    <!--信息录入部分-->
     <RelativeLayout
         android:id="@+id/login_view"
         android:layout_width="fill_parent"
@@ -50,6 +54,7 @@
         android:paddingBottom="10.0px"
         android:paddingTop="21.0px" >
 
+        <!--账号-->
         <EditText
             android:id="@+id/login_edit_account"
             android:layout_width="fill_parent"
@@ -80,6 +85,7 @@
             android:textColor="@color/ivory"
             android:textSize="16.0dip" />
 
+        <!--密码-->
         <EditText
             android:id="@+id/login_edit_pwd"
             android:layout_width="wrap_content"
@@ -109,6 +115,7 @@
             android:textSize="16.0dip" />
     </RelativeLayout>
 
+    <!--登录按钮-->
         <LinearLayout
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
