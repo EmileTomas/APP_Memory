@@ -3,7 +3,6 @@ package com.sjtu.bwphoto.memory.Activities;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.StrictMode;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
@@ -95,7 +94,7 @@ public class LoginActivity extends Activity {
             //处理服务器返回结果
             if (result.contains("success")) {
                 Toast.makeText(this, getString(R.string.login_sucess), Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                Intent intent = new Intent(LoginActivity.this, CropperActivity.class);
                 Bundle bundle = new Bundle();
                 bundle.putString("userName",userName);
                 intent.putExtras(bundle);

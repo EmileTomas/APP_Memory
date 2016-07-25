@@ -69,16 +69,6 @@ public class AddMemoryActivity extends Activity {
             e.printStackTrace();
         }
 
-//        System.out.println("Add memory activity: "+croppedName);
-//        cropped = BitmapFactory.decodeFile(croppedName);
-//        if (cropped == null) System.out.println("Add memory activity: cropped image not get!!!!!!!!!");
-
-//        Intent intent=getIntent();
-//        if(intent!=null) {
-//            System.out.println("add memory reached");
-//            cropped = intent.getParcelableExtra("Image");
-//        }
-
         BtnUpload = (Button) findViewById(R.id.btn_upload);
         BtnCancle = (Button) findViewById(R.id.btn_cancle);
         BtnPublic = (Switch) findViewById(R.id.btn_public);

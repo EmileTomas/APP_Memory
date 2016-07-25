@@ -41,7 +41,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import androidviewhover.BlurLayout;
 
-/**
+/*
  * Created by ly on 7/7/2016.
  * Place need to change:
  * Function
@@ -87,7 +87,6 @@ public class RecentFragment extends Fragment implements SwipeRefreshLayout.OnRef
     private boolean initializeViewSuccess = false;
     private boolean freushFlag = false;
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_recent, container, false);
@@ -112,7 +111,6 @@ public class RecentFragment extends Fragment implements SwipeRefreshLayout.OnRef
         mainActivity = (MainActivity) getActivity();
         userAccount = getUserAccount();
         new RestoreDataThread().start();
-
         return rootView;
     }
 
@@ -124,7 +122,6 @@ public class RecentFragment extends Fragment implements SwipeRefreshLayout.OnRef
         }
     }
 
-
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -135,7 +132,6 @@ public class RecentFragment extends Fragment implements SwipeRefreshLayout.OnRef
         @Override
         public void run() {
             super.run();
-
             //RestoreData from db
             restoreData();
             isCardEmpty = Cards.isEmpty();   //if the database has data, load them and inital view
@@ -145,13 +141,11 @@ public class RecentFragment extends Fragment implements SwipeRefreshLayout.OnRef
                 msg.what = INITIAL_VIEW;
                 mHandler.sendMessage(msg);
             }
-
             try {
                 Thread.currentThread().sleep(2000);//阻断2秒 模仿访问服务器
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-
             //FreshData from server
             fetchDataFirstTime();
         }
@@ -161,12 +155,8 @@ public class RecentFragment extends Fragment implements SwipeRefreshLayout.OnRef
         @Override
         public void run() {
             super.run();
-
-
-            if (!fetchDataSuccess)
-                fetchDataFirstTime();  //if fetch data failure last time, freshData from server
+            if (!fetchDataSuccess) fetchDataFirstTime();  //if fetch data failure last time, freshData from server
             else fetchDataNew();                         //else fetch data new from sever
-
         }
     }
 
@@ -256,12 +246,10 @@ public class RecentFragment extends Fragment implements SwipeRefreshLayout.OnRef
         Message msg = new Message();
         msg.what = NOTIFY_CARDS_CHANGE;
         mHandler.sendMessageDelayed(msg, 3000);
-
     }
 
     //This function will be called only when Cards is not empty
     private void intialView() {
-
         final LinearLayoutManager layoutManager = new LinearLayoutManager(rootView.getContext());
         msgRecycleAdapter = new MsgRecycleAdapterForComment(mainActivity.getRecentFragment(), Cards, rootView);
         recyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
@@ -311,7 +299,6 @@ public class RecentFragment extends Fragment implements SwipeRefreshLayout.OnRef
     private android.os.Handler mHandler = new android.os.Handler() {
         @Override
         public void handleMessage(Message msg) {
-
             switch (msg.what) {
                 case INITIAL_VIEW:
                     intialView();
@@ -340,14 +327,12 @@ public class RecentFragment extends Fragment implements SwipeRefreshLayout.OnRef
     };
 
     private String getUserAccount() {
-
         return mainActivity.getUserAccount();
     }
 
     public void setFABState(int state) {
-        if(state==GONE) mainActivity.setFABState(state);
-        else if(state==VISIBLE)
-        {
+        if (state==GONE) mainActivity.setFABState(state);
+        else if(state==VISIBLE) {
             Message msg = new Message();
             msg.what = SET_FAB;
             mHandler.sendMessageDelayed(msg,100);
