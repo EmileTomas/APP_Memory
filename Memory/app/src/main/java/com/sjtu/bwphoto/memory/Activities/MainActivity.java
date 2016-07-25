@@ -64,20 +64,21 @@ import java.util.Date;
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
-    private String user_name;
-    private final static ServerUrl url = new ServerUrl();
-    private Resource resource;
-    private int res_id;
-
-    // Camera Album
     private static final String IMAGE_UNSPECIFIED = "image/*";
     static final int CAMERA_REQUEST_CODE = 1;
     static final int ALBUM_REQUEST_CODE = 2;
-    static final int CROP_REQUEST_CODE = 3;
+    static final int Scan_REQUEST_CODE = 3;
+    static final int Music_REQUEST_CODE = 4;
     public static final int MEDIA_TYPE_IMAGE = 1;
     public static final int MEDIA_TYPE_VIDEO = 2;
-    private String fileName;
-    private Uri imageUri;
+
+    private String user_name;  // user name
+    private Resource resource;  // resource
+    private int res_id;  // resource id
+    private String fileName;  // file name
+    private Uri imageUri;  // image path
+
+    private final static ServerUrl url = new ServerUrl();
 
     // Tab titles
     private PersonalFragment personalFragment;
@@ -86,12 +87,13 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<Fragment> list_fragment;
     private ArrayList<String> list_tab;
 
-    //widgets
+    // widgets
     private TabLayout tabLayout;
     private ViewPager viewPager;
     private TabsPagerAdapter tabsPagerAdapter;
     private FloatingActionsMenu menuMultipleActions;
-    /**
+
+    /*
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
      */
@@ -108,13 +110,18 @@ public class MainActivity extends AppCompatActivity {
         System.out.println(user_name);
 
         initial_widget();
+
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
 
     }
 
+    /*
+     * initial_widget()
+     */
     private void initial_widget() {
+        menuMultipleActions = (FloatingActionsMenu) findViewById(R.id.menuFAB); // Floating Action Button
         tabLayout = (TabLayout) findViewById(R.id.tablayout);
         viewPager = (ViewPager) findViewById(R.id.pager);
 
@@ -127,12 +134,11 @@ public class MainActivity extends AppCompatActivity {
         list_fragment.add(personalFragment);
         list_fragment.add(recommendFragment);
 
-        //intial tab titles
+        //initial tab titles
         list_tab = new ArrayList<>();
         list_tab.add("Recent");
         list_tab.add("Personal");
         list_tab.add("Recommend");
-
         //set tabs
         tabLayout.addTab(tabLayout.newTab().setText(list_tab.get(0)));
         tabLayout.addTab(tabLayout.newTab().setText(list_tab.get(1)));
@@ -146,56 +152,12 @@ public class MainActivity extends AppCompatActivity {
         //TabLayout加载viewpager
         tabLayout.setupWithViewPager(viewPager, true);
 
-        // Floating Action Button
-        menuMultipleActions = (FloatingActionsMenu) findViewById(R.id.menuFAB);
-
         // Click camera button
         findViewById(R.id.cameraFAB).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //获取resource id
-                resource = RestUtil.postForObject(url.url+"/resources",null, Resource.class);
-                res_id = resource.getId();
-                System.out.println(res_id);
-                Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-
-                if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-                    //生成文件名
-                    new DateFormat();
-                    String name = DateFormat.format("yyyyMMdd_hhmmss", Calendar.getInstance(Locale.CHINA)) + ".jpg";
-                    System.out.println(name);
-
-                    //------------------------通用位置---------------------
-                    if (isSDCardCanUse()) {
-                        File output = new File(Environment.getExternalStorageDirectory(),name);  //获取sd卡根目录
-                        try {
-                            if (output.exists()){
-                                output.delete();
-                            }
-                            output.createNewFile();
-                        } catch (IOException e){
-                            e.printStackTrace();
-                        }
-                        imageUri = Uri.fromFile(output);
-                        Intent takePicIntent = new Intent("android.media.action.IMAGE_CAPTURE");
-                        takePicIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);  //设置输出地址
-                        startActivityForResult(takePicIntent, CAMERA_REQUEST_CODE);  //启动相机  返回CAMERA_REQUEST_CODE
-                    }else{
-                        Toast.makeText(MainActivity.this, "没有SD卡", Toast.LENGTH_LONG).show();
-                    }
-                    //---------------------------------------------------------------
-
-                    //----------------store in /sdcard/DCIM/Camera-------------------
-//                    fileName = "/sdcard/DCIM/Camera/" + name;
-//                    if (isSDCardCanUse()) {
-//                        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(new File(fileName)));
-//                        takePictureIntent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
-//                        startActivityForResult(takePictureIntent, CAMERA_REQUEST_CODE);
-//                    }else{
-//                        Toast.makeText(MainActivity.this, "没有SD卡", Toast.LENGTH_LONG).show();
-//                    }
-                    //---------------------------------------------------------------
-                }
+                System.out.println("camera button clicked !");
+                takePic();
             }
         });
 
@@ -203,9 +165,8 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.albumFAB).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent albumIntent = new Intent(Intent.ACTION_PICK, null);
-                albumIntent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
-                startActivityForResult(albumIntent, ALBUM_REQUEST_CODE);
+                System.out.println("album button clicked !");
+                getPic();
             }
         });
 
@@ -213,22 +174,108 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.bcodeFAB).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                System.out.println("scan button clicked !");
+                scan();
             }
         });
 
+        //Click music button
+        findViewById(R.id.bmusicFAB).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                System.out.println("music button clicked !");
+                getMusic();
+            }
+        });
     }
 
+    /*
+     * Take picture()
+     */
+    public void takePic(){
+        //获取resource id
+        System.out.println(url.url+"/resources");
+        resource = RestUtil.postForObject(url.url+"/resources",null, Resource.class);
+        res_id = resource.getId();
+        System.out.println("MainActivity: Resource id get, "+res_id);
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            //生成文件名
+            new DateFormat();
+            String name = DateFormat.format("yyyyMMdd_hhmmss", Calendar.getInstance(Locale.CHINA)) + ".jpg";
+            System.out.println("Image name formed: "+name);
+
+            //------------------------通用位置---------------------failed
+            //通过sd卡根目录存储访问，需传送imageUri，res_id，user_name到下一个activity
+//            if (isSDCardCanUse()) {
+//                File output = new File(Environment.getExternalStorageDirectory(),name);  //获取sd卡根目录
+//                try {
+//                    if (output.exists()){
+//                        output.delete();
+//                    }
+//                    output.createNewFile();
+//                } catch (IOException e){
+//                    e.printStackTrace();
+//                }
+//                imageUri = Uri.fromFile(output);
+//                Intent takePicIntent = new Intent("android.media.action.IMAGE_CAPTURE");
+//                takePicIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);  //设置输出地址
+//                startActivityForResult(takePicIntent, CAMERA_REQUEST_CODE);  //启动相机  返回CAMERA_REQUEST_CODE
+//            }else{
+//                Toast.makeText(MainActivity.this, "没有SD卡", Toast.LENGTH_LONG).show();
+//            }
+            //---------------------------------------------------------------
+
+            //----------------store in /sdcard/DCIM/Camera-------------------
+            //通过指定路径存储访问，需传送fileName，res_id，user_name到下一个activity
+            fileName = "/sdcard/DCIM/Camera/" + name;
+            if (isSDCardCanUse()) {
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(new File(fileName)));
+                takePictureIntent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
+                startActivityForResult(takePictureIntent, CAMERA_REQUEST_CODE);
+            }else{
+                Toast.makeText(MainActivity.this, "没有SD卡", Toast.LENGTH_LONG).show();
+            }
+            //---------------------------------------------------------------
+        }
+    }
+
+    /*
+     * Choose photo from album
+     */
+    public void getPic(){
+        Intent albumIntent = new Intent(Intent.ACTION_PICK, null);
+        albumIntent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
+        startActivityForResult(albumIntent, ALBUM_REQUEST_CODE);
+    }
+
+    /*
+     * Scan bar code
+     */
+    public void scan(){
+
+    }
+
+    /*
+     * Get music
+     */
+    public void getMusic(){
+
+    }
+
+    /*
+     * onActivityResult()
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
             case CAMERA_REQUEST_CODE:
                 if (resultCode == RESULT_OK) {
-                    //跳转至裁剪
                     Intent intent = new Intent(MainActivity.this, CropperActivity.class);
                     Bundle bundle = new Bundle();
-                    fileName="what";
                     bundle.putString("fileName", fileName);
-                    intent.setData(imageUri);
+                    //intent.setData(imageUri);
                     bundle.putString("userName", user_name);
                     bundle.putInt("res_id", res_id);
                     intent.putExtras(bundle);
@@ -240,10 +287,9 @@ public class MainActivity extends AppCompatActivity {
             case ALBUM_REQUEST_CODE:
                 if (requestCode == RESULT_OK) {
                     if (data == null) {
-                        System.out.println("main acti : data == null");
+                        System.out.println("MainActivity album result : data == null");
                         return;
                     }
-                    //跳转至裁剪
                     Intent intent = new Intent(MainActivity.this, CropperActivity.class);
                     Bundle bundle = new Bundle();
                     Uri originalUri = data.getData();  //获得图片的uri
@@ -261,25 +307,39 @@ public class MainActivity extends AppCompatActivity {
                 }
                 break;
 
+            case Scan_REQUEST_CODE:
+                if (requestCode == RESULT_OK) {
+
+                }
+                break;
+
+            case Music_REQUEST_CODE:
+                if (requestCode == RESULT_OK) {
+
+                }
+                break;
+
             default:
                 break;
         }
     }
 
-    //if SD card is available
+    /*
+     * see if SD card is available
+     */
     private boolean isSDCardCanUse() {
         return Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED);
     }
 
-    /**
-     * Create a file Uri for saving an image or video
+    /*
+     * Create a file Uri for saving an image or video - from developer.android
      */
     private static Uri getOutputMediaFileUri(int type) {
         return Uri.fromFile(getOutputMediaFile(type));
     }
 
-    /**
-     * Create a File for saving an image or video
+    /*
+     * Create a File for saving an image or video - from developer.android
      */
     private static File getOutputMediaFile(int type) {
         // To be safe, you should check that the SDCard is mounted
@@ -310,8 +370,15 @@ public class MainActivity extends AppCompatActivity {
         } else {
             return null;
         }
-
         return mediaFile;
+    }
+
+    //used by MsgRecyleAdapter and fragments
+    public void setFABState(int state){
+        if (state == 1)
+            menuMultipleActions.setVisibility(View.GONE);
+        else if (state == 2)
+            menuMultipleActions.setVisibility(View.VISIBLE);
     }
 
     //used by database
@@ -319,14 +386,7 @@ public class MainActivity extends AppCompatActivity {
         return user_name;
     }
 
-    //used by MsgRecyleAdapter and fragments
-    public void setFABState(int state){
-        if(state==1)
-            menuMultipleActions.setVisibility(View.GONE);
-        else if(state==2)
-            menuMultipleActions.setVisibility(View.VISIBLE);
-    }
-
+    //used by database
     public RecentFragment getRecentFragment(){
         return recentFragment;
     }

@@ -34,6 +34,7 @@
                 app:tabTextColor="#FFFFFF" />
 
         </android.support.v4.view.ViewPager>
+
     </LinearLayout>
 
     <!--侧边栏-->
@@ -46,51 +47,61 @@
         app:headerLayout="@layout/nav_header_main"
         app:menu="@menu/activity_main_drawer" />
 
-    <!--Floating action button-->
+    <!--悬浮按钮-->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:gravity="bottom">
 
-    <com.sjtu.bwphoto.memory.Class.Util.FloatingActionsMenu
-        android:id="@+id/menuFAB"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="right|bottom"
-        app:fab_addButtonColorNormal="@color/white"
-        app:fab_addButtonColorPressed="@color/white_pressed"
-        app:fab_addButtonPlusIconColor="@color/black"
-        app:fab_addButtonSize="mini">
-
-        <com.sjtu.bwphoto.memory.Class.Util.FloatingActionButton
-            android:id="@+id/cameraFAB"
+        <com.sjtu.bwphoto.memory.Class.Util.FloatingActionsMenu
+            android:id="@+id/menuFAB"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:fab_colorNormal="@color/white"
-            app:fab_size="mini"
-            app:fab_icon="@drawable/ic_action_camera"
-            app:fab_colorPressed="@color/white_pressed"/>
+            android:layout_gravity="right|bottom"
+            app:fab_addButtonColorNormal="@color/white"
+            app:fab_addButtonColorPressed="@color/white_pressed"
+            app:fab_addButtonPlusIconColor="@color/black"
+            app:fab_addButtonSize="mini">
 
-        <com.sjtu.bwphoto.memory.Class.Util.FloatingActionButton
-            android:id="@+id/albumFAB"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:fab_colorNormal="@color/white"
-            app:fab_size="mini"
-            app:fab_icon="@drawable/ic_action_picture"
-            app:fab_colorPressed="@color/white_pressed"/>
+            <com.sjtu.bwphoto.memory.Class.Util.FloatingActionButton
+                android:id="@+id/cameraFAB"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:fab_colorNormal="@color/white"
+                app:fab_size="mini"
+                app:fab_icon="@drawable/ic_action_camera"
+                app:fab_colorPressed="@color/white_pressed"/>
 
-        <com.sjtu.bwphoto.memory.Class.Util.FloatingActionButton
-            android:id="@+id/bcodeFAB"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:fab_colorNormal="@color/white"
-            app:fab_size="mini"
-            app:fab_icon="@drawable/ic_action_barcode_1"
-            app:fab_colorPressed="@color/white_pressed"/>
+            <com.sjtu.bwphoto.memory.Class.Util.FloatingActionButton
+                android:id="@+id/albumFAB"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:fab_colorNormal="@color/white"
+                app:fab_size="mini"
+                app:fab_icon="@drawable/ic_action_picture"
+                app:fab_colorPressed="@color/white_pressed"/>
 
-    </com.sjtu.bwphoto.memory.Class.Util.FloatingActionsMenu>
+            <com.sjtu.bwphoto.memory.Class.Util.FloatingActionButton
+                android:id="@+id/bcodeFAB"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:fab_colorNormal="@color/white"
+                app:fab_size="mini"
+                app:fab_icon="@drawable/ic_action_barcode_1"
+                app:fab_colorPressed="@color/white_pressed"/>
+
+            <com.sjtu.bwphoto.memory.Class.Util.FloatingActionButton
+                android:id="@+id/bmusicFAB"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:fab_colorNormal="@color/white"
+                app:fab_size="mini"
+                app:fab_icon="@drawable/ic_action_music_1"
+                app:fab_colorPressed="@color/white_pressed"/>
+
+        </com.sjtu.bwphoto.memory.Class.Util.FloatingActionsMenu>
+
     </LinearLayout>
 
 </android.support.v4.widget.DrawerLayout>
