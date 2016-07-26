@@ -40,6 +40,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public static final String CREATE_VIEW_STORE_PAGE3 = "create table PersonalPage("
             + "id integer primary key autoincrement,"
+            + "posterAccount text,"
             + "account text,"
             + "rankNum integer,"
             + "tag text,"

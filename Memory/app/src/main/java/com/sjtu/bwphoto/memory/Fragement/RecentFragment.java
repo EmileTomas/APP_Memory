@@ -30,7 +30,7 @@ import com.sjtu.bwphoto.memory.Class.Resource.PersonalResource;
 import com.sjtu.bwphoto.memory.Class.RestUtil;
 import com.sjtu.bwphoto.memory.Class.ServerUrl;
 import com.sjtu.bwphoto.memory.Class.Util.FloatingActionButton;
-import com.sjtu.bwphoto.memory.Class.Util.MsgRecycleAdapterForComment;
+import com.sjtu.bwphoto.memory.Class.Util.MsgRecycleAdapterForRecent;
 import com.sjtu.bwphoto.memory.R;
 
 import java.util.ArrayList;
@@ -63,7 +63,7 @@ public class RecentFragment extends Fragment implements SwipeRefreshLayout.OnRef
 
     private View rootView;
     private RecyclerView recyclerView;
-    private MsgRecycleAdapterForComment msgRecycleAdapter;
+    private MsgRecycleAdapterForRecent msgRecycleAdapter;
     private SwipeRefreshLayout swipeRefreshLayout;
     private List<Msg> Cards;
     private LinearLayout commentLayout;
@@ -263,7 +263,7 @@ public class RecentFragment extends Fragment implements SwipeRefreshLayout.OnRef
     //This function will be called only when Cards is not empty
     private void intialView() {
         final LinearLayoutManager layoutManager = new LinearLayoutManager(rootView.getContext());
-        msgRecycleAdapter = new MsgRecycleAdapterForComment(mainActivity.getRecentFragment(), Cards, rootView);
+        msgRecycleAdapter = new MsgRecycleAdapterForRecent(mainActivity.getRecentFragment(), Cards, rootView);
         recyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(layoutManager);

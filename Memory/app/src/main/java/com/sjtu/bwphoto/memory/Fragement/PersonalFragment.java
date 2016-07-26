@@ -145,7 +145,7 @@ public class PersonalFragment extends Fragment implements SwipeRefreshLayout.OnR
             for(int i=0;i<Cards.size();++i)
             {
                 values.put("account",userAccount);
-                values.put("poserAccount",Cards.get(i).getPosterAccount());
+                values.put("posterAccount",Cards.get(i).getPosterAccount());
                 values.put("rankNum",i);
                 values.put("tag",Cards.get(i).getTag());
                 values.put("memoryText",Cards.get(i).getContent());

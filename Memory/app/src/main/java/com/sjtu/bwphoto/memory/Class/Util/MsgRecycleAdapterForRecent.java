@@ -2,6 +2,8 @@ package com.sjtu.bwphoto.memory.Class.Util;
 
 import android.app.Service;
 import android.graphics.Bitmap;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.daimajia.androidanimations.library.Techniques;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.sjtu.bwphoto.memory.Class.Msg;
@@ -20,6 +23,11 @@ import com.sjtu.bwphoto.memory.Class.RestUtil;
 import com.sjtu.bwphoto.memory.Fragement.RecentFragment;
 import com.sjtu.bwphoto.memory.R;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.List;
 
 import androidviewhover.BlurLayout;
@@ -27,15 +35,16 @@ import androidviewhover.BlurLayout;
 /**
  * Created by Administrator on 2016/7/4.
  */
-public class MsgRecycleAdapterForComment extends RecyclerView.Adapter<MsgRecycleAdapterForComment.CardViewHolder> {
+public class MsgRecycleAdapterForRecent extends RecyclerView.Adapter<MsgRecycleAdapterForRecent.CardViewHolder> {
 
+    private static MediaPlayer mediaplayer=new MediaPlayer();
     private List<Msg> Cards;
     private RecentFragment mContext;
     private LayoutInflater inflater;
     private View rootView;
     private final int GONE = 1;
 
-    public MsgRecycleAdapterForComment(RecentFragment mContext, List<Msg> Cards, View rootView) {
+    public MsgRecycleAdapterForRecent(RecentFragment mContext, List<Msg> Cards, View rootView) {
         this.mContext = mContext;
         this.Cards = Cards;
         this.rootView = rootView;
@@ -57,7 +66,7 @@ public class MsgRecycleAdapterForComment extends RecyclerView.Adapter<MsgRecycle
 
     @Override
     public void onBindViewHolder(CardViewHolder holder, int position) {
-        Msg msg = Cards.get(position);
+        final Msg msg = Cards.get(position);
         BlurLayout mSampleLayout = holder.mSampleLayout;
         View hover = holder.hover;
 
@@ -85,9 +94,14 @@ public class MsgRecycleAdapterForComment extends RecyclerView.Adapter<MsgRecycle
             mSampleLayout.setHoverView(hover);
             mSampleLayout.addChildAppearAnimator(hover, R.id.comment, Techniques.SlideInRight);
             mSampleLayout.addChildAppearAnimator(hover, R.id.add_friend, Techniques.SlideInRight);
+            mSampleLayout.addChildAppearAnimator(hover, R.id.music, Techniques.SlideInRight);
+            mSampleLayout.addChildAppearAnimator(hover, R.id.recorder, Techniques.SlideInRight);
+
 
             mSampleLayout.addChildDisappearAnimator(hover, R.id.comment, Techniques.SlideOutRight);
             mSampleLayout.addChildDisappearAnimator(hover, R.id.add_friend, Techniques.SlideOutRight);
+            mSampleLayout.addChildDisappearAnimator(hover, R.id.music, Techniques.SlideOutRight);
+            mSampleLayout.addChildDisappearAnimator(hover, R.id.recorder, Techniques.SlideOutRight);
 
             mSampleLayout.addChildAppearAnimator(hover, R.id.content, Techniques.BounceIn);
             mSampleLayout.addChildDisappearAnimator(hover, R.id.content, Techniques.FadeOutUp);
@@ -104,6 +118,35 @@ public class MsgRecycleAdapterForComment extends RecyclerView.Adapter<MsgRecycle
                     editText.requestFocus();
                     mContext.setFABState(GONE);
                     imm.showSoftInput(editText, 0);
+                }
+            });
+
+            hover.findViewById(R.id.music).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+
+                            String httpUrl = "http://apis.baidu.com/geekery/music/playinfo";
+                            String httpArg = "hash="+msg.getMusicHash();
+                            String jsonResult = request(httpUrl, httpArg);
+
+                            try{
+                                Song song=new Song();
+                                ObjectMapper objectMapper=new ObjectMapper();
+                                song=objectMapper.readValue(jsonResult,Song.class);
+                                System.out.println(song.getData().getFileName());
+                                mediaplayer.reset();
+                                mediaplayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+                                mediaplayer.setDataSource(song.getData().getUrl());
+                                mediaplayer.prepare();
+                                mediaplayer.start();
+                            }catch (Exception e){
+                                e.printStackTrace();
+                            }
+                        }
+                    }).start();
                 }
             });
         }
@@ -133,6 +176,35 @@ public class MsgRecycleAdapterForComment extends RecyclerView.Adapter<MsgRecycle
             textView = (TextView) view.findViewById(R.id.msg_position);
             content = (TextView) hover.findViewById(R.id.content);
         }
+    }
+
+    public static String request(String httpUrl, String httpArg) {
+        BufferedReader reader = null;
+        String result = null;
+        StringBuffer sbf = new StringBuffer();
+        httpUrl = httpUrl + "?" + httpArg;
+
+        try {
+            URL url = new URL(httpUrl);
+            HttpURLConnection connection = (HttpURLConnection) url
+                    .openConnection();
+            connection.setRequestMethod("GET");
+            // 填入apikey到HTTP header
+            connection.setRequestProperty("apikey",  "fad22d042fecdcc0be3244f57faa757f");
+            connection.connect();
+            InputStream is = connection.getInputStream();
+            reader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
+            String strRead = null;
+            while ((strRead = reader.readLine()) != null) {
+                sbf.append(strRead);
+                sbf.append("\r\n");
+            }
+            reader.close();
+            result = sbf.toString();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
     }
 
 
