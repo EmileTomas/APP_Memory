@@ -5,8 +5,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.provider.Settings;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
@@ -16,17 +14,14 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Switch;
 
-import com.sjtu.bwphoto.memory.Class.Resource;
+import com.sjtu.bwphoto.memory.Class.Resource.Resource;
 import com.sjtu.bwphoto.memory.Class.RestUtil;
 import com.sjtu.bwphoto.memory.Class.ServerUrl;
 import com.sjtu.bwphoto.memory.R;
 
-import org.springframework.web.client.RestTemplate;
-
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
 
 public class AddMemoryActivity extends Activity {
     private Button BtnUpload;

@@ -1,7 +1,6 @@
 package com.sjtu.bwphoto.memory.Class.Util;
 
 import android.app.Service;
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -16,18 +15,12 @@ import android.widget.TextView;
 import com.daimajia.androidanimations.library.Techniques;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-import com.sjtu.bwphoto.memory.Activities.MainActivity;
-import com.sjtu.bwphoto.memory.Class.AuthImageDownloader;
 import com.sjtu.bwphoto.memory.Class.Msg;
 import com.sjtu.bwphoto.memory.Class.RestUtil;
-import com.sjtu.bwphoto.memory.Class.Util.Util_Cropper.Handle;
 import com.sjtu.bwphoto.memory.Fragement.RecentFragment;
 import com.sjtu.bwphoto.memory.R;
 
 import java.util.List;
-import java.util.logging.Handler;
-import java.util.logging.LogRecord;
 
 import androidviewhover.BlurLayout;
 
@@ -79,7 +72,7 @@ public class MsgRecycleAdapterForComment extends RecyclerView.Adapter<MsgRecycle
                 .extraForDownloader(RestUtil.getAuth())
                 .build();
         ImageLoader.getInstance().displayImage(msg.getImageUrl(), holder.imageView, options);
-        holder.textView.setText(msg.getMap_position());
+        holder.textView.setText(msg.getTag());
         holder.content.setText(msg.getContent());
 
         BlurLayout.setGlobalDefaultDuration(1);
@@ -90,11 +83,11 @@ public class MsgRecycleAdapterForComment extends RecyclerView.Adapter<MsgRecycle
         if (!holder.set_flag) {
             holder.set_flag = true;
             mSampleLayout.setHoverView(hover);
-            mSampleLayout.addChildAppearAnimator(hover, R.id.cat, Techniques.SlideInRight);
-            mSampleLayout.addChildAppearAnimator(hover, R.id.mail, Techniques.SlideInRight);
+            mSampleLayout.addChildAppearAnimator(hover, R.id.comment, Techniques.SlideInRight);
+            mSampleLayout.addChildAppearAnimator(hover, R.id.add_friend, Techniques.SlideInRight);
 
-            mSampleLayout.addChildDisappearAnimator(hover, R.id.cat, Techniques.SlideOutRight);
-            mSampleLayout.addChildDisappearAnimator(hover, R.id.mail, Techniques.SlideOutRight);
+            mSampleLayout.addChildDisappearAnimator(hover, R.id.comment, Techniques.SlideOutRight);
+            mSampleLayout.addChildDisappearAnimator(hover, R.id.add_friend, Techniques.SlideOutRight);
 
             mSampleLayout.addChildAppearAnimator(hover, R.id.content, Techniques.BounceIn);
             mSampleLayout.addChildDisappearAnimator(hover, R.id.content, Techniques.FadeOutUp);
@@ -104,7 +97,7 @@ public class MsgRecycleAdapterForComment extends RecyclerView.Adapter<MsgRecycle
             final LinearLayout linearLayout = (LinearLayout) rootView.findViewById(R.id.commentView);
             final FloatingActionButton FAB = (FloatingActionButton) rootView.findViewById(R.id.menuFAB);
             imm = (InputMethodManager) editText.getContext().getSystemService(Service.INPUT_METHOD_SERVICE);
-            hover.findViewById(R.id.cat).setOnClickListener(new View.OnClickListener() {
+            hover.findViewById(R.id.comment).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     linearLayout.setVisibility(View.VISIBLE);
@@ -119,7 +112,7 @@ public class MsgRecycleAdapterForComment extends RecyclerView.Adapter<MsgRecycle
     @Override
     public CardViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = inflater.inflate(R.layout.card_item, null);
-        View hover = inflater.inflate(R.layout.hover_sample4, null);
+        View hover = inflater.inflate(R.layout.card_hover, null);
         CardViewHolder holder = new CardViewHolder(view, hover);
         return holder;
     }

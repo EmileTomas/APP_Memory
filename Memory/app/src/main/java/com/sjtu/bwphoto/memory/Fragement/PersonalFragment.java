@@ -139,18 +139,20 @@ public class PersonalFragment extends Fragment implements SwipeRefreshLayout.OnR
             super.run();
             sqLiteDatabase=DatabaseManager.getInstance().openDatabase();
             //DeletePreviousData
-            sqLiteDatabase.delete("Page2","account=?",new String[]{userAccount});
+            sqLiteDatabase.delete("PersonalPage","account=?",new String[]{userAccount});
             //store Cards via Qtbase
             ContentValues values=new ContentValues();
             for(int i=0;i<Cards.size();++i)
             {
                 values.put("account",userAccount);
+                values.put("poserAccount",Cards.get(i).getPosterAccount());
                 values.put("rankNum",i);
-                values.put("location",Cards.get(i).getMap_position());
+                values.put("tag",Cards.get(i).getTag());
                 values.put("memoryText",Cards.get(i).getContent());
                 values.put("imageURL",Cards.get(i).getImageUrl());
+                values.put("musicHash",Cards.get(i).getMusicHash());
 
-                sqLiteDatabase.insert("Page2",null,values);
+                sqLiteDatabase.insert("PersonalPage",null,values);
                 values.clear();
             }
             DatabaseManager.getInstance().closeDatabase();
@@ -160,14 +162,16 @@ public class PersonalFragment extends Fragment implements SwipeRefreshLayout.OnR
     private void restoreData() {
         sqLiteDatabase=DatabaseManager.getInstance().openDatabase();
         Cards = new ArrayList<Msg>();
-        Cursor cursor=sqLiteDatabase.query("Page2",null,"account=?",new String[]{userAccount},null,null,null);
+        Cursor cursor=sqLiteDatabase.query("PersonalPage",null,"account=?",new String[]{userAccount},null,null,null);
         if(cursor.moveToFirst()){
             do{
                 int rankNum=cursor.getInt(cursor.getColumnIndex("rankNum"));
-                String location=cursor.getString(cursor.getColumnIndex("location"));
+                String posterAccount=cursor.getString(cursor.getColumnIndex("posterAccount"));
+                String tag=cursor.getString(cursor.getColumnIndex("tag"));
                 String memoryText=cursor.getString(cursor.getColumnIndex("memoryText"));
                 String imageURL=cursor.getString(cursor.getColumnIndex("imageURL"));
-                Msg Card=new Msg(memoryText,location,imageURL);
+                String musicHash=cursor.getString(cursor.getColumnIndex("musicHash"));
+                Msg Card=new Msg(posterAccount,memoryText,tag,imageURL,musicHash);
                 Cards.add(Card);
             }while(cursor.moveToNext());
         }
@@ -182,14 +186,14 @@ public class PersonalFragment extends Fragment implements SwipeRefreshLayout.OnR
         //  Receive data and store it to Cards
         //  return true;
         Cards.clear();
-        Msg Card4 = new Msg("This is a Story about the future", "Tokyo", "http://www.arrivalguides.com/s3/ag-images-eu/16/d8465238ff0e0298991405b8597d8da6.jpg");
-        Cards.add(0,Card4);
-        Msg Card3 = new Msg("This is a Story about the future", "GreatWall", "http://static.asiawebdirect.com/m/phuket/portals/www-singapore-com/homepage/attractions/all-attractions/pagePropertiesImage/singapore1.jpg");
-        Cards.add(0,Card3);
-        Msg Card2 = new Msg("一个人的旅行，一个人的远方。在悉尼这座城市，享受恬静的海风，任时间流过。", "Sydeney", "drawable://" + R.drawable.sydeney);
-        Cards.add(0,Card2);
-        Msg Card1 = new Msg("This is a Story about the future", "Paris", "drawable://" + R.drawable.paris);
-        Cards.add(0,Card1);
+        Msg Card4 = new Msg("Emile","This is a Story about the future", "Tokyo", "http://www.arrivalguides.com/s3/ag-images-eu/16/d8465238ff0e0298991405b8597d8da6.jpg","c23d025ee9ece593abd96d7b97db97b4");
+        Cards.add(0, Card4);
+        Msg Card3 = new Msg("Tomas","This is a Story about the future", "GreatWall", "http://static.asiawebdirect.com/m/phuket/portals/www-singapore-com/homepage/attractions/all-attractions/pagePropertiesImage/singapore1.jpg","c23d025ee9ece593abd96d7b97db97b4");
+        Cards.add(0, Card3);
+        Msg Card2 = new Msg("Alice","一个人的旅行，一个人的远方。在悉尼这座城市，享受恬静的海风，任时间流过。", "Sydeney", "drawable://" + R.drawable.sydeney,"c23d025ee9ece593abd96d7b97db97b4");
+        Cards.add(0, Card2);
+        Msg Card1 = new Msg("John","This is a Story about the future", "Paris", "drawable://" + R.drawable.paris,"c23d025ee9ece593abd96d7b97db97b4");
+        Cards.add(0, Card1);
         fetchDataSuccess=true;
         isCardEmpty=false;
 
@@ -208,7 +212,7 @@ public class PersonalFragment extends Fragment implements SwipeRefreshLayout.OnR
 
     private void fetchDataNew(){
         //fetchData success part
-        Msg Card1 = new Msg("This is a Story about the future", "Paris", "drawable://" + R.drawable.paris);
+        Msg Card1 = new Msg("John","This is a Story about the future", "Paris", "drawable://" + R.drawable.paris,"c23d025ee9ece593abd96d7b97db97b4");
         Cards.add(0,Card1);
 
 
@@ -268,7 +272,7 @@ public class PersonalFragment extends Fragment implements SwipeRefreshLayout.OnR
                     if(!isCardEmpty) {
                         // bottom
                         freushFlag = false;
-                        Msg msg3 = new Msg("This is a Story about the future", "GreatWall", "drawable://" + R.drawable.greatwall);
+                        Msg msg3 = new Msg("Tomas","This is a Story about the future", "GreatWall", "drawable://" + R.drawable.greatwall,"c23d025ee9ece593abd96d7b97db97b4");
                         Cards.add(msg3);
                         swipeRefreshLayout.setRefreshing(false);
                         msgRecycleAdapter.notifyDataSetChanged();

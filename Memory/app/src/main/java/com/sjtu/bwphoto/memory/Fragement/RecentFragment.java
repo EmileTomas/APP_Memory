@@ -4,7 +4,6 @@ import android.app.Service;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.media.Image;
 import android.os.Bundle;
 import android.os.Message;
 import android.support.v4.app.Fragment;
@@ -12,10 +11,8 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
@@ -28,7 +25,8 @@ import com.sjtu.bwphoto.memory.Activities.MainActivity;
 import com.sjtu.bwphoto.memory.Class.Datebase.DatabaseHelper;
 import com.sjtu.bwphoto.memory.Class.Datebase.DatabaseManager;
 import com.sjtu.bwphoto.memory.Class.Msg;
-import com.sjtu.bwphoto.memory.Class.Resource;
+import com.sjtu.bwphoto.memory.Class.Resource.Memory;
+import com.sjtu.bwphoto.memory.Class.Resource.PersonalResource;
 import com.sjtu.bwphoto.memory.Class.RestUtil;
 import com.sjtu.bwphoto.memory.Class.ServerUrl;
 import com.sjtu.bwphoto.memory.Class.Util.FloatingActionButton;
@@ -37,7 +35,6 @@ import com.sjtu.bwphoto.memory.R;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
 
 import androidviewhover.BlurLayout;
 
@@ -166,17 +163,19 @@ public class RecentFragment extends Fragment implements SwipeRefreshLayout.OnRef
             super.run();
             sqLiteDatabase = DatabaseManager.getInstance().openDatabase();
             //DeletePreviousData
-            sqLiteDatabase.delete("Page1", "account=?", new String[]{userAccount});
+            sqLiteDatabase.delete("RecentPage", "account=?", new String[]{userAccount});
             //store Cards via Qtbase
             ContentValues values = new ContentValues();
             for (int i = 0; i < Cards.size(); ++i) {
-                values.put("account", userAccount);
                 values.put("rankNum", i);
-                values.put("location", Cards.get(i).getMap_position());
+                values.put("account", userAccount);
+                values.put("posterAccount",Cards.get(i).getPosterAccount());
+                values.put("tag", Cards.get(i).getTag());
                 values.put("memoryText", Cards.get(i).getContent());
                 values.put("imageURL", Cards.get(i).getImageUrl());
+                values.put("musicHash",Cards.get(i).getMusicHash());
 
-                sqLiteDatabase.insert("Page1", null, values);
+                sqLiteDatabase.insert("RecentPage", null, values);
                 values.clear();
             }
             DatabaseManager.getInstance().closeDatabase();
@@ -186,14 +185,16 @@ public class RecentFragment extends Fragment implements SwipeRefreshLayout.OnRef
     private void restoreData() {
         sqLiteDatabase = DatabaseManager.getInstance().openDatabase();
         Cards = new ArrayList<Msg>();
-        Cursor cursor = sqLiteDatabase.query("Page1", null, "account=?", new String[]{userAccount}, null, null, null);
+        Cursor cursor = sqLiteDatabase.query("RecentPage", null, "account=?", new String[]{userAccount}, null, null, null);
         if (cursor.moveToFirst()) {
             do {
                 int rankNum = cursor.getInt(cursor.getColumnIndex("rankNum"));
-                String location = cursor.getString(cursor.getColumnIndex("location"));
+                String posterAccount=cursor.getString(cursor.getColumnIndex("posterAccount"));
+                String tag = cursor.getString(cursor.getColumnIndex("tag"));
                 String memoryText = cursor.getString(cursor.getColumnIndex("memoryText"));
                 String imageURL = cursor.getString(cursor.getColumnIndex("imageURL"));
-                Msg Card = new Msg(memoryText, location, imageURL);
+                String musicHash=cursor.getString(cursor.getColumnIndex("musicHash"));
+                Msg Card = new Msg(posterAccount,memoryText, tag, imageURL,musicHash);
                 Cards.add(Card);
             } while (cursor.moveToNext());
         }
@@ -208,13 +209,13 @@ public class RecentFragment extends Fragment implements SwipeRefreshLayout.OnRef
         //  Receive data and store it to Cards
         //  return true;
         Cards.clear();
-        Msg Card4 = new Msg("This is a Story about the future", "Tokyo", url.url+"/resources/1/image");
+        Msg Card4 = new Msg("Emile","This is a Story about the future", "Tokyo", "http://www.arrivalguides.com/s3/ag-images-eu/16/d8465238ff0e0298991405b8597d8da6.jpg","c23d025ee9ece593abd96d7b97db97b4");
         Cards.add(0, Card4);
-        Msg Card3 = new Msg("This is a Story about the future", "GreatWall", "http://static.asiawebdirect.com/m/phuket/portals/www-singapore-com/homepage/attractions/all-attractions/pagePropertiesImage/singapore1.jpg");
+        Msg Card3 = new Msg("Tomas","This is a Story about the future", "GreatWall", "http://static.asiawebdirect.com/m/phuket/portals/www-singapore-com/homepage/attractions/all-attractions/pagePropertiesImage/singapore1.jpg","c23d025ee9ece593abd96d7b97db97b4");
         Cards.add(0, Card3);
-        Msg Card2 = new Msg("一个人的旅行，一个人的远方。在悉尼这座城市，享受恬静的海风，任时间流过。", "Sydeney", "drawable://" + R.drawable.sydeney);
+        Msg Card2 = new Msg("Alice","一个人的旅行，一个人的远方。在悉尼这座城市，享受恬静的海风，任时间流过。", "Sydeney", "drawable://" + R.drawable.sydeney,"c23d025ee9ece593abd96d7b97db97b4");
         Cards.add(0, Card2);
-        Msg Card1 = new Msg("This is a Story about the future", "Paris", "drawable://" + R.drawable.paris);
+        Msg Card1 = new Msg("John","This is a Story about the future", "Paris", "drawable://" + R.drawable.paris,"c23d025ee9ece593abd96d7b97db97b4");
         Cards.add(0, Card1);
         fetchDataSuccess = true;
         isCardEmpty = false;
@@ -234,11 +235,22 @@ public class RecentFragment extends Fragment implements SwipeRefreshLayout.OnRef
     private void fetchDataNew() {
         //fetchData success part
         //Msg Card1 = new Msg("This is a Story about the future", "Paris", "drawable://" + R.drawable.paris);
-        List<Resource> resource = RestUtil.getForObject(url.url+"/resources/latest", List.class);
-        int res_id = 20;
-        System.out.println(res_id);
-        Msg Card1 = new Msg(url.url+"/resources/"+res_id+"/words", "New", url.url+"/resources/"+res_id+"/image");
-        Cards.add(0, Card1);
+        PersonalResource resources;
+        resources = RestUtil.getForObject(url.url+"/resources", PersonalResource.class);
+
+        Memory memory;
+        Msg card;
+        String imageId;
+
+        for(int i=0;i<resources.size();++i){
+            memory=RestUtil.getForObject(url.url+"/resources/"+resources.get(i).getMemory_id()+"/words",Memory.class);
+            imageId=url.url+"/resources/"+resources.get(i).getImage_id()+"/image";
+            System.out.println(imageId);
+            card=new Msg(resources.get(i).getName(),memory.getContent(),Integer.toString(memory.getTimestamp()),imageId,"c23d025ee9ece593abd96d7b97db97b4");
+            Cards.add(0, card);
+        }
+
+
 
 
         //Notify the data has been updated
@@ -313,7 +325,7 @@ public class RecentFragment extends Fragment implements SwipeRefreshLayout.OnRef
                     if (!isCardEmpty) {
                         // bottom
                         freushFlag = false;
-                        Msg msg3 = new Msg("This is a Story about the future", "GreatWall", "drawable://" + R.drawable.greatwall);
+                        Msg msg3 = new Msg("Tomas","This is a Story about the future", "GreatWall", "drawable://" + R.drawable.greatwall,"c23d025ee9ece593abd96d7b97db97b4");
                         Cards.add(msg3);
                         swipeRefreshLayout.setRefreshing(false);
                         msgRecycleAdapter.notifyDataSetChanged();
@@ -338,5 +350,6 @@ public class RecentFragment extends Fragment implements SwipeRefreshLayout.OnRef
             mHandler.sendMessageDelayed(msg,100);
         }
     }
+
 }
 

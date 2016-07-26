@@ -4,24 +4,40 @@ package com.sjtu.bwphoto.memory.Class;
  * Created by Administrator on 2016/7/4.
  */
 public class Msg {
+
+    private String posterAccount;
+
     private String content;
 
-    private String map_position;
+    private String tag;
 
     private String imageUrl;
 
-    public Msg(String content,String map_position,String imageUrl){
+    private String musicHash;
+
+
+    public Msg(String posterAccount,String content,String tag,String imageUrl,String musicHash){
+        this.posterAccount=posterAccount;
         this.content=content;
-        this.map_position=map_position;
+        this.tag=tag;
         this.imageUrl=imageUrl;
+        this.musicHash=musicHash;
+    }
+
+    public String getPosterAccount() {
+        return posterAccount;
+    }
+
+    public String getMusicHash() {
+        return musicHash;
     }
 
     public String getContent(){
         return content;
     }
 
-    public String getMap_position(){
-        return map_position;
+    public String getTag(){
+        return tag;
     }
 
     public String getImageUrl(){return imageUrl;}

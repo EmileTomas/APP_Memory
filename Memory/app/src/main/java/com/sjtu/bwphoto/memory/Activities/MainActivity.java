@@ -1,48 +1,28 @@
 package com.sjtu.bwphoto.memory.Activities;
 
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Bitmap;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.Calendar;
 
-import android.graphics.BitmapFactory;
-import android.graphics.BitmapRegionDecoder;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.renderscript.RenderScript;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.TableLayout;
 import android.widget.Toast;
 
-import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-import com.sjtu.bwphoto.memory.Class.AuthImageDownloader;
-import com.sjtu.bwphoto.memory.Class.Resource;
+import com.sjtu.bwphoto.memory.Class.Resource.Resource;
 import com.sjtu.bwphoto.memory.Class.RestUtil;
 import com.sjtu.bwphoto.memory.Class.ServerUrl;
-import com.sjtu.bwphoto.memory.Class.User;
-import com.sjtu.bwphoto.memory.Class.Util.FloatingActionButton;
 import com.sjtu.bwphoto.memory.Class.Util.FloatingActionsMenu;
 import com.sjtu.bwphoto.memory.Class.Util.TabsPagerAdapter;
 import com.sjtu.bwphoto.memory.Fragement.PersonalFragment;
@@ -50,14 +30,7 @@ import com.sjtu.bwphoto.memory.Fragement.RecentFragment;
 import com.sjtu.bwphoto.memory.Fragement.RecommendFragment;
 import com.sjtu.bwphoto.memory.R;
 
-import org.springframework.core.io.FileSystemResource;
-import org.springframework.core.io.InputStreamResource;
-import org.springframework.web.client.RestTemplate;
-
 import java.io.File;
-import java.io.FileOutputStream;
-import java.net.URI;
-import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;

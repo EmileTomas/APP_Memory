@@ -10,7 +10,7 @@ import android.widget.Toast;
  */
 
 public class DatabaseHelper extends SQLiteOpenHelper {
-    public static final String CREATE_USER_DETAIL="create table UserDetail("
+    public static final String CREATE_USER_DETAIL = "create table UserDetail("
             + "id integer primary key autoincrement,"
             + "account text,"
             + "nickname text，"
@@ -18,35 +18,40 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + "age integer,"
             + "birthday text)";
 
-    public static final  String CREATE_VIEW_STORE_PAGE1= "create table Page1("
-        + "id integer primary key autoincrement,"
-                + "account text,"
-                + "rankNum integer,"
-                + "location text,"
-                +  "memoryText text,"
-                +  "imageURL text)";
+    public static final String CREATE_VIEW_STORE_PAGE1 = "create table RecentPage("
+            + "id integer primary key autoincrement,"
+            + "account text,"
+            + "posterAccount text,"
+            + "rankNum integer,"
+            + "tag text,"
+            + "imageURL text,"
+            + "memoryText text,"
+            + "musicHash text)";
 
-    public static final  String CREATE_VIEW_STORE_PAGE2= "create table Page2("
+    public static final String CREATE_VIEW_STORE_PAGE2 = "create table RecommendPage("
+            + "id integer primary key autoincrement,"
+            + "account text,"
+            + "posterAccount text,"
+            + "rankNum integer,"
+            + "tag text,"
+            + "memoryText text,"
+            + "imageURL text,"
+            + "musicHash text)";
+
+    public static final String CREATE_VIEW_STORE_PAGE3 = "create table PersonalPage("
             + "id integer primary key autoincrement,"
             + "account text,"
             + "rankNum integer,"
-            + "location text,"
-            +  "memoryText text,"
-            +  "imageURL text)";
-
-    public static final  String CREATE_VIEW_STORE_PAGE3= "create table Page3("
-            + "id integer primary key autoincrement,"
-            + "account text,"
-            + "rankNum integer,"
-            + "location text,"
-            +  "memoryText text,"
-            +  "imageURL text)";
+            + "tag text,"
+            + "memoryText text,"
+            + "imageURL text,"
+            + "musicHash text)";
 
     private Context mcontext;
 
-    public DatabaseHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version){
-        super(context,name,factory,version);
-        mcontext=context;
+    public DatabaseHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
+        super(context, name, factory, version);
+        mcontext = context;
     }
 
     @Override

@@ -1,4 +1,4 @@
-package com.sjtu.bwphoto.memory.Class;
+package com.sjtu.bwphoto.memory.Class.Resource;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonInclude;

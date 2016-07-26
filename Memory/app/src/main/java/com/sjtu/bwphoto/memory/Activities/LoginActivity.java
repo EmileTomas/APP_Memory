@@ -3,6 +3,7 @@ package com.sjtu.bwphoto.memory.Activities;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
@@ -34,6 +35,9 @@ public class LoginActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_login);
@@ -94,7 +98,7 @@ public class LoginActivity extends Activity {
             //处理服务器返回结果
             if (result.contains("success")) {
                 Toast.makeText(this, getString(R.string.login_sucess), Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(LoginActivity.this, CropperActivity.class);
+                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                 Bundle bundle = new Bundle();
                 bundle.putString("userName",userName);
                 intent.putExtras(bundle);

@@ -65,7 +65,7 @@ public class MsgRecycleAdapter extends RecyclerView.Adapter<MsgRecycleAdapter.Ca
                 .bitmapConfig(Bitmap.Config.RGB_565)
                 .build();
         ImageLoader.getInstance().displayImage(msg.getImageUrl(), holder.imageView, options);
-        holder.textView.setText(msg.getMap_position());
+        holder.textView.setText(msg.getTag());
         holder.content.setText(msg.getContent());
 
         BlurLayout.setGlobalDefaultDuration(1);
@@ -76,11 +76,11 @@ public class MsgRecycleAdapter extends RecyclerView.Adapter<MsgRecycleAdapter.Ca
         if (!holder.set_flag) {
             holder.set_flag = true;
             mSampleLayout.setHoverView(hover);
-            mSampleLayout.addChildAppearAnimator(hover, R.id.cat, Techniques.SlideInRight);
-            mSampleLayout.addChildAppearAnimator(hover, R.id.mail, Techniques.SlideInRight);
+            mSampleLayout.addChildAppearAnimator(hover, R.id.comment, Techniques.SlideInRight);
+            mSampleLayout.addChildAppearAnimator(hover, R.id.add_friend, Techniques.SlideInRight);
 
-            mSampleLayout.addChildDisappearAnimator(hover, R.id.cat, Techniques.SlideOutRight);
-            mSampleLayout.addChildDisappearAnimator(hover, R.id.mail, Techniques.SlideOutRight);
+            mSampleLayout.addChildDisappearAnimator(hover, R.id.comment, Techniques.SlideOutRight);
+            mSampleLayout.addChildDisappearAnimator(hover, R.id.add_friend, Techniques.SlideOutRight);
 
             mSampleLayout.addChildAppearAnimator(hover, R.id.content, Techniques.BounceIn);
             mSampleLayout.addChildDisappearAnimator(hover, R.id.content, Techniques.FadeOutUp);
@@ -90,7 +90,7 @@ public class MsgRecycleAdapter extends RecyclerView.Adapter<MsgRecycleAdapter.Ca
     @Override
     public CardViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = inflater.inflate(R.layout.card_item, null);
-        View hover = inflater.inflate(R.layout.hover_sample4, null);
+        View hover = inflater.inflate(R.layout.card_hover, null);
         CardViewHolder holder = new CardViewHolder(view, hover);
         return holder;
     }
