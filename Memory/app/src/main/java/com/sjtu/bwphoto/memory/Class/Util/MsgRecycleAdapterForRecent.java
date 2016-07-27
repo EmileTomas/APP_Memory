@@ -94,16 +94,18 @@ public class MsgRecycleAdapterForRecent extends RecyclerView.Adapter<MsgRecycleA
         if (!holder.set_flag) {
             holder.set_flag = true;
             mSampleLayout.setHoverView(hover);
-            mSampleLayout.addChildAppearAnimator(hover, R.id.comment, Techniques.SlideInRight);
-            mSampleLayout.addChildAppearAnimator(hover, R.id.add_friend, Techniques.SlideInRight);
-            mSampleLayout.addChildAppearAnimator(hover, R.id.music, Techniques.SlideInRight);
-            mSampleLayout.addChildAppearAnimator(hover, R.id.recorder, Techniques.SlideInRight);
+            mSampleLayout.addChildAppearAnimator(hover, R.id.comment, Techniques.FadeIn);
+            mSampleLayout.addChildAppearAnimator(hover, R.id.add_friend, Techniques.FadeIn);
+            mSampleLayout.addChildAppearAnimator(hover, R.id.music, Techniques.FadeIn);
+            mSampleLayout.addChildAppearAnimator(hover, R.id.recorder, Techniques.FadeIn);
+            mSampleLayout.addChildAppearAnimator(hover, R.id.detail, Techniques.FadeIn);
 
 
-            mSampleLayout.addChildDisappearAnimator(hover, R.id.comment, Techniques.SlideOutRight);
-            mSampleLayout.addChildDisappearAnimator(hover, R.id.add_friend, Techniques.SlideOutRight);
-            mSampleLayout.addChildDisappearAnimator(hover, R.id.music, Techniques.SlideOutRight);
-            mSampleLayout.addChildDisappearAnimator(hover, R.id.recorder, Techniques.SlideOutRight);
+            mSampleLayout.addChildDisappearAnimator(hover, R.id.comment, Techniques.FadeOut);
+            mSampleLayout.addChildDisappearAnimator(hover, R.id.add_friend, Techniques.FadeOut);
+            mSampleLayout.addChildDisappearAnimator(hover, R.id.music, Techniques.FadeOut);
+            mSampleLayout.addChildDisappearAnimator(hover, R.id.recorder, Techniques.FadeOut);
+            mSampleLayout.addChildDisappearAnimator(hover, R.id.detail, Techniques.FadeOut);
 
             mSampleLayout.addChildAppearAnimator(hover, R.id.content, Techniques.BounceIn);
             mSampleLayout.addChildDisappearAnimator(hover, R.id.content, Techniques.FadeOutUp);

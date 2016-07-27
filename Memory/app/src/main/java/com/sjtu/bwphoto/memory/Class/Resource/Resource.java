@@ -1,6 +1,7 @@
 package com.sjtu.bwphoto.memory.Class.Resource;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -10,6 +11,7 @@ import java.sql.Timestamp;
  * Created by ly on 7/21/2016.
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)  //如果null就不生成
+
 public class Resource {
     @JsonProperty
     private int id;

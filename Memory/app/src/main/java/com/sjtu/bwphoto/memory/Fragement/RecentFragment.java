@@ -243,9 +243,11 @@ public class RecentFragment extends Fragment implements SwipeRefreshLayout.OnRef
         String imageId;
 
         for(int i=0;i<resources.size();++i){
-            memory=RestUtil.getForObject(url.url+"/resources/"+resources.get(i).getMemory_id()+"/words",Memory.class);
-            imageId=url.url+"/resources/"+resources.get(i).getImage_id()+"/image";
+            memory=RestUtil.getForObject(url.url+"/resources/"+resources.get(i).getId()+"/words",Memory.class);
+            System.out.println(url.url+"/resources/"+resources.get(i).getMemory_id()+"/words");
+            imageId=url.url+"/resources/"+resources.get(i).getId()+"/image";
             System.out.println(imageId);
+            System.out.println("");
             card=new Msg(resources.get(i).getName(),memory.getContent(),Integer.toString(memory.getTimestamp()),imageId,"c23d025ee9ece593abd96d7b97db97b4");
             Cards.add(0, card);
         }
