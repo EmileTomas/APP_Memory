@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -43,6 +44,7 @@ public class MsgRecycleAdapterForRecent extends RecyclerView.Adapter<MsgRecycleA
     private LayoutInflater inflater;
     private View rootView;
     private final int GONE = 1;
+    private final int VISIBLE = 2;
 
     public MsgRecycleAdapterForRecent(RecentFragment mContext, List<Msg> Cards, View rootView) {
         this.mContext = mContext;
@@ -106,21 +108,40 @@ public class MsgRecycleAdapterForRecent extends RecyclerView.Adapter<MsgRecycleA
             mSampleLayout.addChildAppearAnimator(hover, R.id.content, Techniques.BounceIn);
             mSampleLayout.addChildDisappearAnimator(hover, R.id.content, Techniques.FadeOutUp);
 
+
+            //Comment
             final InputMethodManager imm;
-            final EditText editText = (EditText) rootView.findViewById(R.id.commentBox);
-            final LinearLayout linearLayout = (LinearLayout) rootView.findViewById(R.id.commentView);
-            final FloatingActionButton FAB = (FloatingActionButton) rootView.findViewById(R.id.menuFAB);
-            imm = (InputMethodManager) editText.getContext().getSystemService(Service.INPUT_METHOD_SERVICE);
+            final EditText commentBox = (EditText) rootView.findViewById(R.id.commentBox);
+            final LinearLayout commentView = (LinearLayout) rootView.findViewById(R.id.commentView);
+            final Button commentSendButton=(Button)rootView.findViewById(R.id.sendButton);
+            imm = (InputMethodManager) commentBox.getContext().getSystemService(Service.INPUT_METHOD_SERVICE);
+            //Comment Button
             hover.findViewById(R.id.comment).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    linearLayout.setVisibility(View.VISIBLE);
-                    editText.requestFocus();
+                    commentView.setVisibility(View.VISIBLE);
+                    commentBox.requestFocus();
                     mContext.setFABState(GONE);
-                    imm.showSoftInput(editText, 0);
+                    imm.showSoftInput(commentBox, 0);
+                }
+            });
+            //Send Button
+            commentSendButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    String text=commentBox.getText().toString();
+                    commentBox.setText("");
+                    commentView.setVisibility(View.GONE);
+                    imm.hideSoftInputFromWindow(commentBox.getWindowToken(), 0);
+                    mContext.setFABState(VISIBLE);
+                    //Send Message here
+
                 }
             });
 
+
+
+            //Music Button
             hover.findViewById(R.id.music).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -178,6 +199,7 @@ public class MsgRecycleAdapterForRecent extends RecyclerView.Adapter<MsgRecycleA
         }
     }
 
+    //request for JSON feedback of Music
     public static String request(String httpUrl, String httpArg) {
         BufferedReader reader = null;
         String result = null;
