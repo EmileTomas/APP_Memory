@@ -33,16 +33,26 @@
             android:name=".Activities.MainActivity"
             android:configChanges="orientation|keyboardHidden"
             android:launchMode="singleInstance"
+<<<<<<< Updated upstream
             android:windowSoftInputMode="adjustResize" />
+=======
+            android:windowSoftInputMode="adjustResize|stateHidden" />
+>>>>>>> Stashed changes
         <activity android:name=".Activities.LoginActivity" />
         <activity android:name=".Activities.RegisterActivity" />
         <activity android:name=".Activities.FirstActivity" />
         <activity android:name=".Activities.AddMemoryActivity" />
+<<<<<<< Updated upstream
         <activity android:name=".Activities.CropperActivity" />
         <!--
  ATTENTION: This was auto-generated to add Google Play services to your project for
      App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information.
         -->
+=======
+        <activity android:name=".Activities.CropperActivity"></activity>
+        <!-- ATTENTION: This was auto-generated to add Google Play services to your project for
+     App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information. -->
+>>>>>>> Stashed changes
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />

@@ -25,42 +25,6 @@
         </android.support.v4.widget.SwipeRefreshLayout>
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/commentView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:visibility="gone">
 
-        <ImageView
-            android:id="@+id/outside"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1" />
-
-        <LinearLayout
-            android:id="@+id/commentBar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/white"
-            android:orientation="horizontal">
-
-            <EditText
-                android:id="@+id/commentBox"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:maxLines="2"
-                />
-
-            <Button
-                android:id="@+id/sendButton"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="10dp"
-                android:background="@color/white"
-                android:text="Send" />
-        </LinearLayout>
-    </LinearLayout>
 
 </FrameLayout>

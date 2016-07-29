@@ -33,7 +33,7 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_marginBottom="4dp"
-        android:gravity="left">
+        >
 
         <ImageView
             android:id="@+id/music"
@@ -48,17 +48,20 @@
             android:layout_height="25dp"
             android:layout_marginLeft="15dp"
             android:src="@drawable/recoder" />
-    </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginBottom="4dp"
-        android:gravity="right">
-
-
+        <com.sjtu.bwphoto.memory.Class.MarqueeTextView
+            android:id="@+id/song_title"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:maxLines="1"
+            android:ellipsize="marquee"
+            android:gravity="center"
+            android:layout_height="match_parent"
+            android:marqueeRepeatLimit="marquee_forever"
+            android:textColor="@android:color/white"
+            />
         <ImageView
             android:id="@+id/comment"
             android:layout_width="25dp"

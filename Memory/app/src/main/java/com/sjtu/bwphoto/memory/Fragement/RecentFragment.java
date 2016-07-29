@@ -32,6 +32,7 @@ import com.sjtu.bwphoto.memory.Class.Resource.ResourceList;
 import com.sjtu.bwphoto.memory.Class.RestUtil;
 import com.sjtu.bwphoto.memory.Class.ServerUrl;
 import com.sjtu.bwphoto.memory.Class.Util.FloatingActionButton;
+import com.sjtu.bwphoto.memory.Class.Util.FloatingActionsMenu;
 import com.sjtu.bwphoto.memory.Class.Util.MsgRecycleAdapterForRecent;
 import com.sjtu.bwphoto.memory.R;
 
@@ -61,9 +62,13 @@ public class RecentFragment extends Fragment implements SwipeRefreshLayout.OnRef
     private final int SET_FAB=3;
     private final int GONE = 1;
     private final int VISIBLE = 2;
+    private final int RecentPage = 0;
+    private final int PersonalPage = 1;
+    private final int RecommendPage = 2;
     private final static ServerUrl url = new ServerUrl();;
 
     private View rootView;
+    private View mainActivityrootVeiw;
     private RecyclerView recyclerView;
     private MsgRecycleAdapterForRecent msgRecycleAdapter;
     private SwipeRefreshLayout swipeRefreshLayout;
@@ -72,7 +77,7 @@ public class RecentFragment extends Fragment implements SwipeRefreshLayout.OnRef
     private ImageView outside;
     private EditText commentTextEdit;
     private Button commentSendButton;
-    private FloatingActionButton FAB;
+    private FloatingActionsMenu FAB;
     private InputMethodManager imm;
     private MainActivity mainActivity;
 
@@ -89,6 +94,8 @@ public class RecentFragment extends Fragment implements SwipeRefreshLayout.OnRef
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_recent, container, false);
+        mainActivity = (MainActivity) getActivity();
+        mainActivityrootVeiw=mainActivity.getMainActivityRootView();
         BlurLayout.setGlobalDefaultDuration(800);
 
         databaseHelper = new DatabaseHelper(getContext(), "AppDatabase.db", null, 1);
@@ -107,7 +114,6 @@ public class RecentFragment extends Fragment implements SwipeRefreshLayout.OnRef
                         .getDisplayMetrics()));
 
         //restore data from last time and refresh data
-        mainActivity = (MainActivity) getActivity();
         userAccount = getUserAccount();
         new RestoreDataThread().start();
         return rootView;
@@ -218,14 +224,14 @@ public class RecentFragment extends Fragment implements SwipeRefreshLayout.OnRef
             Memory memory;
             Msg card;
             String imageId;
-            Resource tempResource;
+
             for (int i = 0; i < resources.size(); ++i) {
-                tempResource = RestUtil.getForObject(url.url + "/resources/" + resources.get(i).getId(), Resource.class);
-                memory = RestUtil.getForObject(url.url + "/resources/" + tempResource.getId() + "/words", Memory.class);
-                imageId = url.url + "/resources/" + tempResource.getId() + "/image";
-                card = new Msg(tempResource.getName(), memory.getContent(), Integer.toString(memory.getTimestamp()), imageId, "c23d025ee9ece593abd96d7b97db97b4");
+                memory = RestUtil.getForObject(url.url + "/resources/" + resources.get(i).getId() + "/words", Memory.class);
+                imageId = url.url + "/resources/" + resources.get(i).getId() + "/image";
+
+                card = new Msg(resources.get(i).getName(), memory.getContent(), Integer.toString(memory.getTimestamp()), imageId, "c23d025ee9ece593abd96d7b97db97b4");
                 Cards.add(0, card);
-                System.out.println(url.url + "/resources/" + tempResource.getId() + "/words");
+                System.out.println(url.url + "/resources/" + resources.get(i).getId() + "/words");
                 System.out.println(imageId);
             }
 
@@ -253,7 +259,7 @@ public class RecentFragment extends Fragment implements SwipeRefreshLayout.OnRef
     //This function will be called only when Cards is not empty
     private void intialView() {
         final LinearLayoutManager layoutManager = new LinearLayoutManager(rootView.getContext());
-        msgRecycleAdapter = new MsgRecycleAdapterForRecent(mainActivity.getRecentFragment(), Cards, rootView);
+        msgRecycleAdapter = new MsgRecycleAdapterForRecent(Cards, rootView,mainActivityrootVeiw,RecentPage);
         recyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(layoutManager);
@@ -281,11 +287,11 @@ public class RecentFragment extends Fragment implements SwipeRefreshLayout.OnRef
         });
 
         //Here has some problem 可以通过创建新的View将之消费点击事件
-        commentLayout = (LinearLayout) rootView.findViewById(R.id.commentView);
-        commentTextEdit = (EditText) rootView.findViewById(R.id.commentBox);
-        outside = (ImageView) rootView.findViewById(R.id.outside);
-        commentSendButton = (Button) rootView.findViewById(R.id.sendButton);
-        FAB = (FloatingActionButton) rootView.findViewById(R.id.menuFAB);
+        commentLayout = (LinearLayout) mainActivityrootVeiw.findViewById(R.id.commentView);
+        commentTextEdit = (EditText) mainActivityrootVeiw.findViewById(R.id.commentBox);
+        outside = (ImageView) mainActivityrootVeiw.findViewById(R.id.outside);
+        commentSendButton = (Button) mainActivityrootVeiw.findViewById(R.id.sendButton);
+        FAB = (FloatingActionsMenu) mainActivityrootVeiw.findViewById(R.id.menuFAB);
         imm = (InputMethodManager) commentTextEdit.getContext().getSystemService(Service.INPUT_METHOD_SERVICE);
         outside.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -322,7 +328,7 @@ public class RecentFragment extends Fragment implements SwipeRefreshLayout.OnRef
                     }
                     break;
                 case SET_FAB:
-                    mainActivity.setFABState(VISIBLE);
+                   mainActivity.setFABState(VISIBLE);
             }
         }
 
@@ -332,14 +338,16 @@ public class RecentFragment extends Fragment implements SwipeRefreshLayout.OnRef
         return mainActivity.getUserAccount();
     }
 
+
     public void setFABState(int state) {
         if (state==GONE) mainActivity.setFABState(state);
         else if(state==VISIBLE) {
             Message msg = new Message();
             msg.what = SET_FAB;
-            mHandler.sendMessageDelayed(msg,100);
+            mHandler.sendMessageDelayed(msg, 250);
         }
     }
+
 
 }
 

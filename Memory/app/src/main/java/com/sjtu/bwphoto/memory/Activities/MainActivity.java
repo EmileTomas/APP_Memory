@@ -1,5 +1,6 @@
 package com.sjtu.bwphoto.memory.Activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 
@@ -48,6 +49,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private static final int Music_REQUEST_CODE = 4;
     public static final int MEDIA_TYPE_IMAGE = 1;
     public static final int MEDIA_TYPE_VIDEO = 2;
+    public static  Context mainActivityContext;
 
     private String user_name;  // user name
     private Resource resource;  // resource
@@ -81,6 +83,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mainActivityContext=this;
 
         //Receive Data from last activity
         Bundle bundle = this.getIntent().getExtras();
@@ -369,6 +372,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     //used by MsgRecyleAdapter and fragments
+    public View getMainActivityRootView(){
+        return findViewById(R.id.drawer_layout);
+    }
+
     public void setFABState(int state) {
         if (state == 1)
             menuMultipleActions.setVisibility(View.GONE);
