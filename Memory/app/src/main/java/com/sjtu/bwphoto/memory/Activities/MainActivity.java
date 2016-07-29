@@ -9,12 +9,16 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.text.format.DateFormat;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
@@ -36,12 +40,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private static final String IMAGE_UNSPECIFIED = "image/*";
-    static final int CAMERA_REQUEST_CODE = 1;
-    static final int ALBUM_REQUEST_CODE = 2;
-    static final int Scan_REQUEST_CODE = 3;
-    static final int Music_REQUEST_CODE = 4;
+    private static final int CAMERA_REQUEST_CODE = 1;
+    private static final int ALBUM_REQUEST_CODE = 2;
+    private static final int Scan_REQUEST_CODE = 3;
+    private static final int Music_REQUEST_CODE = 4;
     public static final int MEDIA_TYPE_IMAGE = 1;
     public static final int MEDIA_TYPE_VIDEO = 2;
 
@@ -65,7 +69,8 @@ public class MainActivity extends AppCompatActivity {
     private ViewPager viewPager;
     private TabsPagerAdapter tabsPagerAdapter;
     private FloatingActionsMenu menuMultipleActions;
-
+    private NavigationView navigationView;
+    private DrawerLayout drawerLayout;
     /*
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -125,6 +130,14 @@ public class MainActivity extends AppCompatActivity {
         //TabLayout加载viewpager
         tabLayout.setupWithViewPager(viewPager, true);
 
+        //Set Nav_View
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawerLayout.setScrimColor(getResources().getColor(android.R.color.transparent));
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+
+
+
         // Click camera button
         findViewById(R.id.cameraFAB).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -160,24 +173,27 @@ public class MainActivity extends AppCompatActivity {
                 getMusic();
             }
         });
+
+
     }
+
 
     /*
      * Take picture()
      */
-    public void takePic(){
+    public void takePic() {
         //获取resource id
-        System.out.println(url.url+"/resources");
-        resource = RestUtil.postForObject(url.url+"/resources",null, Resource.class);
+        System.out.println(url.url + "/resources");
+        resource = RestUtil.postForObject(url.url + "/resources", null, Resource.class);
         res_id = resource.getId();
-        System.out.println("MainActivity: Resource id get, "+res_id);
+        System.out.println("MainActivity: Resource id get, " + res_id);
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
             //生成文件名
             new DateFormat();
             String name = DateFormat.format("yyyyMMdd_hhmmss", Calendar.getInstance(Locale.CHINA)) + ".jpg";
-            System.out.println("Image name formed: "+name);
+            System.out.println("Image name formed: " + name);
 
             //------------------------通用位置---------------------failed
             //通过sd卡根目录存储访问，需传送imageUri，res_id，user_name到下一个activity
@@ -207,7 +223,7 @@ public class MainActivity extends AppCompatActivity {
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(new File(fileName)));
                 takePictureIntent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
                 startActivityForResult(takePictureIntent, CAMERA_REQUEST_CODE);
-            }else{
+            } else {
                 Toast.makeText(MainActivity.this, "没有SD卡", Toast.LENGTH_LONG).show();
             }
             //---------------------------------------------------------------
@@ -217,7 +233,7 @@ public class MainActivity extends AppCompatActivity {
     /*
      * Choose photo from album
      */
-    public void getPic(){
+    public void getPic() {
         Intent albumIntent = new Intent(Intent.ACTION_PICK, null);
         albumIntent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
         startActivityForResult(albumIntent, ALBUM_REQUEST_CODE);
@@ -226,14 +242,14 @@ public class MainActivity extends AppCompatActivity {
     /*
      * Scan bar code
      */
-    public void scan(){
+    public void scan() {
 
     }
 
     /*
      * Get music
      */
-    public void getMusic(){
+    public void getMusic() {
 
     }
 
@@ -271,9 +287,9 @@ public class MainActivity extends AppCompatActivity {
                     int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
                     cursor.moveToFirst();
                     String path = cursor.getString(column_index);
-                    System.out.println("main acti path:"+path);
-                    bundle.putString("fileName",path);
-                    bundle.putString("userName",user_name);
+                    System.out.println("main acti path:" + path);
+                    bundle.putString("fileName", path);
+                    bundle.putString("userName", user_name);
                     intent.putExtras(bundle);
                     startActivity(intent);
                     MainActivity.this.finish();
@@ -347,7 +363,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //used by MsgRecyleAdapter and fragments
-    public void setFABState(int state){
+    public void setFABState(int state) {
         if (state == 1)
             menuMultipleActions.setVisibility(View.GONE);
         else if (state == 2)
@@ -360,7 +376,18 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //used by database
-    public RecentFragment getRecentFragment(){
+    public RecentFragment getRecentFragment() {
         return recentFragment;
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        // Handle navigation view item clicks here.
+        int id = item.getItemId();
+
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
     }
 }

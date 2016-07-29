@@ -99,13 +99,14 @@ public class MsgRecycleAdapterForRecent extends RecyclerView.Adapter<MsgRecycleA
             mSampleLayout.addChildAppearAnimator(hover, R.id.music, Techniques.FadeIn);
             mSampleLayout.addChildAppearAnimator(hover, R.id.recorder, Techniques.FadeIn);
             mSampleLayout.addChildAppearAnimator(hover, R.id.detail, Techniques.FadeIn);
-
+            mSampleLayout.addChildAppearAnimator(hover, R.id.hover_view, Techniques.FadeIn);
 
             mSampleLayout.addChildDisappearAnimator(hover, R.id.comment, Techniques.FadeOut);
             mSampleLayout.addChildDisappearAnimator(hover, R.id.add_friend, Techniques.FadeOut);
             mSampleLayout.addChildDisappearAnimator(hover, R.id.music, Techniques.FadeOut);
             mSampleLayout.addChildDisappearAnimator(hover, R.id.recorder, Techniques.FadeOut);
             mSampleLayout.addChildDisappearAnimator(hover, R.id.detail, Techniques.FadeOut);
+            mSampleLayout.addChildDisappearAnimator(hover, R.id.hover_view, Techniques.FadeOut);
 
             mSampleLayout.addChildAppearAnimator(hover, R.id.content, Techniques.BounceIn);
             mSampleLayout.addChildDisappearAnimator(hover, R.id.content, Techniques.FadeOutUp);

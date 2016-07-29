@@ -20,13 +20,15 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.sjtu.bwphoto.memory.Activities.MainActivity;
 import com.sjtu.bwphoto.memory.Class.Datebase.DatabaseHelper;
 import com.sjtu.bwphoto.memory.Class.Datebase.DatabaseManager;
 import com.sjtu.bwphoto.memory.Class.Msg;
 import com.sjtu.bwphoto.memory.Class.Resource.Memory;
-import com.sjtu.bwphoto.memory.Class.Resource.PersonalResource;
+import com.sjtu.bwphoto.memory.Class.Resource.Resource;
+import com.sjtu.bwphoto.memory.Class.Resource.ResourceList;
 import com.sjtu.bwphoto.memory.Class.RestUtil;
 import com.sjtu.bwphoto.memory.Class.ServerUrl;
 import com.sjtu.bwphoto.memory.Class.Util.FloatingActionButton;
@@ -114,8 +116,10 @@ public class RecentFragment extends Fragment implements SwipeRefreshLayout.OnRef
     @Override
     public void onRefresh() {
         if (!freushFlag) {
+            freushFlag = true;
             swipeRefreshLayout.setRefreshing(true);
             new RefreshDataThread().start();
+
         }
     }
 
@@ -138,13 +142,10 @@ public class RecentFragment extends Fragment implements SwipeRefreshLayout.OnRef
                 msg.what = INITIAL_VIEW;
                 mHandler.sendMessage(msg);
             }
-            try {
-                Thread.currentThread().sleep(2000);//阻断2秒 模仿访问服务器
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+
             //FreshData from server
-            fetchDataFirstTime();
+            freushFlag = true;
+            fetchDataNew();
         }
     }
 
@@ -152,7 +153,8 @@ public class RecentFragment extends Fragment implements SwipeRefreshLayout.OnRef
         @Override
         public void run() {
             super.run();
-            if (!fetchDataSuccess) fetchDataFirstTime();  //if fetch data failure last time, freshData from server
+            if (!fetchDataSuccess)
+                fetchDataNew();  //if fetch data failure last time, freshData from server
             else fetchDataNew();                         //else fetch data new from sever
         }
     }
@@ -202,64 +204,50 @@ public class RecentFragment extends Fragment implements SwipeRefreshLayout.OnRef
         DatabaseManager.getInstance().closeDatabase();
     }
 
-    private void fetchDataFirstTime() {
-        //if(ConnectServer) return false; //conenct Severfaiure
-        //else:
-        //  Clear Cards
-        //  Receive data and store it to Cards
-        //  return true;
-        Cards.clear();
-        Msg Card4 = new Msg("Emile","This is a Story about the future", "Tokyo", "http://www.arrivalguides.com/s3/ag-images-eu/16/d8465238ff0e0298991405b8597d8da6.jpg","c23d025ee9ece593abd96d7b97db97b4");
-        Cards.add(0, Card4);
-        Msg Card3 = new Msg("Tomas","This is a Story about the future", "GreatWall", "http://static.asiawebdirect.com/m/phuket/portals/www-singapore-com/homepage/attractions/all-attractions/pagePropertiesImage/singapore1.jpg","c23d025ee9ece593abd96d7b97db97b4");
-        Cards.add(0, Card3);
-        Msg Card2 = new Msg("Alice","一个人的旅行，一个人的远方。在悉尼这座城市，享受恬静的海风，任时间流过。", "Sydeney", "drawable://" + R.drawable.sydeney,"c23d025ee9ece593abd96d7b97db97b4");
-        Cards.add(0, Card2);
-        Msg Card1 = new Msg("John","This is a Story about the future", "Paris", "drawable://" + R.drawable.paris,"c23d025ee9ece593abd96d7b97db97b4");
-        Cards.add(0, Card1);
-        fetchDataSuccess = true;
-        isCardEmpty = false;
 
-        if (!initializeViewSuccess) {
-            initializeViewSuccess = true;
-            Message msg = new Message();
-            msg.what = INITIAL_VIEW;
-            mHandler.sendMessage(msg);
-        } else {
-            Message msg = new Message();
-            msg.what = NOTIFY_CARDS_CHANGE;
-            mHandler.sendMessage(msg);
-        }
-    }
 
     private void fetchDataNew() {
         //fetchData success part
         //Msg Card1 = new Msg("This is a Story about the future", "Paris", "drawable://" + R.drawable.paris);
-        PersonalResource resources;
-        resources = RestUtil.getForObject(url.url+"/resources", PersonalResource.class);
+        Cards.clear();
 
-        Memory memory;
-        Msg card;
-        String imageId;
+        ResourceList resources;
+        resources = RestUtil.getForObject(url.url + "/resources/latest", ResourceList.class);
 
-        for(int i=0;i<resources.size();++i){
-            memory=RestUtil.getForObject(url.url+"/resources/"+resources.get(i).getId()+"/words",Memory.class);
-            System.out.println(url.url+"/resources/"+resources.get(i).getMemory_id()+"/words");
-            imageId=url.url+"/resources/"+resources.get(i).getId()+"/image";
-            System.out.println(imageId);
-            System.out.println("");
-            card=new Msg(resources.get(i).getName(),memory.getContent(),Integer.toString(memory.getTimestamp()),imageId,"c23d025ee9ece593abd96d7b97db97b4");
-            Cards.add(0, card);
+        if (resources != null) {
+            Memory memory;
+            Msg card;
+            String imageId;
+            Resource tempResource;
+            for (int i = 0; i < resources.size(); ++i) {
+                tempResource = RestUtil.getForObject(url.url + "/resources/" + resources.get(i).getId(), Resource.class);
+                memory = RestUtil.getForObject(url.url + "/resources/" + tempResource.getId() + "/words", Memory.class);
+                imageId = url.url + "/resources/" + tempResource.getId() + "/image";
+                card = new Msg(tempResource.getName(), memory.getContent(), Integer.toString(memory.getTimestamp()), imageId, "c23d025ee9ece593abd96d7b97db97b4");
+                Cards.add(0, card);
+                System.out.println(url.url + "/resources/" + tempResource.getId() + "/words");
+                System.out.println(imageId);
+            }
+
+            freushFlag = false;
+            fetchDataSuccess = true;
+            isCardEmpty = false;
+
+            if (!initializeViewSuccess) {
+                initializeViewSuccess = true;
+                Message msg = new Message();
+                msg.what = INITIAL_VIEW;
+                mHandler.sendMessage(msg);
+            } else {
+                Message msg = new Message();
+                msg.what = NOTIFY_CARDS_CHANGE;
+                mHandler.sendMessage(msg);
+            }
+        } else {
+            freushFlag = false;
+            //Notify no new Data;
         }
 
-
-
-
-        //Notify the data has been updated
-        freushFlag = false;
-        Message msg = new Message();
-        msg.what = NOTIFY_CARDS_CHANGE;
-        mHandler.sendMessageDelayed(msg, 3000);
     }
 
     //This function will be called only when Cards is not empty

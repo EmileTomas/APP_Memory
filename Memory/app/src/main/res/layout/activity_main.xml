@@ -9,7 +9,6 @@
     tools:openDrawer="start">
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:custom="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -37,15 +36,6 @@
 
     </LinearLayout>
 
-    <!--侧边栏-->
-    <android.support.design.widget.NavigationView
-        android:id="@+id/nav_view"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_gravity="start"
-        android:fitsSystemWindows="true"
-        app:headerLayout="@layout/nav_header_main"
-        app:menu="@menu/activity_main_drawer" />
 
     <!--悬浮按钮-->
     <LinearLayout
@@ -103,5 +93,16 @@
         </com.sjtu.bwphoto.memory.Class.Util.FloatingActionsMenu>
 
     </LinearLayout>
+
+
+    <!--侧边栏-->
+    <android.support.design.widget.NavigationView
+        android:id="@+id/nav_view"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:fitsSystemWindows="true"
+        app:headerLayout="@layout/nav_header_main"
+        app:menu="@menu/activity_main_drawer" />
 
 </android.support.v4.widget.DrawerLayout>
