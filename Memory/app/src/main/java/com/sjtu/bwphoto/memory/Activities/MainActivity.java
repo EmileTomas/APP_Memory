@@ -234,6 +234,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
      * Choose photo from album
      */
     public void getPic() {
+        Toast.makeText(MainActivity.this,"Album Button clicked",Toast.LENGTH_LONG).show();
         Intent albumIntent = new Intent(Intent.ACTION_PICK, null);
         albumIntent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
         startActivityForResult(albumIntent, ALBUM_REQUEST_CODE);
@@ -243,14 +244,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
      * Scan bar code
      */
     public void scan() {
-
+        Toast.makeText(MainActivity.this,"Scan Button clicked",Toast.LENGTH_LONG).show();
     }
 
     /*
      * Get music
      */
     public void getMusic() {
-
+        Toast.makeText(MainActivity.this,"Music Button clicked",Toast.LENGTH_LONG).show();
+        Intent intent = new Intent(MainActivity.this,AddMemoryMusicActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString("userName", user_name);
+        intent.putExtras(bundle);
+        startActivity(intent);
     }
 
     /*

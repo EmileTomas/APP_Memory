@@ -12,7 +12,7 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/aliceblue"
+        android:background="@color/ivory"
         android:orientation="vertical"
         tools:context=".Activities.MainActivity">
 
@@ -25,12 +25,12 @@
                 android:id="@+id/tablayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="#09C7F7"
+                android:background="@color/cornflowerblue"
                 app:tabGravity="fill"
-                app:tabIndicatorColor="#60a8ef"
+                app:tabIndicatorColor="@color/powderblue"
                 app:tabMode="fixed"
-                app:tabSelectedTextColor="#000000"
-                app:tabTextColor="#FFFFFF" />
+                app:tabSelectedTextColor="#00FA9A"
+                app:tabTextColor="@color/ivory" />
 
         </android.support.v4.view.ViewPager>
 
@@ -51,7 +51,7 @@
             android:layout_gravity="right|bottom"
             app:fab_addButtonColorNormal="@color/white"
             app:fab_addButtonColorPressed="@color/white_pressed"
-            app:fab_addButtonPlusIconColor="@color/black"
+            app:fab_addButtonPlusIconColor="@color/cornflowerblue"
             app:fab_addButtonSize="mini">
 
             <com.sjtu.bwphoto.memory.Class.Util.FloatingActionButton
