@@ -1,5 +1,6 @@
 package com.sjtu.bwphoto.memory.Activities;
 
+import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -21,6 +22,10 @@ import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.google.android.gms.appindexing.AppIndex;
@@ -73,6 +78,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private FloatingActionsMenu menuMultipleActions;
     private NavigationView navigationView;
     private DrawerLayout drawerLayout;
+
+    //Comment View
+    private LinearLayout commentLayout;
+    private ImageView outside;
+    private EditText commentTextEdit;
+    private InputMethodManager imm;
     /*
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -139,7 +150,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        //set CommentView
+        //Here has some problem 可以通过创建新的View将之消费点击事件
+        commentLayout = (LinearLayout) findViewById(R.id.commentView);
+        commentTextEdit = (EditText) findViewById(R.id.commentBox);
+        outside = (ImageView) findViewById(R.id.outside);
+        imm = (InputMethodManager) commentTextEdit.getContext().getSystemService(Service.INPUT_METHOD_SERVICE);
+        outside.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                commentLayout.setVisibility(View.GONE);
+                setFABState(2);
+                imm.hideSoftInputFromWindow(commentTextEdit.getWindowToken(), 0);
 
+            }
+        });
 
         // Click camera button
         findViewById(R.id.cameraFAB).setOnClickListener(new View.OnClickListener() {
@@ -397,8 +422,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;

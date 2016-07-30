@@ -59,9 +59,7 @@ public class RecentFragment extends Fragment implements SwipeRefreshLayout.OnRef
     private final int INITIAL_VIEW = 0;
     private final int LOAD_MORE_DATA = 1;
     private final int NOTIFY_CARDS_CHANGE = 2;
-    private final int SET_FAB=3;
-    private final int GONE = 1;
-    private final int VISIBLE = 2;
+
     private final int RecentPage = 0;
     private final int PersonalPage = 1;
     private final int RecommendPage = 2;
@@ -73,12 +71,6 @@ public class RecentFragment extends Fragment implements SwipeRefreshLayout.OnRef
     private MsgRecycleAdapterForRecent msgRecycleAdapter;
     private SwipeRefreshLayout swipeRefreshLayout;
     private List<Msg> Cards;
-    private LinearLayout commentLayout;
-    private ImageView outside;
-    private EditText commentTextEdit;
-    private Button commentSendButton;
-    private FloatingActionsMenu FAB;
-    private InputMethodManager imm;
     private MainActivity mainActivity;
 
     private String userAccount;
@@ -101,7 +93,7 @@ public class RecentFragment extends Fragment implements SwipeRefreshLayout.OnRef
         databaseHelper = new DatabaseHelper(getContext(), "AppDatabase.db", null, 1);
         DatabaseManager.initializeInstance(databaseHelper);
 
-        swipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_Refresh);
+        swipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_Refresh_recent);
         swipeRefreshLayout.setColorSchemeResources(
                 R.color.GoogleBlue,
                 R.color.GoogleGreen,
@@ -159,9 +151,7 @@ public class RecentFragment extends Fragment implements SwipeRefreshLayout.OnRef
         @Override
         public void run() {
             super.run();
-            if (!fetchDataSuccess)
-                fetchDataNew();  //if fetch data failure last time, freshData from server
-            else fetchDataNew();                         //else fetch data new from sever
+            fetchDataNew();
         }
     }
 
@@ -260,7 +250,7 @@ public class RecentFragment extends Fragment implements SwipeRefreshLayout.OnRef
     private void intialView() {
         final LinearLayoutManager layoutManager = new LinearLayoutManager(rootView.getContext());
         msgRecycleAdapter = new MsgRecycleAdapterForRecent(Cards, rootView,mainActivityrootVeiw,RecentPage);
-        recyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
+        recyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view_recent);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(msgRecycleAdapter);
@@ -286,22 +276,7 @@ public class RecentFragment extends Fragment implements SwipeRefreshLayout.OnRef
             }
         });
 
-        //Here has some problem 可以通过创建新的View将之消费点击事件
-        commentLayout = (LinearLayout) mainActivityrootVeiw.findViewById(R.id.commentView);
-        commentTextEdit = (EditText) mainActivityrootVeiw.findViewById(R.id.commentBox);
-        outside = (ImageView) mainActivityrootVeiw.findViewById(R.id.outside);
-        commentSendButton = (Button) mainActivityrootVeiw.findViewById(R.id.sendButton);
-        FAB = (FloatingActionsMenu) mainActivityrootVeiw.findViewById(R.id.menuFAB);
-        imm = (InputMethodManager) commentTextEdit.getContext().getSystemService(Service.INPUT_METHOD_SERVICE);
-        outside.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                commentLayout.setVisibility(View.GONE);
-                setFABState(VISIBLE);
-                imm.hideSoftInputFromWindow(commentTextEdit.getWindowToken(), 0);
 
-            }
-        });
     }
 
     private android.os.Handler mHandler = new android.os.Handler() {
@@ -327,8 +302,6 @@ public class RecentFragment extends Fragment implements SwipeRefreshLayout.OnRef
                         msgRecycleAdapter.notifyDataSetChanged();
                     }
                     break;
-                case SET_FAB:
-                   mainActivity.setFABState(VISIBLE);
             }
         }
 
@@ -337,17 +310,6 @@ public class RecentFragment extends Fragment implements SwipeRefreshLayout.OnRef
     private String getUserAccount() {
         return mainActivity.getUserAccount();
     }
-
-
-    public void setFABState(int state) {
-        if (state==GONE) mainActivity.setFABState(state);
-        else if(state==VISIBLE) {
-            Message msg = new Message();
-            msg.what = SET_FAB;
-            mHandler.sendMessageDelayed(msg, 250);
-        }
-    }
-
 
 }
 

@@ -193,8 +193,10 @@ public class MsgRecycleAdapterForRecent extends RecyclerView.Adapter<MsgRecycleA
                         }).start();
                     }
                 });
+            } else {
+                ImageView add_friend = (ImageView) hover.findViewById(R.id.add_friend);
+                add_friend.setVisibility(View.GONE);
             }
-
             //setting the comment button
             final InputMethodManager imm;
             final EditText commentBox = (EditText) mainActivityView.findViewById(R.id.commentBox);
