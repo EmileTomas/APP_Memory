@@ -59,6 +59,7 @@ public class MsgRecycleAdapterForRecent extends RecyclerView.Adapter<MsgRecycleA
     private LayoutInflater inflater;
     private View mainActivityView;
     private int pageNumber;
+    Song song = new Song();
 
     private FloatingActionsMenu FAB;
 
@@ -119,13 +120,52 @@ public class MsgRecycleAdapterForRecent extends RecyclerView.Adapter<MsgRecycleA
             mSampleLayout.addChildAppearAnimator(hover, R.id.detail, Techniques.FadeIn);
             mSampleLayout.addChildAppearAnimator(hover, R.id.hover_view, Techniques.FadeIn);
 
-
             mSampleLayout.addChildDisappearAnimator(hover, R.id.content, Techniques.FadeOutUp);
             mSampleLayout.addChildDisappearAnimator(hover, R.id.comment, Techniques.FadeOut);
             mSampleLayout.addChildDisappearAnimator(hover, R.id.music, Techniques.FadeOut);
             mSampleLayout.addChildDisappearAnimator(hover, R.id.recorder, Techniques.FadeOut);
             mSampleLayout.addChildDisappearAnimator(hover, R.id.detail, Techniques.FadeOut);
             mSampleLayout.addChildDisappearAnimator(hover, R.id.hover_view, Techniques.FadeOut);
+
+            mSampleLayout.addAppearListener(new BlurLayout.AppearListener() {
+                @Override
+                public void onStart() {
+                    if (msg.getMusicHash() != "") {
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                String httpUrl = "http://apis.baidu.com/geekery/music/playinfo";
+                                String httpArg = "hash=" + msg.getMusicHash();
+                                String jsonResult = request(httpUrl, httpArg);
+                                try {
+                                    ObjectMapper objectMapper = new ObjectMapper();
+                                    song = objectMapper.readValue(jsonResult, Song.class);
+
+                                    //Show song Title
+                                    Bundle bundle = new Bundle();
+                                    bundle.putString("SongTitle", song.getData().getFileName());
+                                    Message postmessage = new Message();
+                                    postmessage.setData(bundle);
+                                    postmessage.obj = holder.songTitle;
+                                    postmessage.what = SET_SONG_TITLE;
+                                    mHandler.sendMessage(postmessage);
+                                    System.out.println(song.getData().getFileName());
+
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }).start();
+                    }
+                }
+
+                @Override
+                public void onEnd() {
+                    //If the hover is disappeared, stop playing music.
+                    mediaplayer.reset();
+                }
+            });
+
 
             //setting the add_friend button
             if (pageNumber == RecentPage) {
@@ -198,26 +238,7 @@ public class MsgRecycleAdapterForRecent extends RecyclerView.Adapter<MsgRecycleA
                     new Thread(new Runnable() {
                         @Override
                         public void run() {
-
-                            String httpUrl = "http://apis.baidu.com/geekery/music/playinfo";
-                            String httpArg = "hash=" + msg.getMusicHash();
-                            String jsonResult = request(httpUrl, httpArg);
-
                             try {
-                                Song song = new Song();
-                                ObjectMapper objectMapper = new ObjectMapper();
-                                song = objectMapper.readValue(jsonResult, Song.class);
-
-                                //Show song Title
-                                Bundle bundle=new Bundle();
-                                bundle.putString("SongTitle",song.getData().getFileName());
-                                Message postmessage = new Message();
-                                postmessage.setData(bundle);
-                                postmessage.obj= holder.songTitle;
-                                postmessage.what=SET_SONG_TITLE;
-                                mHandler.sendMessage(postmessage);
-                                System.out.println(song.getData().getFileName());
-
                                 //Play music
                                 mediaplayer.reset();
                                 mediaplayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
