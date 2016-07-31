@@ -17,11 +17,29 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingLeft="10dp"
-                android:text="Friend Apply"/>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="10dp"
+                    android:text="Friend Apply" />
+
+                <Button
+                    android:id="@+id/friend_apply_delete"
+                    android:layout_width="28dp"
+                    android:layout_height="16dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_gravity="right"
+                    android:background="@color/GoogleRed"
+                    android:text="X"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white" />
+            </RelativeLayout>
+
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -29,76 +47,85 @@
                 android:orientation="horizontal">
 
                 <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
-                    android:id="@+id/profile_friend_apply"
-                    android:paddingLeft="10dp"
+                    android:id="@+id/friend_apply_profile"
                     android:layout_width="90dp"
                     android:layout_height="90dp"
+                    android:paddingLeft="10dp"
 
                     android:src="@drawable/profile"
                     app:civ_border_color="#FF000000"
                     app:civ_border_width="3dp" />
 
-                <LinearLayout
+                <RelativeLayout
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_weight="8"
-                    android:paddingRight="10dp"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:paddingRight="10dp">
 
                     <TextView
-                        android:id="@+id/name_friend_apply"
+                        android:id="@+id/friend_apply_name"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_above="@id/friend_apply_content"
                         android:gravity="left"
                         android:maxLines="1"
-                        android:paddingLeft="10dp"
-                        android:paddingTop="13dp"
                         android:paddingBottom="5dp"
+                        android:paddingLeft="10dp"
                         android:text="Emile"
                         android:textColor="#000000"
                         android:textSize="18sp" />
 
                     <TextView
-                        android:id="@+id/content_friend_apply"
+                        android:id="@+id/friend_apply_content"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
                         android:gravity="left"
                         android:maxLines="2"
                         android:paddingLeft="10dp"
                         android:text="A cute guy who want be your friend"
                         android:textColor="#000000"
-                        android:textSize="13sp"
-                    />
-                </LinearLayout>
-
-                <RelativeLayout
-                    android:layout_width="0dp"
-                    android:layout_weight="2"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
-
-                    <Button
-                        android:layout_marginTop="10dp"
-                        android:layout_marginRight="3dp"
-                        android:layout_width="match_parent"
-                        android:layout_height="30dp"
-                        android:layout_alignParentTop="true"
-                        android:background="#09C7F7"
-                        android:text="Accept"
-                        android:textColor="@color/white"
-                        android:textAllCaps="false" />
-
-                    <Button
-                        android:layout_marginBottom="10dp"
-                        android:layout_marginRight="3dp"
-                        android:layout_width="match_parent"
-                        android:layout_height="30dp"
-                        android:layout_alignParentBottom="true"
-                        android:background="#09C7F7"
-                        android:text="Refuse"
-                        android:textColor="@color/white"
-                        android:textAllCaps="false" />
+                        android:textSize="13sp" />
                 </RelativeLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <TextView
+                            android:id="@+id/friend_apply_result"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_marginRight="5dp"
+                            android:background="@color/white"
+                            android:text="Accepted"
+                            android:textAllCaps="false"
+                            android:textColor="@color/grey"
+                            android:visibility="gone" />
+
+                        <Button
+                            android:id="@+id/friend_apply_accept"
+                            android:layout_width="60dp"
+                            android:layout_height="30dp"
+                            android:layout_centerVertical="true"
+                            android:layout_marginRight="5dp"
+                            android:background="#09C7F7"
+                            android:text="Accept"
+
+                            android:textAllCaps="false"
+                            android:textColor="@color/white" />
+
+
+                    </RelativeLayout>
+
+                </LinearLayout>
 
             </LinearLayout>
         </LinearLayout>

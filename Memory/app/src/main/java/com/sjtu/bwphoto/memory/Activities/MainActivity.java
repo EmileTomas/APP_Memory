@@ -10,6 +10,7 @@ import java.util.Calendar;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Message;
 import android.provider.MediaStore;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
@@ -45,6 +46,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
+import java.util.logging.Handler;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private static final String IMAGE_UNSPECIFIED = "image/*";
@@ -52,6 +54,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private static final int ALBUM_REQUEST_CODE = 2;
     private static final int Scan_REQUEST_CODE = 3;
     private static final int Music_REQUEST_CODE = 4;
+    private static final int COMMENT_VISIBLE = 1;
     public static final int MEDIA_TYPE_IMAGE = 1;
     public static final int MEDIA_TYPE_VIDEO = 2;
     public static  Context mainActivityContext;
@@ -404,18 +407,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void setFABState(int state) {
         if (state == 1)
             menuMultipleActions.setVisibility(View.GONE);
-        else if (state == 2)
-            menuMultipleActions.setVisibility(View.VISIBLE);
+        else if (state == 2) {
+            Message msg = new Message();
+            msg.what = COMMENT_VISIBLE;
+            mHandler.sendMessageDelayed(msg, 350);
+        }
+
     }
 
     //used by database
     public String getUserAccount() {
         return user_name;
-    }
-
-    //used by database
-    public RecentFragment getRecentFragment() {
-        return recentFragment;
     }
 
     @Override
@@ -424,6 +426,28 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         int id = item.getItemId();
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
+
+        if (id == R.id.nav_notify) {
+
+            Intent intent = new Intent(MainActivity.this, MainActivity.class);
+            startActivity(intent);
+        } else if (id == R.id.nav_friendlist) {
+
+        }
+
         return true;
     }
+
+
+    private android.os.Handler mHandler = new android.os.Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what) {
+                case COMMENT_VISIBLE:
+                    menuMultipleActions.setVisibility(View.VISIBLE);
+                    break;
+            }
+        }
+    };
 }

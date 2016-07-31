@@ -1,6 +1,5 @@
 package com.sjtu.bwphoto.memory.Fragement;
 
-import android.app.Service;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -15,25 +14,16 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import com.sjtu.bwphoto.memory.Activities.MainActivity;
 import com.sjtu.bwphoto.memory.Class.Datebase.DatabaseHelper;
 import com.sjtu.bwphoto.memory.Class.Datebase.DatabaseManager;
 import com.sjtu.bwphoto.memory.Class.Msg;
 import com.sjtu.bwphoto.memory.Class.Resource.Memory;
-import com.sjtu.bwphoto.memory.Class.Resource.Resource;
 import com.sjtu.bwphoto.memory.Class.Resource.ResourceList;
 import com.sjtu.bwphoto.memory.Class.RestUtil;
 import com.sjtu.bwphoto.memory.Class.ServerUrl;
-import com.sjtu.bwphoto.memory.Class.Util.FloatingActionButton;
-import com.sjtu.bwphoto.memory.Class.Util.FloatingActionsMenu;
-import com.sjtu.bwphoto.memory.Class.Util.MsgRecycleAdapterForRecent;
+import com.sjtu.bwphoto.memory.Class.Util.MsgRecycleAdapter;
 import com.sjtu.bwphoto.memory.R;
 
 import java.util.ArrayList;
@@ -68,7 +58,7 @@ public class RecentFragment extends Fragment implements SwipeRefreshLayout.OnRef
     private View rootView;
     private View mainActivityrootVeiw;
     private RecyclerView recyclerView;
-    private MsgRecycleAdapterForRecent msgRecycleAdapter;
+    private MsgRecycleAdapter msgRecycleAdapter;
     private SwipeRefreshLayout swipeRefreshLayout;
     private List<Msg> Cards;
     private MainActivity mainActivity;
@@ -249,7 +239,7 @@ public class RecentFragment extends Fragment implements SwipeRefreshLayout.OnRef
     //This function will be called only when Cards is not empty
     private void intialView() {
         final LinearLayoutManager layoutManager = new LinearLayoutManager(rootView.getContext());
-        msgRecycleAdapter = new MsgRecycleAdapterForRecent(Cards, rootView,mainActivityrootVeiw,RecentPage);
+        msgRecycleAdapter = new MsgRecycleAdapter(Cards, rootView, mainActivityrootVeiw, RecentPage);
         recyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view_recent);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(layoutManager);

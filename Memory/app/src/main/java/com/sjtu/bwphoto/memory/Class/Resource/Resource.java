@@ -12,9 +12,6 @@ import java.sql.Timestamp;
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)  //如果null就不生成
 @JsonIgnoreProperties(ignoreUnknown = true)
-
-
-
 public class Resource {
     @JsonProperty
     private int id;

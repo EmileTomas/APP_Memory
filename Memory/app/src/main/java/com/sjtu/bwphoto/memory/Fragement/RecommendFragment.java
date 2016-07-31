@@ -14,10 +14,6 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 
 import com.sjtu.bwphoto.memory.Activities.MainActivity;
 import com.sjtu.bwphoto.memory.Class.Datebase.DatabaseHelper;
@@ -28,7 +24,6 @@ import com.sjtu.bwphoto.memory.Class.Resource.ResourceList;
 import com.sjtu.bwphoto.memory.Class.RestUtil;
 import com.sjtu.bwphoto.memory.Class.ServerUrl;
 import com.sjtu.bwphoto.memory.Class.Util.MsgRecycleAdapter;
-import com.sjtu.bwphoto.memory.Class.Util.MsgRecycleAdapterForRecent;
 import com.sjtu.bwphoto.memory.R;
 
 import java.util.ArrayList;
@@ -53,7 +48,7 @@ public class RecommendFragment extends Fragment implements SwipeRefreshLayout.On
     private View rootView;
     private View mainActivityrootVeiw;
     private RecyclerView recyclerView;
-    private MsgRecycleAdapterForRecent msgRecycleAdapter;
+    private MsgRecycleAdapter msgRecycleAdapter;
     private SwipeRefreshLayout swipeRefreshLayout;
     private List<Msg> Cards;
     private MainActivity mainActivity;
@@ -233,7 +228,7 @@ public class RecommendFragment extends Fragment implements SwipeRefreshLayout.On
     //This function will be called only when Cards is not empty
     private void intialView() {
         final LinearLayoutManager layoutManager = new LinearLayoutManager(rootView.getContext());
-        msgRecycleAdapter = new MsgRecycleAdapterForRecent(Cards, rootView, mainActivityrootVeiw, RecommendPage);
+        msgRecycleAdapter = new MsgRecycleAdapter(Cards, rootView, mainActivityrootVeiw, RecommendPage);
         recyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view_recommend);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(layoutManager);
