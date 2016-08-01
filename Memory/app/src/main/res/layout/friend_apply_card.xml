@@ -64,6 +64,18 @@
                     android:paddingRight="10dp">
 
                     <TextView
+                        android:id="@+id/friend_apply_content"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:gravity="left"
+                        android:maxLines="2"
+                        android:paddingLeft="10dp"
+                        android:text="A cute guy who want be your friend"
+                        android:textColor="#000000"
+                        android:textSize="13sp" />
+
+                    <TextView
                         android:id="@+id/friend_apply_name"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -76,17 +88,7 @@
                         android:textColor="#000000"
                         android:textSize="18sp" />
 
-                    <TextView
-                        android:id="@+id/friend_apply_content"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:gravity="left"
-                        android:maxLines="2"
-                        android:paddingLeft="10dp"
-                        android:text="A cute guy who want be your friend"
-                        android:textColor="#000000"
-                        android:textSize="13sp" />
+
                 </RelativeLayout>
 
                 <LinearLayout
