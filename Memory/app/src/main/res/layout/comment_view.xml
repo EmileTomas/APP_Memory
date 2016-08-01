@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+
+    <ImageView
+        android:id="@+id/comment_view_image"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/paris" />
+
+
+    <ScrollView
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="1dp"
+                android:layout_marginTop="3dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <!--Header-->
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <!--Profile-->
+                        <de.hdodenhof.circleimageview.CircleImageView
+                            android:id="@+id/comment_view_profile"
+                            android:layout_width="45dp"
+                            android:layout_height="45dp"
+                            android:paddingBottom="5dp"
+                            android:paddingLeft="7dp"
+                            android:src="@drawable/profile"
+                            app:civ_border_color="#FF000000"
+                            app:civ_border_width="1dp"></de.hdodenhof.circleimageview.CircleImageView>
+
+                        <!--Name and Time-->
+                        <LinearLayout
+                            android:layout_toRightOf="@id/comment_view_profile"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_marginLeft="7dp"
+                            android:layout_marginTop="3dp"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Emile"
+                                android:textColor="@color/black"
+                                android:textSize="35px" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="0dp"
+                                android:layout_weight="1"
+                                android:text="Today 8:23 PM"
+                                android:textColor="@color/black_overlay"
+                                android:textSize="25px" />
+                        </LinearLayout>
+
+                        <ImageView
+                            android:layout_alignParentRight="true"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@drawable/music_color" />
+                    </RelativeLayout>
+
+                    <!--Content-->
+                    <TextView
+                        android:id="@+id/comment_view_content"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingBottom="5dp"
+                        android:paddingLeft="7dp"
+                        android:paddingRight="7dp"
+                        android:text="我们淡淡的回忆往事。往事许多是一朵薄而瘦的花，一瓣是思量，一瓣是柔肠，一瓣是新愁，一瓣是旧念。这一路走来，多少人历经风开万年，却常常忽略身后，一瓣瓣往事，风吹它，突然念起时，人生已转了季，寒枝花已凉。我喜欢这样的人生，有时，我们走进一本书里，在某段话上凝神，或者走进黄昏，在夕阳晚照里静思，就如走进温柔的往事里。"
+                        android:textColor="@color/black_translucent" />
+                </LinearLayout>
+            </android.support.v7.widget.CardView>
+
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:layout_width="37dp"
+                        android:layout_height="37dp"
+                        android:paddingLeft="4dp"
+                        android:paddingTop="2dp"
+                        android:src="@drawable/profile"
+                        app:civ_border_color="#FF000000"
+                        app:civ_border_width="1dp"></de.hdodenhof.circleimageview.CircleImageView>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:paddingLeft="5dp"
+                            android:text="Lilith"
+                            android:textColor="@color/black"
+                            android:textSize="35px" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:paddingLeft="5dp"
+                            android:text="Today 1:00 AM"
+                            android:textColor="@color/black_overlay"
+                            android:textSize="25px" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingBottom="5dp"
+                            android:paddingLeft="5dp"
+                            android:text="I think you hold the right Stuff in this problem."
+                            android:textColor="@color/black_translucent"
+                            android:textSize="25px" />
+
+                    </LinearLayout>
+                </LinearLayout>
+            </android.support.v7.widget.CardView>
+
+
+            <!--
+            <android.support.v7.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+            </android.support.v7.widget.RecyclerView>
+            Comment-->
+        </LinearLayout>
+    </ScrollView>
+
+
+</LinearLayout>
