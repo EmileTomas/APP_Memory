@@ -33,6 +33,7 @@ public class FirstActivity extends Activity {
                 // TODO Auto-generated method stub
                 Intent intent = new Intent(FirstActivity.this, LoginActivity.class);
                 startActivity(intent);
+                FirstActivity.this.finish();
             }
         });
 
@@ -42,6 +43,7 @@ public class FirstActivity extends Activity {
                 // TODO Auto-generated method stub
                 Intent intent = new Intent(FirstActivity.this, RegisterActivity.class);
                 startActivity(intent);
+                FirstActivity.this.finish();
             }
         });
     }

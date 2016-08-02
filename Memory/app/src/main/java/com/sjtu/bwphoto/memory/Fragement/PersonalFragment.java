@@ -192,7 +192,7 @@ public class PersonalFragment extends Fragment implements SwipeRefreshLayout.OnR
         Cards.clear();
 
         ResourceList resources;
-        resources = RestUtil.getForObject(url.url + "/resources/latest", ResourceList.class);
+        resources = RestUtil.getForObject(url.url + "/resources/self", ResourceList.class);
         if (resources != null) {
             Memory memory;
             Msg card;
