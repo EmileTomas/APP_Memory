@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Switch;
+import android.widget.Toast;
 
 import com.sjtu.bwphoto.memory.Class.Resource.Resource;
 import com.sjtu.bwphoto.memory.Class.RestUtil;
@@ -52,17 +53,19 @@ public class AddMemoryActivity extends Activity {
         userName = bundle.getString("userName");
         res_id = bundle.getInt("res_id");
         croppedName = bundle.getString("croppedName");
-        imageUri = this.getIntent().getData();
+        //imageUri = this.getIntent().getData();
 
-        try {
-            InputStream in = getContentResolver().openInputStream(imageUri);
-            cropped = BitmapFactory.decodeStream(in);
-            in.close();
-        } catch (FileNotFoundException e){
-            e.printStackTrace();
-        } catch (IOException e){
-            e.printStackTrace();
-        }
+//        try {
+//            InputStream in = getContentResolver().o(croppedName);
+//            cropped = BitmapFactory.decodeStream(in);
+//            in.close();
+//        } catch (FileNotFoundException e){
+//            e.printStackTrace();
+//        } catch (IOException e){
+//            e.printStackTrace();
+//        }
+
+        cropped = BitmapFactory.decodeFile(croppedName);
 
         BtnUpload = (Button) findViewById(R.id.btn_upload);
         BtnCancle = (Button) findViewById(R.id.btn_cancle);
@@ -106,7 +109,10 @@ public class AddMemoryActivity extends Activity {
         resource.setId(res_id);
         String result = RestUtil.postForObject(url.url+"/resources/"+res_id+"/words", resource, String.class);
         System.out.println(url.url+"/resources/"+res_id+"/words");
-        if (result.contains("success")) System.out.println("upload word Success!!!!!");
+        if (result.contains("success")) {
+            System.out.println("upload word Success!!!!!");
+            Toast.makeText(AddMemoryActivity.this,"Upload success", Toast.LENGTH_SHORT);
+        }
         else System.out.println("upload word Fail!!!!!");
         Intent intent = new Intent(AddMemoryActivity.this, MainActivity.class);
         Bundle bundle = new Bundle();
