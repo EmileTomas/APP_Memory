@@ -282,12 +282,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
      * Get music
      */
     public void getMusic() {
-        Toast.makeText(MainActivity.this,"Music Button clicked",Toast.LENGTH_LONG).show();
+        //Toast.makeText(MainActivity.this,"Music Button clicked",Toast.LENGTH_LONG).show();
         Intent intent = new Intent(MainActivity.this,AddMemoryMusicActivity.class);
         Bundle bundle = new Bundle();
         bundle.putString("userName", user_name);
         intent.putExtras(bundle);
         startActivity(intent);
+        MainActivity.this.finish();
     }
 
     /*

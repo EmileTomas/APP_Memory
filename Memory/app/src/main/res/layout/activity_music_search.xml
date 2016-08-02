@@ -5,38 +5,64 @@
     android:layout_height="match_parent"
     tools:context="com.sjtu.bwphoto.memory.Activities.MusicSearchActivity">
 
+    <!--Title-->
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/btn_back"
+        android:layout_alignParentTop="true"
+        android:text="Music"
+        android:gravity="center"
+        android:textAlignment="center"
+        android:textSize="20sp"
+        android:textColor="@color/ivory"
+        android:background="@color/cornflowerblue"/>
+
+    <Button
+        android:id="@+id/btn_back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:text="Back"
+        android:textSize="12sp"
+        android:textColor="@color/ivory"
+        android:background="@drawable/shape_nocolor"
+        style="?android:attr/borderlessButtonStyle"/>
+
     <LinearLayout
         android:id="@+id/search_area"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:weightSum = "5"
-        android:layout_centerHorizontal="true"
-        android:gravity="center_horizontal"
-        android:layout_alignParentTop="true"
+        android:layout_below="@+id/title"
         android:orientation="horizontal">
 
         <EditText
-            android:id="@+id/add_txt"
+            android:id="@+id/song_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="4"
             android:layout_marginTop="20dip"
-            android:background="@null"/>
-
-        <Button
-            android:id="@+id/search"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="搜索"
-            android:textColor="@color/cornflowerblue"
-            android:background="@drawable/shape_nocolor"
-            style="?android:attr/borderlessButtonStyle"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="20dip"
-            android:layout_weight="1"
-            android:textSize="15sp"/>
+            android:layout_marginLeft="10dip"
+            android:layout_gravity="left"/>
 
     </LinearLayout>
+
+    <Button
+        android:id="@+id/search"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/title"
+        android:layout_alignParentRight="true"
+        android:text="搜索"
+        android:textColor="@color/cornflowerblue"
+        android:background="@drawable/shape_nocolor"
+        style="?android:attr/borderlessButtonStyle"
+        android:layout_marginTop="10dip"
+        android:layout_marginLeft="5dip"
+        android:textSize="15sp"/>
 
     <ListView
         android:id="@+id/result"

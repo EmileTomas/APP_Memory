@@ -165,6 +165,12 @@ public class AddMemoryMusicActivity extends AppCompatActivity {
                 }
             }
         }).start();
+        Intent intent = new Intent(AddMemoryMusicActivity.this, MusicSearchActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString("userName", userName);
+        intent.putExtras(bundle);
+        startActivity(intent);
+        AddMemoryMusicActivity.this.finish();
     }
 
     public static String request(String httpUrl, String httpArg) {
