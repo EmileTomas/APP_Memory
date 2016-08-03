@@ -38,7 +38,6 @@ public class Song {
 
     private SongInfo data;
 
-
     private int code;
     private String status;
     private String msg;

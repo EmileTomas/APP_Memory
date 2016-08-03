@@ -14,9 +14,12 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Switch;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sjtu.bwphoto.memory.Class.Resource.Resource;
 import com.sjtu.bwphoto.memory.Class.RestUtil;
 import com.sjtu.bwphoto.memory.Class.ServerUrl;
+import com.sjtu.bwphoto.memory.Class.Util.Song;
+import com.sjtu.bwphoto.memory.Class.Util.Util_Cropper.Songresult;
 import com.sjtu.bwphoto.memory.R;
 
 import java.io.BufferedReader;
@@ -42,6 +45,7 @@ public class AddMemoryMusicActivity extends AppCompatActivity {
     private Uri imageUri;
     private Bitmap cropped;
     private int res_id;
+    private Songresult song = new Songresult();
 
     private final static ServerUrl url = new ServerUrl();
 
@@ -140,10 +144,33 @@ public class AddMemoryMusicActivity extends AppCompatActivity {
     }
 
     public void add_music() {
-        String httpUrl = "http://apis.baidu.com/geekery/music/query";
-        String httpArg = "s=%E5%8D%81%E5%B9%B4&size=10&page=1";
-        String jsonResult = request(httpUrl, httpArg);
-        System.out.println(jsonResult);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                String httpUrl = "http://apis.baidu.com/geekery/music/query";
+                String httpArg = "s=%E5%8D%81%E5%B9%B4&size=10&page=1";
+                String jsonResult = request(httpUrl, httpArg);
+                if (jsonResult != null) System.out.println("add_music:json result down line");
+                System.out.println("Music result :"+jsonResult);
+                try{
+                    ObjectMapper objectMapper = new ObjectMapper();
+                    song = objectMapper.readValue(jsonResult, Songresult.class);
+                    String s = song.getData().getData().get(0).getHash();
+                    if(s==null)System.out.println("s is null!!!!!!!!!!");
+                    if(s!=null)System.out.println("s is not null!!!!!!!!!!");
+                    System.out.println(s);
+                } catch (IOException e){
+                    e.printStackTrace();
+                    System.out.println("AddMemoryMusic:164error");
+                }
+            }
+        }).start();
+        Intent intent = new Intent(AddMemoryMusicActivity.this, MusicSearchActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString("userName", userName);
+        intent.putExtras(bundle);
+        startActivity(intent);
+        AddMemoryMusicActivity.this.finish();
     }
 
     public static String request(String httpUrl, String httpArg) {
@@ -151,24 +178,25 @@ public class AddMemoryMusicActivity extends AppCompatActivity {
         String result = null;
         StringBuffer sbf = new StringBuffer();
         httpUrl = httpUrl + "?" + httpArg;
+        System.out.println("AddMusicMemory : "+httpUrl);
 
         try {
-            URL url = new URL(httpUrl);
-            HttpURLConnection connection = (HttpURLConnection) url
-                    .openConnection();
-            connection.setRequestMethod("GET");
-            // 填入apikey到HTTP header
-            connection.setRequestProperty("apikey",  "fad22d042fecdcc0be3244f57faa757f");
-            connection.connect();
-            InputStream is = connection.getInputStream();
-            reader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
-            String strRead = null;
-            while ((strRead = reader.readLine()) != null) {
-                sbf.append(strRead);
-                sbf.append("\r\n");
-            }
-            reader.close();
-            result = sbf.toString();
+                    URL url = new URL(httpUrl);
+                    HttpURLConnection connection = (HttpURLConnection) url
+                            .openConnection();
+                    connection.setRequestMethod("GET");
+                    // 填入apikey到HTTP header
+                    connection.setRequestProperty("apikey", "fad22d042fecdcc0be3244f57faa757f");
+                    connection.connect();
+                    InputStream is = connection.getInputStream();
+                    reader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
+                    String strRead = null;
+                    while ((strRead = reader.readLine()) != null) {
+                        sbf.append(strRead);
+                        sbf.append("\r\n");
+                    }
+                    reader.close();
+                    result = sbf.toString();
         } catch (Exception e) {
             e.printStackTrace();
         }

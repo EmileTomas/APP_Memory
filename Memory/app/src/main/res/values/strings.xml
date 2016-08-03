@@ -103,5 +103,6 @@
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
 
+    <string name="scan_text">将二维码/条形码放入框内</string>
 
 </resources>
