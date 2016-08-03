@@ -39,8 +39,10 @@ public class FriendRequestAdapter extends RecyclerView.Adapter<FriendRequestAdap
 
     public FriendRequestAdapter(View rootView, ArrayList<FriendRequestCard> friendRequestList) {
         this.rootView = rootView;
-        this.inflater = LayoutInflater.from(rootView.getContext());
+
         this.friendRequestList = friendRequestList;
+        this.inflater = LayoutInflater.from(rootView.getContext());
+
     }
 
     @Override
@@ -52,12 +54,49 @@ public class FriendRequestAdapter extends RecyclerView.Adapter<FriendRequestAdap
     public RequestCardHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
         View friendApplyCard = inflater.inflate(R.layout.friend_apply_card, null);
-        RequestCardHolder requestCardHolder = new RequestCardHolder(friendApplyCard);
+        final RequestCardHolder requestCardHolder = new RequestCardHolder(friendApplyCard);
+
+
+        requestCardHolder.acceptButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final FriendRequestCard friendRequestCard = friendRequestList.get(requestCardHolder.getAdapterPosition());
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        String result = RestUtil.postForObject(url.url + "/friends/make/" + friendRequestCard.getName(), null, String.class);
+                        //Send Accept here
+                        System.out.println(result);
+                    }
+                }).start();
+                requestCardHolder.acceptButton.setVisibility(View.GONE);
+                requestCardHolder.result.setVisibility(View.VISIBLE);
+            }
+        });
+
+        requestCardHolder.deleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final FriendRequestCard friendRequestCard = friendRequestList.get(requestCardHolder.getAdapterPosition());
+                //Haven't response to this request yet, then refuse
+                if (requestCardHolder.acceptButton.getVisibility() == View.VISIBLE) {
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            //Refuse the request
+                        }
+                    }).start();
+                }
+                friendRequestList.remove(requestCardHolder.getAdapterPosition());
+                notifyDataSetChanged();
+            }
+        });
+
         return requestCardHolder;
     }
 
     class RequestCardHolder extends RecyclerView.ViewHolder {
-        public View rootView;
+        public View view;
         public CircleImageView profile;
         public TextView name;
         public TextView content;
@@ -67,13 +106,13 @@ public class FriendRequestAdapter extends RecyclerView.Adapter<FriendRequestAdap
 
         public RequestCardHolder(View friendApplyCard) {
             super(friendApplyCard);
-            this.rootView = friendApplyCard;
-            this.profile = (CircleImageView) rootView.findViewById(R.id.friend_apply_profile);
-            this.name = (TextView) rootView.findViewById(R.id.friend_apply_name);
-            this.content = (TextView) rootView.findViewById(R.id.friend_apply_content);
-            this.result = (TextView) rootView.findViewById(R.id.friend_apply_result);
-            this.acceptButton = (Button) rootView.findViewById(R.id.friend_apply_accept);
-            this.deleteButton = (Button) rootView.findViewById(R.id.friend_apply_delete);
+            this.view = friendApplyCard;
+            this.profile = (CircleImageView) view.findViewById(R.id.friend_apply_profile);
+            this.name = (TextView) view.findViewById(R.id.friend_apply_name);
+            this.content = (TextView) view.findViewById(R.id.friend_apply_content);
+            this.result = (TextView) view.findViewById(R.id.friend_apply_result);
+            this.acceptButton = (Button) view.findViewById(R.id.friend_apply_accept);
+            this.deleteButton = (Button) view.findViewById(R.id.friend_apply_delete);
         }
     }
 
@@ -95,38 +134,6 @@ public class FriendRequestAdapter extends RecyclerView.Adapter<FriendRequestAdap
                 .build();
         ImageLoader.getInstance().displayImage(friendRequestCard.getProfile(), holder.profile, options);
 
-        holder.acceptButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        String result = RestUtil.postForObject(url.url + "/friends/make/" + friendRequestCard.getName(), null, String.class);        //Send Accept here
-                    }
-                }).start();
-                holder.acceptButton.setVisibility(View.GONE);
-                holder.result.setVisibility(View.VISIBLE);
-            }
-        });
-
-        holder.deleteButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //Haven't response to this request yet, then refuse
-                if (holder.acceptButton.getVisibility() == View.VISIBLE) {
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            //Refuse the request
-                        }
-                    }).start();
-                }
-
-
-                friendRequestList.remove(position);
-                notifyDataSetChanged();
-            }
-        });
     }
 }
 

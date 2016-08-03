@@ -58,6 +58,7 @@ public class PersonalFragment extends Fragment implements SwipeRefreshLayout.OnR
     private DatabaseHelper databaseHelper;
     private SQLiteDatabase sqLiteDatabase;
 
+    private int firstVisibleItem;
     private int lastVisibleItem;
     private boolean isCardEmpty = true;
     private boolean fetchDataSuccess = false;
@@ -70,7 +71,7 @@ public class PersonalFragment extends Fragment implements SwipeRefreshLayout.OnR
         rootView = inflater.inflate(R.layout.fragment_personal, container, false);
         mainActivity = (MainActivity) getActivity();
         mainActivityrootVeiw = mainActivity.getMainActivityRootView();
-        BlurLayout.setGlobalDefaultDuration(800);
+        BlurLayout.setGlobalDefaultDuration(400);
 
         databaseHelper=new DatabaseHelper(getContext(),"AppDatabase.db",null,1);
         DatabaseManager.initializeInstance(databaseHelper);
@@ -192,7 +193,7 @@ public class PersonalFragment extends Fragment implements SwipeRefreshLayout.OnR
         Cards.clear();
 
         ResourceList resources;
-        resources = RestUtil.getForObject(url.url + "/resources/latest", ResourceList.class);
+        resources = RestUtil.getForObject(url.url + "/resources/self", ResourceList.class);
         if (resources != null) {
             Memory memory;
             Msg card;
@@ -208,10 +209,10 @@ public class PersonalFragment extends Fragment implements SwipeRefreshLayout.OnR
                 System.out.println(imageId);
             }
 
-            freushFlag = false;
+
             fetchDataSuccess = true;
             isCardEmpty = false;
-
+            freushFlag = false;
             if (!initializeViewSuccess) {
                 initializeViewSuccess = true;
                 Message msg = new Message();
@@ -232,7 +233,7 @@ public class PersonalFragment extends Fragment implements SwipeRefreshLayout.OnR
     //This function will be called only when Cards is not empty
     private void intialView(){
         final LinearLayoutManager layoutManager = new LinearLayoutManager(rootView.getContext());
-        msgRecycleAdapter = new MsgRecycleAdapter(Cards, rootView, mainActivityrootVeiw, PersonalPage);
+        msgRecycleAdapter = new MsgRecycleAdapter(Cards, rootView, mainActivity, PersonalPage);
         recyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view_personal);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(layoutManager);
@@ -243,7 +244,7 @@ public class PersonalFragment extends Fragment implements SwipeRefreshLayout.OnR
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
-                if (!freushFlag && newState == RecyclerView.SCROLL_STATE_IDLE && (lastVisibleItem + 1 == msgRecycleAdapter.getItemCount())) {
+                if (!freushFlag && newState == RecyclerView.SCROLL_STATE_IDLE && (lastVisibleItem + 1 == msgRecycleAdapter.getItemCount()) && (firstVisibleItem != 0)) {
                     swipeRefreshLayout.setRefreshing(true);
                     freushFlag = true;
                     Message msg = new Message();
@@ -256,6 +257,8 @@ public class PersonalFragment extends Fragment implements SwipeRefreshLayout.OnR
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                 lastVisibleItem = layoutManager.findLastVisibleItemPosition();
+                firstVisibleItem = layoutManager.findFirstVisibleItemPosition();
+
             }
         });
     }
@@ -267,11 +270,13 @@ public class PersonalFragment extends Fragment implements SwipeRefreshLayout.OnR
             switch (msg.what) {
                 case INITIAL_VIEW:
                     intialView();
+
                     break;
 
                 case NOTIFY_CARDS_CHANGE:
                     swipeRefreshLayout.setRefreshing(false);
                     msgRecycleAdapter.notifyDataSetChanged();
+
                     break;
 
                 case LOAD_MORE_DATA  :

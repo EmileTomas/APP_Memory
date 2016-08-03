@@ -8,6 +8,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.TextView;
 
 import com.sjtu.bwphoto.memory.Class.Resource.FriendRequest;
 import com.sjtu.bwphoto.memory.Class.Resource.FriendRequestList;
@@ -16,6 +17,8 @@ import com.sjtu.bwphoto.memory.Class.ServerUrl;
 import com.sjtu.bwphoto.memory.Class.Util.FriendRequestCard;
 import com.sjtu.bwphoto.memory.Class.Util.Util_Cropper.FriendRequestAdapter;
 import com.sjtu.bwphoto.memory.R;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,28 +30,34 @@ public class FriendApplyListActivity extends AppCompatActivity {
     private static final ServerUrl url = new ServerUrl();
     private FriendRequestList friendRequestList;
     private FriendRequestAdapter adapter;
-    private ArrayList<FriendRequestCard> friendRequestCards;
+    private ArrayList<FriendRequestCard> friendRequestCards = new ArrayList<FriendRequestCard>();
     private RecyclerView recyclerView;
 
     @Override
-    public void onCreate(Bundle savedInstanceState, PersistableBundle persistentState) {
-        super.onCreate(savedInstanceState, persistentState);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         setContentView(R.layout.friend_apply);
 
         //Get data from Server
         friendRequestList = RestUtil.getForObject(url.url + "/friends/make", FriendRequestList.class);
-
+        String temp = RestUtil.getForObject(url.url + "/friends/make", String.class);
+        System.out.println(temp);
         if (friendRequestList != null) {
+            System.out.println("Get Data");
             FriendRequestCard friendRequestCard;
             for (int i = 0; i < friendRequestList.size(); ++i) {
                 String name = friendRequestList.get(i).getApplyer();
                 //Here should changed to corresponding API
                 String content = "Hope be Friend with you.";
-                String imageURL = RestUtil.getForObject(url.url + "/identity/profile/" + name, String.class);
+                String imageURL = "https://case.edu/medicine/admissions/media/school-of-medicine/admissions/classprofile.png";
                 friendRequestCard = new FriendRequestCard(name, content, imageURL);
                 friendRequestCards.add(friendRequestCard);
             }
 
+        } else {
+            System.out.println("Get Data Failed");
+            TextView info = (TextView) findViewById(R.id.friend_apply_info);
+            info.setVisibility(View.VISIBLE);
         }
 
         View rootView = findViewById(R.id.friend_apply_rootview);

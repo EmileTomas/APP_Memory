@@ -68,7 +68,7 @@ public class RecommendFragment extends Fragment implements SwipeRefreshLayout.On
         rootView = inflater.inflate(R.layout.fragment_recommend, container, false);
         mainActivity = (MainActivity) getActivity();
         mainActivityrootVeiw = mainActivity.getMainActivityRootView();
-        BlurLayout.setGlobalDefaultDuration(800);
+        BlurLayout.setGlobalDefaultDuration(400);
 
         databaseHelper = new DatabaseHelper(getContext(), "AppDatabase.db", null, 1);
         DatabaseManager.initializeInstance(databaseHelper);
@@ -228,7 +228,7 @@ public class RecommendFragment extends Fragment implements SwipeRefreshLayout.On
     //This function will be called only when Cards is not empty
     private void intialView() {
         final LinearLayoutManager layoutManager = new LinearLayoutManager(rootView.getContext());
-        msgRecycleAdapter = new MsgRecycleAdapter(Cards, rootView, mainActivityrootVeiw, RecommendPage);
+        msgRecycleAdapter = new MsgRecycleAdapter(Cards, rootView, mainActivity, RecommendPage);
         recyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view_recommend);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(layoutManager);

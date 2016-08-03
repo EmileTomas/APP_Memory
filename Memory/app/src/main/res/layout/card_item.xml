@@ -34,7 +34,7 @@
                     android:src="@drawable/paris"/>
 
                 <TextView
-                    android:id="@+id/msg_position"
+                    android:id="@+id/msg_tag"
                     android:layout_alignBottom="@id/msg_photo"
                     android:maxLines="1"
                     android:textSize="20sp"

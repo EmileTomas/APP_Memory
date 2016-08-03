@@ -102,8 +102,10 @@ public class LoginActivity extends Activity {
                 Bundle bundle = new Bundle();
                 bundle.putString("userName",userName);
                 intent.putExtras(bundle);
+
                 startActivity(intent);
                 LoginActivity.this.finish();
+
             }
             else {
                 Toast.makeText(this, getString(R.string.login_fail),Toast.LENGTH_SHORT).show();

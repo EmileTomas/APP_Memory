@@ -78,7 +78,7 @@ public class RecentFragment extends Fragment implements SwipeRefreshLayout.OnRef
         rootView = inflater.inflate(R.layout.fragment_recent, container, false);
         mainActivity = (MainActivity) getActivity();
         mainActivityrootVeiw=mainActivity.getMainActivityRootView();
-        BlurLayout.setGlobalDefaultDuration(800);
+        BlurLayout.setGlobalDefaultDuration(400);
 
         databaseHelper = new DatabaseHelper(getContext(), "AppDatabase.db", null, 1);
         DatabaseManager.initializeInstance(databaseHelper);
@@ -199,7 +199,8 @@ public class RecentFragment extends Fragment implements SwipeRefreshLayout.OnRef
 
         ResourceList resources;
         resources = RestUtil.getForObject(url.url + "/resources/latest", ResourceList.class);
-
+        String temp = RestUtil.getForObject(url.url + "/resources", String.class);
+        System.out.println("ddaddd" + temp);
         if (resources != null) {
             Memory memory;
             Msg card;
@@ -239,7 +240,7 @@ public class RecentFragment extends Fragment implements SwipeRefreshLayout.OnRef
     //This function will be called only when Cards is not empty
     private void intialView() {
         final LinearLayoutManager layoutManager = new LinearLayoutManager(rootView.getContext());
-        msgRecycleAdapter = new MsgRecycleAdapter(Cards, rootView, mainActivityrootVeiw, RecentPage);
+        msgRecycleAdapter = new MsgRecycleAdapter(Cards, rootView, mainActivity, RecentPage);
         recyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view_recent);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(layoutManager);

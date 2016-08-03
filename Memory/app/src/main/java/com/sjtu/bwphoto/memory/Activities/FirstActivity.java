@@ -8,6 +8,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 
+import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.sjtu.bwphoto.memory.R;
 
 public class FirstActivity extends Activity {
@@ -33,6 +34,7 @@ public class FirstActivity extends Activity {
                 // TODO Auto-generated method stub
                 Intent intent = new Intent(FirstActivity.this, LoginActivity.class);
                 startActivity(intent);
+                FirstActivity.this.finish();
             }
         });
 
@@ -42,6 +44,7 @@ public class FirstActivity extends Activity {
                 // TODO Auto-generated method stub
                 Intent intent = new Intent(FirstActivity.this, RegisterActivity.class);
                 startActivity(intent);
+
             }
         });
     }

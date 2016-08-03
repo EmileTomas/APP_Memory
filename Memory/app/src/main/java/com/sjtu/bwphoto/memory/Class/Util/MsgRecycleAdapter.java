@@ -1,6 +1,8 @@
 package com.sjtu.bwphoto.memory.Class.Util;
 
+import android.app.Activity;
 import android.app.Service;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
@@ -22,17 +24,24 @@ import com.daimajia.androidanimations.library.Techniques;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.sjtu.bwphoto.memory.Activities.CommentActivity;
 import com.sjtu.bwphoto.memory.Activities.MainActivity;
 import com.sjtu.bwphoto.memory.Class.Msg;
+import com.sjtu.bwphoto.memory.Class.Resource.CommentIntent;
+import com.sjtu.bwphoto.memory.Class.Resource.Mark;
 import com.sjtu.bwphoto.memory.Class.RestUtil;
 import com.sjtu.bwphoto.memory.Class.ServerUrl;
 import com.sjtu.bwphoto.memory.R;
+
+import org.w3c.dom.Comment;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.List;
 
 import androidviewhover.BlurLayout;
@@ -56,14 +65,16 @@ public class MsgRecycleAdapter extends RecyclerView.Adapter<MsgRecycleAdapter.Ca
     private LayoutInflater inflater;
     private View mainActivityView;
     private int pageNumber;
+    private Activity mainActivity;
     Song song = new Song();
 
     private FloatingActionsMenu FAB;
 
 
-    public MsgRecycleAdapter(List<Msg> Cards, View rootView, View mainActivityView, int pageNumber) {
+    public MsgRecycleAdapter(List<Msg> Cards, View rootView, MainActivity mainActivity, int pageNumber) {
         this.Cards = Cards;
-        this.mainActivityView = mainActivityView;
+        this.mainActivity = mainActivity;
+        this.mainActivityView = mainActivity.getMainActivityRootView();
         inflater = LayoutInflater.from(rootView.getContext());
         FAB = (FloatingActionsMenu) this.mainActivityView.findViewById(R.id.menuFAB);
         this.pageNumber = pageNumber;
@@ -77,13 +88,16 @@ public class MsgRecycleAdapter extends RecyclerView.Adapter<MsgRecycleAdapter.Ca
     @Override
     public void onViewDetachedFromWindow(CardViewHolder holder) {
         super.onViewDetachedFromWindow(holder);
-        BlurLayout.setGlobalDefaultDuration(1);
+        BlurLayout.setGlobalDefaultDuration(10);
         holder.mSampleLayout.dismissHover();
+        BlurLayout.setGlobalDefaultDuration(400);
     }
 
 
     @Override
     public void onBindViewHolder(final CardViewHolder holder, final int position) {
+        holder.mSampleLayout.dismissHover();
+
         final Msg msg = Cards.get(position);
         BlurLayout mSampleLayout = holder.mSampleLayout;
         View hover = holder.hover;
@@ -102,168 +116,193 @@ public class MsgRecycleAdapter extends RecyclerView.Adapter<MsgRecycleAdapter.Ca
         holder.textView.setText(msg.getTag());
         holder.content.setText(msg.getContent());
 
-        BlurLayout.setGlobalDefaultDuration(1);
-        holder.mSampleLayout.dismissHover();
-
-        //Set Hover
         BlurLayout.setGlobalDefaultDuration(400);
-        if (!holder.set_flag) {
-            holder.set_flag = true;
-            mSampleLayout.setHoverView(hover);
-            mSampleLayout.addChildAppearAnimator(hover, R.id.content, Techniques.BounceIn);
-            mSampleLayout.addChildAppearAnimator(hover, R.id.comment, Techniques.FadeIn);
-            mSampleLayout.addChildAppearAnimator(hover, R.id.music, Techniques.FadeIn);
-            mSampleLayout.addChildAppearAnimator(hover, R.id.recorder, Techniques.FadeIn);
-            mSampleLayout.addChildAppearAnimator(hover, R.id.detail, Techniques.FadeIn);
-            mSampleLayout.addChildAppearAnimator(hover, R.id.hover_view, Techniques.FadeIn);
-
-            mSampleLayout.addChildDisappearAnimator(hover, R.id.content, Techniques.FadeOutUp);
-            mSampleLayout.addChildDisappearAnimator(hover, R.id.comment, Techniques.FadeOut);
-            mSampleLayout.addChildDisappearAnimator(hover, R.id.music, Techniques.FadeOut);
-            mSampleLayout.addChildDisappearAnimator(hover, R.id.recorder, Techniques.FadeOut);
-            mSampleLayout.addChildDisappearAnimator(hover, R.id.detail, Techniques.FadeOut);
-            mSampleLayout.addChildDisappearAnimator(hover, R.id.hover_view, Techniques.FadeOut);
-
-            mSampleLayout.addAppearListener(new BlurLayout.AppearListener() {
-                @Override
-                public void onStart() {
-                    if (msg.getMusicHash() != "") {
-                        new Thread(new Runnable() {
-                            @Override
-                            public void run() {
-                                String httpUrl = "http://apis.baidu.com/geekery/music/playinfo";
-                                String httpArg = "hash=" + msg.getMusicHash();
-                                String jsonResult = request(httpUrl, httpArg);
-                                try {
-                                    ObjectMapper objectMapper = new ObjectMapper();
-                                    song = objectMapper.readValue(jsonResult, Song.class);
-
-                                    //Show song Title
-                                    Bundle bundle = new Bundle();
-                                    bundle.putString("SongTitle", song.getData().getFileName());
-                                    Message postmessage = new Message();
-                                    postmessage.setData(bundle);
-                                    postmessage.obj = holder.songTitle;
-                                    postmessage.what = SET_SONG_TITLE;
-                                    mHandler.sendMessage(postmessage);
-                                    System.out.println(song.getData().getFileName());
-
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                        }).start();
-                    }
-                }
-
-                @Override
-                public void onEnd() {
-                    //If the hover is disappeared, stop playing music.
-                    mediaplayer.reset();
-                }
-            });
 
 
-            //setting the add_friend button
-            if (pageNumber == RecentPage) {
-                ImageView add_friend = (ImageView) hover.findViewById(R.id.add_friend);
-                mSampleLayout.addChildAppearAnimator(hover, R.id.add_friend, Techniques.FadeIn);
-                mSampleLayout.addChildDisappearAnimator(hover, R.id.add_friend, Techniques.FadeOut);
-                add_friend.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        new Thread(new Runnable() {
-                            @Override
-                            public void run() {
-                                String result = RestUtil.postForObject(url.url + "/friends/apply/" + msg.getPosterAccount(), null, String.class);
-                                Message postmessage = new Message();
-                                if (result.contains("success")) {
-                                    postmessage.what = APPLY_SUCCESS;
-                                    mHandler.sendMessage(postmessage);
-
-                                } else {
-                                    postmessage.what = APPLY_SUCCESS;
-                                    mHandler.sendMessage(postmessage);
-                                }
-                            }
-                        }).start();
-                    }
-                });
-            } else {
-                ImageView add_friend = (ImageView) hover.findViewById(R.id.add_friend);
-                add_friend.setVisibility(View.GONE);
-            }
-            //setting the comment button
-            final InputMethodManager imm;
-            final EditText commentBox = (EditText) mainActivityView.findViewById(R.id.commentBox);
-            final LinearLayout commentView = (LinearLayout) mainActivityView.findViewById(R.id.commentView);
-            final Button commentSendButton = (Button) mainActivityView.findViewById(R.id.sendButton);
-            imm = (InputMethodManager) commentBox.getContext().getSystemService(Service.INPUT_METHOD_SERVICE);
-            hover.findViewById(R.id.comment).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    commentView.setVisibility(View.VISIBLE);
-                    commentBox.requestFocus();
-                    FAB.setVisibility(View.INVISIBLE);
-                    imm.showSoftInput(commentBox, 0);
-                }
-            });
-
-
-            //Send Button
-            commentSendButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    String text = commentBox.getText().toString();
-                    commentBox.setText("");
-                    commentView.setVisibility(View.GONE);
-                    imm.hideSoftInputFromWindow(commentBox.getWindowToken(), 0);
-
-                    Message postmessage = new Message();
-                    postmessage.what = VISIBLE;
-                    mHandler.sendMessageDelayed(postmessage, 250);
-
-                    //Send Message here
-
-                }
-            });
-
-
-            //Music Button
-            hover.findViewById(R.id.music).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                //Play music
-                                mediaplayer.reset();
-                                mediaplayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-                                mediaplayer.setDataSource(song.getData().getUrl());
-                                mediaplayer.prepare();
-                                mediaplayer.start();
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }).start();
-                }
-            });
-        }
     }
 
     @Override
     public CardViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = inflater.inflate(R.layout.card_item, null);
         View hover = inflater.inflate(R.layout.card_hover, null);
-        CardViewHolder holder = new CardViewHolder(view, hover);
+        final CardViewHolder holder = new CardViewHolder(view, hover);
+
+
+        BlurLayout mSampleLayout = (BlurLayout) view.findViewById(R.id.blur_layout);
+
+        mSampleLayout.setHoverView(hover);
+        mSampleLayout.addChildAppearAnimator(hover, R.id.content, Techniques.BounceIn);
+        mSampleLayout.addChildAppearAnimator(hover, R.id.comment, Techniques.FadeIn);
+        mSampleLayout.addChildAppearAnimator(hover, R.id.music, Techniques.FadeIn);
+        mSampleLayout.addChildAppearAnimator(hover, R.id.recorder, Techniques.FadeIn);
+        mSampleLayout.addChildAppearAnimator(hover, R.id.detail, Techniques.FadeIn);
+        mSampleLayout.addChildAppearAnimator(hover, R.id.hover_view, Techniques.FadeIn);
+
+        mSampleLayout.addChildDisappearAnimator(hover, R.id.content, Techniques.FadeOutUp);
+        mSampleLayout.addChildDisappearAnimator(hover, R.id.comment, Techniques.FadeOut);
+        mSampleLayout.addChildDisappearAnimator(hover, R.id.music, Techniques.FadeOut);
+        mSampleLayout.addChildDisappearAnimator(hover, R.id.recorder, Techniques.FadeOut);
+        mSampleLayout.addChildDisappearAnimator(hover, R.id.detail, Techniques.FadeOut);
+        mSampleLayout.addChildDisappearAnimator(hover, R.id.hover_view, Techniques.FadeOut);
+
+
+        mSampleLayout.addAppearListener(new BlurLayout.AppearListener() {
+            @Override
+            public void onStart() {
+                final Msg msg = Cards.get(holder.getAdapterPosition());
+                if (msg.getMusicHash() != "") {
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            String httpUrl = "http://apis.baidu.com/geekery/music/playinfo";
+                            String httpArg = "hash=" + msg.getMusicHash();
+                            String jsonResult = request(httpUrl, httpArg);
+                            try {
+                                ObjectMapper objectMapper = new ObjectMapper();
+                                song = objectMapper.readValue(jsonResult, Song.class);
+
+                                //Show song Title
+                                Bundle bundle = new Bundle();
+                                bundle.putString("SongTitle", song.getData().getFileName());
+                                Message postmessage = new Message();
+                                postmessage.setData(bundle);
+                                postmessage.obj = holder.songTitle;
+                                postmessage.what = SET_SONG_TITLE;
+                                mHandler.sendMessage(postmessage);
+                                System.out.println(song.getData().getFileName());
+
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }).start();
+                }
+            }
+
+            @Override
+            public void onEnd() {
+                //If the hover is disappeared, stop playing music.
+                mediaplayer.reset();
+            }
+        });
+
+
+        //Music Button
+        hover.findViewById(R.id.music).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            //Play music
+                            mediaplayer.reset();
+                            mediaplayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+                            mediaplayer.setDataSource(song.getData().getUrl());
+                            mediaplayer.prepare();
+                            mediaplayer.start();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }).start();
+            }
+        });
+
+
+        //setting the add_friend button
+        if (pageNumber == RecentPage) {
+            ImageView add_friend = (ImageView) hover.findViewById(R.id.add_friend);
+            mSampleLayout.addChildAppearAnimator(hover, R.id.add_friend, Techniques.FadeIn);
+            mSampleLayout.addChildDisappearAnimator(hover, R.id.add_friend, Techniques.FadeOut);
+            add_friend.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            final Msg msg = Cards.get(holder.getAdapterPosition());
+                            String result = RestUtil.postForObject(url.url + "/friends/apply/" + msg.getPosterAccount(), null, String.class);
+                            Message postmessage = new Message();
+                            if (result.contains("success")) {
+                                postmessage.what = APPLY_SUCCESS;
+                                mHandler.sendMessage(postmessage);
+
+                            } else {
+                                postmessage.what = APPLY_SUCCESS;
+                                mHandler.sendMessage(postmessage);
+                            }
+                        }
+                    }).start();
+                }
+            });
+        } else {
+            ImageView add_friend = (ImageView) hover.findViewById(R.id.add_friend);
+            add_friend.setVisibility(View.GONE);
+        }
+
+        //setting the comment button
+        final InputMethodManager imm;
+        final EditText commentBox = (EditText) mainActivityView.findViewById(R.id.commentBox);
+        final LinearLayout commentView = (LinearLayout) mainActivityView.findViewById(R.id.commentView);
+        imm = (InputMethodManager) commentBox.getContext().getSystemService(Service.INPUT_METHOD_SERVICE);
+        hover.findViewById(R.id.comment).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                commentView.setVisibility(View.VISIBLE);
+                commentBox.requestFocus();
+                FAB.setVisibility(View.INVISIBLE);
+                imm.showSoftInput(commentBox, 0);
+            }
+        });
+
+        //Send Button
+        final Button commentSendButton = (Button) mainActivityView.findViewById(R.id.sendButton);
+        commentSendButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final Msg msg = Cards.get(holder.getAdapterPosition());
+                String text = commentBox.getText().toString();
+                commentBox.setText("");
+                commentView.setVisibility(View.GONE);
+                imm.hideSoftInputFromWindow(commentBox.getWindowToken(), 0);
+
+                Message postmessage = new Message();
+                postmessage.what = VISIBLE;
+                mHandler.sendMessageDelayed(postmessage, 250);
+
+                //Send Message here
+                Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+                String markURL = msg.getImageUrl().replace("image", "marks");
+                Mark mark = new Mark(text, timestamp);
+                String result = RestUtil.postForObject(markURL, mark, String.class);
+                System.out.println(result);
+            }
+        });
+
+
+        holder.detail.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final Msg msg = Cards.get(holder.getAdapterPosition());
+                Intent intent = new Intent(mainActivity, CommentActivity.class);
+                Bundle bundle = new Bundle();
+                System.out.println("Position is " + holder.getAdapterPosition());
+                CommentIntent commentIntent = new CommentIntent(msg.getPosterAccount(), msg.getImageUrl(), msg.getMusicHash(), msg.getContent());
+                bundle.putSerializable("commentIntent", commentIntent);
+                intent.putExtras(bundle);
+                mainActivity.startActivity(intent);
+            }
+        });
+
+
         return holder;
     }
 
     class CardViewHolder extends RecyclerView.ViewHolder {
         boolean set_flag = false;
         ImageView imageView;
+        ImageView detail;
         TextView textView;
         TextView content;
         View hover;
@@ -275,9 +314,11 @@ public class MsgRecycleAdapter extends RecyclerView.Adapter<MsgRecycleAdapter.Ca
             this.hover = hover;
             mSampleLayout = (BlurLayout) view.findViewById(R.id.blur_layout);
             imageView = (ImageView) view.findViewById(R.id.msg_photo);
-            textView = (TextView) view.findViewById(R.id.msg_position);
+            textView = (TextView) view.findViewById(R.id.msg_tag);
             content = (TextView) hover.findViewById(R.id.content);
             songTitle = (TextView) hover.findViewById(R.id.song_title);
+            detail = (ImageView) hover.findViewById(R.id.detail);
+
         }
     }
 
