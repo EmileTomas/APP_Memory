@@ -49,6 +49,9 @@ public class ScanActivity extends Activity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent();
+                Bundle bundle = new Bundle();
+                bundle.putString("userName", userName);
+                intent.putExtras(bundle);
                 intent.setClass(ScanActivity.this, ScanCaptureActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivityForResult(intent, SCANNIN_GREQUEST_CODE);
@@ -62,13 +65,13 @@ public class ScanActivity extends Activity {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
             case SCANNIN_GREQUEST_CODE:
-                if(resultCode == RESULT_OK){
+                    System.out.println("Scan result ok !!!!!");
                     Bundle bundle = data.getExtras();
                     //显示扫描到的内容
+                    System.out.println("Scan Activity result : "+bundle.getString("result"));
                     mTextView.setText(bundle.getString("result"));
                     //显示
-                    mImageView.setImageBitmap((Bitmap) data.getParcelableExtra("bitmap"));
-                }
+                    //mImageView.setImageBitmap((Bitmap) data.getParcelableExtra("bitmap"));
                 break;
         }
     }

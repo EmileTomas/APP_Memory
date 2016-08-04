@@ -276,7 +276,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
      */
     public void scan() {
         Toast.makeText(MainActivity.this,"Scan Button clicked",Toast.LENGTH_LONG).show();
-        Intent intent = new Intent(MainActivity.this,ScanActivity.class);
+        Intent intent = new Intent(MainActivity.this,ScanCaptureActivity.class);
         Bundle bundle = new Bundle();
         bundle.putString("userName", user_name);
         intent.putExtras(bundle);

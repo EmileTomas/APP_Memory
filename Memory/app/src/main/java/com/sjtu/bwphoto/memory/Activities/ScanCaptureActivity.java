@@ -47,6 +47,7 @@ public class ScanCaptureActivity extends Activity implements Callback {
     private boolean playBeep;
     private static final float BEEP_VOLUME = 0.10f;
     private boolean vibrate;
+    private String userName;
 
     /** Called when the activity is first created. */
     @Override
@@ -58,6 +59,10 @@ public class ScanCaptureActivity extends Activity implements Callback {
         //ViewUtil.addTopView(getApplicationContext(), this, R.string.scan_card);
         CameraManager.init(getApplication());
         viewfinderView = (ViewfinderView) findViewById(R.id.viewfinder_view);
+
+        //Receive Data from last activity
+        Bundle bundle = this.getIntent().getExtras();
+        userName = bundle.getString("userName");
 
         Button mButtonBack = (Button) findViewById(R.id.button_back);
         mButtonBack.setOnClickListener(new OnClickListener() {
@@ -121,15 +126,27 @@ public class ScanCaptureActivity extends Activity implements Callback {
         inactivityTimer.onActivity();
         playBeepSoundAndVibrate();
         String resultString = result.getText();
+        System.out.println("Scan result : "+resultString);
         if (resultString.equals("")) {
             Toast.makeText(ScanCaptureActivity.this, "Scan failed!", Toast.LENGTH_SHORT).show();
         }else {
+            //Intent resultIntent = new Intent();
+            //resultIntent.setClass(ScanCaptureActivity.this, ScanActivity.class);
+            //Bundle bundle = new Bundle();
+            //bundle.putString("result", resultString);
+            //bundle.putParcelable("bitmap", barcode);
+            //bundle.putString("userName", userName);
+            //resultIntent.putExtras(bundle);
+            //System.out.println("Scan result : "+resultString);
+            //this.setResult(RESULT_OK, resultIntent);
+            //startActivity(resultIntent);
+            Toast.makeText(ScanCaptureActivity.this, "Scan Success!", Toast.LENGTH_SHORT).show();
             Intent resultIntent = new Intent();
+            resultIntent.setClass(ScanCaptureActivity.this, MainActivity.class);
             Bundle bundle = new Bundle();
-            bundle.putString("result", resultString);
-            bundle.putParcelable("bitmap", barcode);
+            bundle.putString("userName", userName);
             resultIntent.putExtras(bundle);
-            this.setResult(RESULT_OK, resultIntent);
+            startActivity(resultIntent);
         }
         ScanCaptureActivity.this.finish();
     }
