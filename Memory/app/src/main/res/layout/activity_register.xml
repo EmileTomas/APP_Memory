@@ -187,7 +187,7 @@
             android:gravity="center"
             android:inputType="text"
             android:textColor="@color/ivory"
-            android:maxLength="10"
+            android:maxLength="30"
             android:paddingLeft="45.0sp"
             android:saveEnabled="true" />
 
