@@ -1,4 +1,4 @@
-package com.sjtu.bwphoto.memory.Class.Util;
+package com.sjtu.bwphoto.memory.Class.Adapter;
 import android.nfc.Tag;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;

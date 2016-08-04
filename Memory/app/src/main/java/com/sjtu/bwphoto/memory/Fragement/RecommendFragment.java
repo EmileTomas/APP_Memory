@@ -18,12 +18,13 @@ import android.view.ViewGroup;
 import com.sjtu.bwphoto.memory.Activities.MainActivity;
 import com.sjtu.bwphoto.memory.Class.Datebase.DatabaseHelper;
 import com.sjtu.bwphoto.memory.Class.Datebase.DatabaseManager;
-import com.sjtu.bwphoto.memory.Class.Msg;
+import com.sjtu.bwphoto.memory.Class.Adapter.Msg;
 import com.sjtu.bwphoto.memory.Class.Resource.Memory;
+import com.sjtu.bwphoto.memory.Class.Resource.Resource;
 import com.sjtu.bwphoto.memory.Class.Resource.ResourceList;
 import com.sjtu.bwphoto.memory.Class.RestUtil;
 import com.sjtu.bwphoto.memory.Class.ServerUrl;
-import com.sjtu.bwphoto.memory.Class.Util.MsgRecycleAdapter;
+import com.sjtu.bwphoto.memory.Class.Adapter.MsgRecycleAdapter;
 import com.sjtu.bwphoto.memory.R;
 
 import java.util.ArrayList;
@@ -145,13 +146,15 @@ public class RecommendFragment extends Fragment implements SwipeRefreshLayout.On
             //store Cards via Qtbase
             ContentValues values = new ContentValues();
             for (int i = 0; i < Cards.size(); ++i) {
+                Msg card=Cards.get(i);
+                values.put("resourceID",card.getResourceId());
                 values.put("rankNum", i);
                 values.put("account", userAccount);
-                values.put("posterAccount",Cards.get(i).getPosterAccount());
-                values.put("tag", Cards.get(i).getTag());
-                values.put("memoryText", Cards.get(i).getContent());
-                values.put("imageURL", Cards.get(i).getImageUrl());
-                values.put("musicHash",Cards.get(i).getMusicHash());
+                values.put("posterAccount",card.getPosterAccount());
+                values.put("tag", card.getTag());
+                values.put("memoryText", card.getContent());
+                values.put("imageURL", card.getImageUrl());
+                values.put("musicHash",card.getMusicHash());
 
                 sqLiteDatabase.insert("RecommendPage", null, values);
                 values.clear();
@@ -167,12 +170,13 @@ public class RecommendFragment extends Fragment implements SwipeRefreshLayout.On
         if (cursor.moveToFirst()) {
             do {
                 int rankNum = cursor.getInt(cursor.getColumnIndex("rankNum"));
+                int resourceId=cursor.getInt(cursor.getColumnIndex("resourceId"));
                 String posterAccount=cursor.getString(cursor.getColumnIndex("posterAccount"));
                 String tag = cursor.getString(cursor.getColumnIndex("tag"));
                 String memoryText = cursor.getString(cursor.getColumnIndex("memoryText"));
                 String imageURL = cursor.getString(cursor.getColumnIndex("imageURL"));
                 String musicHash=cursor.getString(cursor.getColumnIndex("musicHash"));
-                Msg Card = new Msg(posterAccount, memoryText, tag, imageURL, musicHash);
+                Msg Card = new Msg(resourceId,posterAccount,memoryText, tag, imageURL,musicHash);
                 Cards.add(Card);
             } while (cursor.moveToNext());
         }
@@ -195,10 +199,11 @@ public class RecommendFragment extends Fragment implements SwipeRefreshLayout.On
             String imageId;
 
             for (int i = 0; i < resources.size(); ++i) {
-                memory = RestUtil.getForObject(url.url + "/resources/" + resources.get(i).getId() + "/words", Memory.class);
-                imageId = url.url + "/resources/" + resources.get(i).getId() + "/image";
+                Resource resource=resources.get(i);
+                memory = RestUtil.getForObject(url.url + "/resources/" + resource.getId() + "/words", Memory.class);
+                imageId = url.url + "/resources/" + resource.getId() + "/image";
 
-                card = new Msg(resources.get(i).getName(), memory.getContent(), Integer.toString(memory.getTimestamp()), imageId, "c23d025ee9ece593abd96d7b97db97b4");
+                card = new Msg(resource.getId(),resource.getName(), memory.getContent(), Integer.toString(memory.getTimestamp()), imageId, "c23d025ee9ece593abd96d7b97db97b4");
                 Cards.add(0, card);
                 System.out.println(url.url + "/resources/" + resources.get(i).getId() + "/words");
                 System.out.println(imageId);
@@ -275,7 +280,7 @@ public class RecommendFragment extends Fragment implements SwipeRefreshLayout.On
                     if (!isCardEmpty) {
                         // bottom
                         freushFlag = false;
-                        Msg msg3 = new Msg("Tomas","This is a Story about the future", "GreatWall", "drawable://" + R.drawable.greatwall,"c23d025ee9ece593abd96d7b97db97b4");
+                        Msg msg3 = new Msg(-1,"Tomas","This is a Story about the future", "GreatWall", "drawable://" + R.drawable.greatwall,"c23d025ee9ece593abd96d7b97db97b4");
                         Cards.add(msg3);
                         swipeRefreshLayout.setRefreshing(false);
                         msgRecycleAdapter.notifyDataSetChanged();

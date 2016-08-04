@@ -1,23 +1,27 @@
 package com.sjtu.bwphoto.memory.Activities;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
-import android.os.Message;
-import android.os.PersistableBundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.sjtu.bwphoto.memory.Class.Adapter.CommentAdapter;
 import com.sjtu.bwphoto.memory.Class.Resource.CommentIntent;
+import com.sjtu.bwphoto.memory.Class.Resource.MarkReceiveList;
 import com.sjtu.bwphoto.memory.Class.RestUtil;
-import com.sjtu.bwphoto.memory.Class.Util.Song;
+import com.sjtu.bwphoto.memory.Class.Resource.Song;
+import com.sjtu.bwphoto.memory.Class.ServerUrl;
 import com.sjtu.bwphoto.memory.R;
 
 import java.io.BufferedReader;
@@ -30,6 +34,8 @@ import java.net.URL;
  * Created by Administrator on 2016/8/2.
  */
 public class CommentActivity extends AppCompatActivity {
+    private static final ServerUrl url = new ServerUrl();
+
     private Song song = new Song();
     private MediaPlayer mediaPlayer=new MediaPlayer();
     CommentIntent commentIntent;
@@ -39,6 +45,11 @@ public class CommentActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.comment_view);
 
+        initialHeader();
+
+    }
+
+    private void initialHeader(){
         Intent intent = this.getIntent();
         commentIntent= (CommentIntent) intent.getSerializableExtra("commentIntent");
 
@@ -69,8 +80,6 @@ public class CommentActivity extends AppCompatActivity {
         //set Music Player
         if (commentIntent.getMusicURL() != "") {
 
-
-
             new Thread(new Runnable() {
                 @Override
                 public void run() {
@@ -99,9 +108,29 @@ public class CommentActivity extends AppCompatActivity {
             }).start();
         }
     }
+    private void InitialComment(){
+        MarkReceiveList markReceiveList=new MarkReceiveList();
 
+        if(commentIntent.getResourceId()!=-1){
+            String markUrl=url.url+"/resources/"+Integer.toString(commentIntent.getResourceId())+"/marks";
+            markReceiveList =RestUtil.getForObject(markUrl,MarkReceiveList.class);
+        }
+
+        View rootView=findViewById(R.id.comment_view);
+        RecyclerView recyclerView;
+        CommentAdapter adapter=new CommentAdapter(rootView,markReceiveList);
+
+        //Set Adapter for data
+        final LinearLayoutManager layoutManager = new LinearLayoutManager(rootView.getContext());
+        recyclerView = (RecyclerView) rootView.findViewById(R.id.comment_view_recycleView);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setAdapter(adapter);
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+
+    }
     //request for JSON feedback of Music
-    public static String request(String httpUrl, String httpArg) {
+    private static String request(String httpUrl, String httpArg) {
         BufferedReader reader = null;
         String result = null;
         StringBuffer sbf = new StringBuffer();

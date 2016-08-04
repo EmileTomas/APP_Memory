@@ -1,4 +1,4 @@
-package com.sjtu.bwphoto.memory.Class.Util.Util_Cropper;
+package com.sjtu.bwphoto.memory.Class.Adapter;
 
 import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
@@ -10,22 +10,12 @@ import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.sjtu.bwphoto.memory.Class.Msg;
-import com.sjtu.bwphoto.memory.Class.Resource.FriendRequest;
-import com.sjtu.bwphoto.memory.Class.Resource.FriendRequestList;
 import com.sjtu.bwphoto.memory.Class.RestUtil;
 import com.sjtu.bwphoto.memory.Class.ServerUrl;
-import com.sjtu.bwphoto.memory.Class.User;
-import com.sjtu.bwphoto.memory.Class.Util.FriendRequestCard;
 import com.sjtu.bwphoto.memory.R;
 
-import org.w3c.dom.Text;
-
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.zip.Inflater;
 
-import androidviewhover.BlurLayout;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 /**

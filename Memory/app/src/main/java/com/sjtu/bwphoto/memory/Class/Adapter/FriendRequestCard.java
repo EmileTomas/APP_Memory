@@ -1,4 +1,4 @@
-package com.sjtu.bwphoto.memory.Class.Util;
+package com.sjtu.bwphoto.memory.Class.Adapter;
 
 import com.sjtu.bwphoto.memory.Class.Resource.FriendRequest;
 

@@ -2,7 +2,6 @@ package com.sjtu.bwphoto.memory.Activities;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -18,12 +17,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sjtu.bwphoto.memory.Class.Resource.Resource;
 import com.sjtu.bwphoto.memory.Class.RestUtil;
 import com.sjtu.bwphoto.memory.Class.ServerUrl;
-import com.sjtu.bwphoto.memory.Class.Util.Song;
 import com.sjtu.bwphoto.memory.Class.Util.Util_Cropper.Songresult;
 import com.sjtu.bwphoto.memory.R;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;

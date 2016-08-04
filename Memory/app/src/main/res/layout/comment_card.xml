@@ -16,8 +16,9 @@
             android:orientation="horizontal">
 
             <de.hdodenhof.circleimageview.CircleImageView
-                android:layout_width="37dp"
-                android:layout_height="37dp"
+                android:id="@+id/comment_view_comment_profile"
+                android:layout_width="47dp"
+                android:layout_height="47dp"
                 android:paddingLeft="4dp"
                 android:paddingTop="2dp"
                 android:src="@drawable/profile"
@@ -31,29 +32,32 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/comment_view_comment_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingLeft="5dp"
                     android:text="Lilith"
                     android:textColor="@color/black"
-                    android:textSize="35px" />
+                    android:textSize="50px" />
 
                 <TextView
+                    android:id="@+id/comment_view_comment_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingLeft="5dp"
                     android:text="Today 1:00 AM"
                     android:textColor="@color/black_overlay"
-                    android:textSize="25px" />
+                    android:textSize="40px" />
 
                 <TextView
+                    android:id="@+id/comment_view_comment_content"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingBottom="5dp"
                     android:paddingLeft="5dp"
                     android:text="I think you hold the right Stuff in this problem."
                     android:textColor="@color/black_translucent"
-                    android:textSize="25px" />
+                    android:textSize="45px" />
 
             </LinearLayout>
         </LinearLayout>
