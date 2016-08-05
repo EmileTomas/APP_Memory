@@ -13,7 +13,7 @@ import java.sql.Timestamp;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)  //如果null就不生成
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Mark {
+public class MarkCreate {
     @JsonProperty
     String content;
     @JsonProperty
@@ -37,7 +37,7 @@ public class Mark {
 
 
 
-    public Mark(String content, Timestamp timestamp){
+    public MarkCreate(String content, Timestamp timestamp){
         this.content=content;
         this.timestamp=timestamp;
     }

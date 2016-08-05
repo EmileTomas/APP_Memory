@@ -1,4 +1,4 @@
-package com.sjtu.bwphoto.memory.Class.Util;
+package com.sjtu.bwphoto.memory.Class.Adapter;
 
 import android.app.Activity;
 import android.app.Service;
@@ -26,14 +26,13 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.sjtu.bwphoto.memory.Activities.CommentActivity;
 import com.sjtu.bwphoto.memory.Activities.MainActivity;
-import com.sjtu.bwphoto.memory.Class.Msg;
 import com.sjtu.bwphoto.memory.Class.Resource.CommentIntent;
-import com.sjtu.bwphoto.memory.Class.Resource.Mark;
+import com.sjtu.bwphoto.memory.Class.Resource.MarkCreate;
 import com.sjtu.bwphoto.memory.Class.RestUtil;
 import com.sjtu.bwphoto.memory.Class.ServerUrl;
+import com.sjtu.bwphoto.memory.Class.Util.FloatingActionsMenu;
+import com.sjtu.bwphoto.memory.Class.Resource.Song;
 import com.sjtu.bwphoto.memory.R;
-
-import org.w3c.dom.Comment;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -41,7 +40,6 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.sql.Timestamp;
-import java.util.Date;
 import java.util.List;
 
 import androidviewhover.BlurLayout;
@@ -274,8 +272,8 @@ public class MsgRecycleAdapter extends RecyclerView.Adapter<MsgRecycleAdapter.Ca
                 //Send Message here
                 Timestamp timestamp = new Timestamp(System.currentTimeMillis());
                 String markURL = msg.getImageUrl().replace("image", "marks");
-                Mark mark = new Mark(text, timestamp);
-                String result = RestUtil.postForObject(markURL, mark, String.class);
+                MarkCreate markCreate = new MarkCreate(text, timestamp);
+                String result = RestUtil.postForObject(markURL, markCreate, String.class);
                 System.out.println(result);
             }
         });
@@ -288,7 +286,7 @@ public class MsgRecycleAdapter extends RecyclerView.Adapter<MsgRecycleAdapter.Ca
                 Intent intent = new Intent(mainActivity, CommentActivity.class);
                 Bundle bundle = new Bundle();
                 System.out.println("Position is " + holder.getAdapterPosition());
-                CommentIntent commentIntent = new CommentIntent(msg.getPosterAccount(), msg.getImageUrl(), msg.getMusicHash(), msg.getContent());
+                CommentIntent commentIntent = new CommentIntent(msg.getResourceId(),msg.getPosterAccount(), msg.getImageUrl(), msg.getMusicHash(), msg.getContent());
                 bundle.putSerializable("commentIntent", commentIntent);
                 intent.putExtras(bundle);
                 mainActivity.startActivity(intent);

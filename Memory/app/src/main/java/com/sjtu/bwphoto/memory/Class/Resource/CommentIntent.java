@@ -7,10 +7,19 @@ import java.io.Serializable;
  */
 public class CommentIntent implements Serializable {
 
+    int resourceId;
     String name;
     String imageURL;
     String musicURL;
     String content;
+
+    public int getResourceId() {
+        return resourceId;
+    }
+
+    public void setResourceId(int resourceId) {
+        this.resourceId = resourceId;
+    }
 
     public String getName() {
         return name;
@@ -44,7 +53,8 @@ public class CommentIntent implements Serializable {
         this.content = content;
     }
 
-public CommentIntent(String name,String imageURL,String musicURL,String content){
+public CommentIntent(int resourceId,String name,String imageURL,String musicURL,String content){
+    this.resourceId=resourceId;
     this.name=name;
     this.imageURL=imageURL;
     this.musicURL=musicURL;

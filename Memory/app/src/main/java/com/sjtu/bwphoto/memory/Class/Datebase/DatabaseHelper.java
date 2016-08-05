@@ -20,6 +20,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public static final String CREATE_VIEW_STORE_PAGE1 = "create table RecentPage("
             + "id integer primary key autoincrement,"
+            + "resourceId integer"
             + "account text,"
             + "posterAccount text,"
             + "rankNum integer,"
@@ -30,6 +31,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public static final String CREATE_VIEW_STORE_PAGE2 = "create table RecommendPage("
             + "id integer primary key autoincrement,"
+            + "resourceId integer"
             + "account text,"
             + "posterAccount text,"
             + "rankNum integer,"
@@ -40,6 +42,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public static final String CREATE_VIEW_STORE_PAGE3 = "create table PersonalPage("
             + "id integer primary key autoincrement,"
+            + "resourceId integer"
             + "account text,"
             + "posterAccount text,"
             + "rankNum integer,"

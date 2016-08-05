@@ -1,4 +1,4 @@
-package com.sjtu.bwphoto.memory.Class.Util;
+package com.sjtu.bwphoto.memory.Class.Resource;
 
 /**
  * Created by Administrator on 2016/7/23.

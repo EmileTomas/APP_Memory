@@ -35,7 +35,7 @@ import com.sjtu.bwphoto.memory.Class.Resource.Resource;
 import com.sjtu.bwphoto.memory.Class.RestUtil;
 import com.sjtu.bwphoto.memory.Class.ServerUrl;
 import com.sjtu.bwphoto.memory.Class.Util.FloatingActionsMenu;
-import com.sjtu.bwphoto.memory.Class.Util.TabsPagerAdapter;
+import com.sjtu.bwphoto.memory.Class.Adapter.TabsPagerAdapter;
 import com.sjtu.bwphoto.memory.Fragement.PersonalFragment;
 import com.sjtu.bwphoto.memory.Fragement.RecentFragment;
 import com.sjtu.bwphoto.memory.Fragement.RecommendFragment;
@@ -46,7 +46,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
-import java.util.logging.Handler;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private static final String IMAGE_UNSPECIFIED = "image/*";

@@ -12,7 +12,13 @@ import org.springframework.web.client.RestTemplate;
 import java.util.Map;
 
 /**
- * Created by ly on 7/21/2016.
+ * RestTemplate With Cookie
+ * @Author Li Yi
+ * @since 2016/7/21
+ * @version
+ *      0   basic GET and POST
+ *      0.5 Auth and cookie impl  2016/7/21
+ *      1   DELETE method         2016/8/2
  */
 public class RestUtil {
     private static RestTemplate restTemplate = new RestTemplate();
@@ -52,6 +58,16 @@ public class RestUtil {
         return (T)re.getBody();
     }
 
+    public static <T> T deleteForOject(String url, Class<T> clazz)
+    {
+        return (T)restTemplate.exchange(
+                url,
+                HttpMethod.DELETE,
+                new HttpEntity(headers),
+                clazz
+        ).getBody();
+    }
+
     public static <T> T uploadFile(String url, FileSystemResource isr, String filename, Class<T> clazz)
     {
         MultiValueMap<String, Object> hd = new LinkedMultiValueMap<>();
@@ -71,3 +87,4 @@ public class RestUtil {
         return headers.toSingleValueMap();
     }
 }
+

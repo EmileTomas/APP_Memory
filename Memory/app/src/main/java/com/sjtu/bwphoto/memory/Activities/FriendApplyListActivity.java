@@ -1,8 +1,6 @@
 package com.sjtu.bwphoto.memory.Activities;
 
-import android.app.Activity;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -10,18 +8,14 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
 
-import com.sjtu.bwphoto.memory.Class.Resource.FriendRequest;
 import com.sjtu.bwphoto.memory.Class.Resource.FriendRequestList;
 import com.sjtu.bwphoto.memory.Class.RestUtil;
 import com.sjtu.bwphoto.memory.Class.ServerUrl;
-import com.sjtu.bwphoto.memory.Class.Util.FriendRequestCard;
-import com.sjtu.bwphoto.memory.Class.Util.Util_Cropper.FriendRequestAdapter;
+import com.sjtu.bwphoto.memory.Class.Adapter.FriendRequestCard;
+import com.sjtu.bwphoto.memory.Class.Adapter.FriendRequestAdapter;
 import com.sjtu.bwphoto.memory.R;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Administrator on 2016/7/30.
@@ -45,19 +39,20 @@ public class FriendApplyListActivity extends AppCompatActivity {
         if (friendRequestList != null) {
             System.out.println("Get Data");
             FriendRequestCard friendRequestCard;
-            for (int i = 0; i < friendRequestList.size(); ++i) {
-                String name = friendRequestList.get(i).getApplyer();
-                //Here should changed to corresponding API
-                String content = "Hope be Friend with you.";
-                String imageURL = "https://case.edu/medicine/admissions/media/school-of-medicine/admissions/classprofile.png";
-                friendRequestCard = new FriendRequestCard(name, content, imageURL);
-                friendRequestCards.add(friendRequestCard);
+            if (friendRequestList.size() != 0) {
+                for (int i = 0; i < friendRequestList.size(); ++i) {
+                    String name = friendRequestList.get(i).getApplyer();
+                    //Here should changed to corresponding API
+                    String content = "Hope be Friend with you.";
+                    String imageURL = "https://case.edu/medicine/admissions/media/school-of-medicine/admissions/classprofile.png";
+                    friendRequestCard = new FriendRequestCard(name, content, imageURL);
+                    friendRequestCards.add(friendRequestCard);
+                }
+            } else {
+                System.out.println("Get Data Failed");
+                TextView info = (TextView) findViewById(R.id.friend_apply_info);
+                info.setVisibility(View.VISIBLE);
             }
-
-        } else {
-            System.out.println("Get Data Failed");
-            TextView info = (TextView) findViewById(R.id.friend_apply_info);
-            info.setVisibility(View.VISIBLE);
         }
 
         View rootView = findViewById(R.id.friend_apply_rootview);
