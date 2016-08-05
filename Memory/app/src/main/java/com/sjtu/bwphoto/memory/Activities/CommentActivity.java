@@ -46,7 +46,7 @@ public class CommentActivity extends AppCompatActivity {
         setContentView(R.layout.comment_view);
 
         initialHeader();
-
+        InitialComment();
     }
 
     private void initialHeader(){
@@ -113,7 +113,10 @@ public class CommentActivity extends AppCompatActivity {
 
         if(commentIntent.getResourceId()!=-1){
             String markUrl=url.url+"/resources/"+Integer.toString(commentIntent.getResourceId())+"/marks";
+            System.out.println("get Mark from"+markUrl);
             markReceiveList =RestUtil.getForObject(markUrl,MarkReceiveList.class);
+            String temp=RestUtil.getForObject(markUrl,String.class);
+            System.out.println("Dddd"+temp);
         }
 
         View rootView=findViewById(R.id.comment_view);

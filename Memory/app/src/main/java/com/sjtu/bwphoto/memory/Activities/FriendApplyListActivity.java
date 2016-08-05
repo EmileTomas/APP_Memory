@@ -11,7 +11,7 @@ import android.widget.TextView;
 import com.sjtu.bwphoto.memory.Class.Resource.FriendRequestList;
 import com.sjtu.bwphoto.memory.Class.RestUtil;
 import com.sjtu.bwphoto.memory.Class.ServerUrl;
-import com.sjtu.bwphoto.memory.Class.Adapter.FriendRequestCard;
+import com.sjtu.bwphoto.memory.Class.Adapter.UserCard;
 import com.sjtu.bwphoto.memory.Class.Adapter.FriendRequestAdapter;
 import com.sjtu.bwphoto.memory.R;
 
@@ -24,7 +24,7 @@ public class FriendApplyListActivity extends AppCompatActivity {
     private static final ServerUrl url = new ServerUrl();
     private FriendRequestList friendRequestList;
     private FriendRequestAdapter adapter;
-    private ArrayList<FriendRequestCard> friendRequestCards = new ArrayList<FriendRequestCard>();
+    private ArrayList<UserCard> userCards = new ArrayList<UserCard>();
     private RecyclerView recyclerView;
 
     @Override
@@ -38,15 +38,15 @@ public class FriendApplyListActivity extends AppCompatActivity {
         System.out.println(temp);
         if (friendRequestList != null) {
             System.out.println("Get Data");
-            FriendRequestCard friendRequestCard;
+            UserCard userCard;
             if (friendRequestList.size() != 0) {
                 for (int i = 0; i < friendRequestList.size(); ++i) {
                     String name = friendRequestList.get(i).getApplyer();
                     //Here should changed to corresponding API
                     String content = "Hope be Friend with you.";
-                    String imageURL = "https://case.edu/medicine/admissions/media/school-of-medicine/admissions/classprofile.png";
-                    friendRequestCard = new FriendRequestCard(name, content, imageURL);
-                    friendRequestCards.add(friendRequestCard);
+                    String imageURL = url.url+"/identity/profile/"+name;
+                    userCard = new UserCard(name, content, imageURL);
+                    userCards.add(userCard);
                 }
             } else {
                 System.out.println("Get Data Failed");
@@ -56,7 +56,7 @@ public class FriendApplyListActivity extends AppCompatActivity {
         }
 
         View rootView = findViewById(R.id.friend_apply_rootview);
-        adapter = new FriendRequestAdapter(rootView, friendRequestCards);
+        adapter = new FriendRequestAdapter(rootView, userCards);
 
         //Set Adapter for data
         final LinearLayoutManager layoutManager = new LinearLayoutManager(rootView.getContext());

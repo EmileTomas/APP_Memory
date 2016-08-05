@@ -5,7 +5,7 @@ import com.sjtu.bwphoto.memory.Class.Resource.FriendRequest;
 /**
  * Created by Administrator on 2016/7/31.
  */
-public class FriendRequestCard {
+public class UserCard {
     private String name;
     private String content;
     private String profile;
@@ -34,7 +34,7 @@ public class FriendRequestCard {
         this.profile = profile;
     }
 
-    public FriendRequestCard(String name, String content, String profile) {
+    public UserCard(String name, String content, String profile) {
         this.name = name;
         this.content = content;
         this.profile = profile;

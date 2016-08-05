@@ -56,9 +56,9 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentC
     public void onBindViewHolder(final CommentCardHolder holder, final int position) {
         MarkReceive markReceive=markReceiveArrayList.get(position);
 
-        holder.name.setText(markReceive.getThis_name());
+        holder.name.setText(markReceive.getThisUser());
         holder.content.setText(markReceive.getContent());
-        holder.time.setText(markReceive.getTimestamp().toString());
+        holder.time.setText(markReceive.getTime().toString());
 
         DisplayImageOptions options = new DisplayImageOptions.Builder()
                 .showImageOnLoading(R.drawable.loading)
@@ -69,7 +69,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentC
                 .extraForDownloader(RestUtil.getAuth())
                 .build();
 
-        ImageLoader.getInstance().displayImage(Url.url+"/identity/profile/"+markReceive.getThis_name(), holder.profile, options);
+        ImageLoader.getInstance().displayImage(Url.url+"/identity/profile/"+markReceive.getThisUser(), holder.profile, options);
 
     }
 
@@ -86,6 +86,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentC
             this.profile = (CircleImageView) view.findViewById(R.id.comment_view_comment_profile);
             this.name = (TextView) view.findViewById(R.id.comment_view_comment_name);
             this.content = (TextView) view.findViewById(R.id.comment_view_comment_content);
+            this.time=(TextView) view.findViewById(R.id.comment_view_comment_time);
         }
     }
 }
