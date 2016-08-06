@@ -55,6 +55,8 @@ public class MsgRecycleAdapter extends RecyclerView.Adapter<MsgRecycleAdapter.Ca
     private final int APPLY_SUCCESS = 1;
     private final int APPLY_FAIL = 2;
     private final int SET_SONG_TITLE = 3;
+    private final int COMMENT_SUCCESS=4;
+    private final int COMMENT_FAIL=5;
 
 
     private static MediaPlayer mediaplayer = new MediaPlayer();
@@ -228,7 +230,7 @@ public class MsgRecycleAdapter extends RecyclerView.Adapter<MsgRecycleAdapter.Ca
                                 mHandler.sendMessage(postmessage);
 
                             } else {
-                                postmessage.what = APPLY_SUCCESS;
+                                postmessage.what = APPLY_FAIL;
                                 mHandler.sendMessage(postmessage);
                             }
                         }
@@ -263,7 +265,7 @@ public class MsgRecycleAdapter extends RecyclerView.Adapter<MsgRecycleAdapter.Ca
             public void onClick(View view) {
 
                 final Msg msg = Cards.get(itemPosition);
-                String text = commentBox.getText().toString();
+                final String text = commentBox.getText().toString();
                 commentBox.setText("");
                 commentView.setVisibility(View.GONE);
                 imm.hideSoftInputFromWindow(commentBox.getWindowToken(), 0);
@@ -272,15 +274,32 @@ public class MsgRecycleAdapter extends RecyclerView.Adapter<MsgRecycleAdapter.Ca
                 postmessage.what = VISIBLE;
                 mHandler.sendMessageDelayed(postmessage, 250);
 
-                //Send Message here
-                Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-                String markURL = msg.getImageUrl().replace("image", "marks");
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        //Send Message here
+                        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+                        String markURL = msg.getImageUrl().replace("image", "marks");
 
-                MarkCreate markCreate = new MarkCreate(text, timestamp);
-                System.out.println("Create a mark on "+ markURL);
+                        MarkCreate markCreate = new MarkCreate(text, timestamp);
+                        System.out.println("Create a mark on "+ markURL);
 
-                String result = RestUtil.postForObject(markURL, markCreate, String.class);
-                System.out.println(result);
+                        String result = RestUtil.postForObject(markURL, markCreate, String.class);
+                        System.out.println(result);
+
+                        Message postmessage = new Message();
+                        if (result.contains("success")) {
+                            postmessage.what = COMMENT_SUCCESS;
+                            mHandler.sendMessage(postmessage);
+
+                        } else {
+                            postmessage.what = COMMENT_FAIL;
+                            mHandler.sendMessage(postmessage);
+                        }
+
+                    }
+                }).start();
+
             }
         });
 
@@ -377,6 +396,13 @@ public class MsgRecycleAdapter extends RecyclerView.Adapter<MsgRecycleAdapter.Ca
                     String title = msg.getData().get("SongTitle").toString();
                     songTitle.setText(title);
                     break;
+                case COMMENT_SUCCESS:
+                    Toast.makeText(MainActivity.mainActivityContext,"评论成功",Toast.LENGTH_SHORT).show();
+                    break;
+                case COMMENT_FAIL:
+                    Toast.makeText(MainActivity.mainActivityContext,"评论失败",Toast.LENGTH_SHORT).show();
+                    break;
+
             }
         }
 

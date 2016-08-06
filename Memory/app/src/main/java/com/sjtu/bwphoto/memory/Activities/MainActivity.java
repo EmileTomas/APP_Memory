@@ -482,7 +482,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Intent intent = new Intent(MainActivity.this, FriendApplyListActivity.class);
             startActivity(intent);
         } else if (id == R.id.nav_friendlist) {
-
+            Intent intent = new Intent(MainActivity.this, FriendListActivty.class);
+            startActivity(intent);
         }
 
         return true;

@@ -10,12 +10,11 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.sjtu.bwphoto.memory.Class.Adapter.FriendListAdapter;
-import com.sjtu.bwphoto.memory.Class.Adapter.FriendRequestAdapter;
 import com.sjtu.bwphoto.memory.Class.Adapter.UserCard;
 import com.sjtu.bwphoto.memory.Class.Resource.FriendList;
+import com.sjtu.bwphoto.memory.Class.Resource.UserDetail;
 import com.sjtu.bwphoto.memory.Class.RestUtil;
 import com.sjtu.bwphoto.memory.Class.ServerUrl;
-import com.sjtu.bwphoto.memory.Class.User;
 import com.sjtu.bwphoto.memory.R;
 
 import java.util.ArrayList;
@@ -37,12 +36,16 @@ public class FriendListActivty extends AppCompatActivity{
 
         //Get Data
         friends= RestUtil.getForObject(url.url+"/friends",FriendList.class);
-        if(friends.size()!=0){
+        String temp=RestUtil.getForObject(url.url+"/friends",String.class);
+        if(friends!=null){
             UserCard userCard;
             for(int i =0;i<friends.size();++i){
                 String name=friends.get(i).getFrName();
 
-                User friend=RestUtil.getForObject(url.url+"/identity/detail/"+name,User.class);
+                String s=RestUtil.getForObject(url.url+"/identity/detail/"+name,String.class);
+                System.out.println(s);
+
+                UserDetail friend=RestUtil.getForObject(url.url+"/identity/detail/"+name,UserDetail.class);
                 String content=friend.getContent();
                 String profileURL=url.url+"/identity/profile/"+name;
 

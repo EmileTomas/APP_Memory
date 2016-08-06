@@ -36,7 +36,7 @@ public class FriendApplyListActivity extends AppCompatActivity {
         friendRequestList = RestUtil.getForObject(url.url + "/friends/make", FriendRequestList.class);
         String temp = RestUtil.getForObject(url.url + "/friends/make", String.class);
         System.out.println(temp);
-        if (friendRequestList != null) {
+        if (friendRequestList.size()!=0) {
             System.out.println("Get Data");
             UserCard userCard;
             if (friendRequestList.size() != 0) {
@@ -48,11 +48,12 @@ public class FriendApplyListActivity extends AppCompatActivity {
                     userCard = new UserCard(name, content, imageURL);
                     userCards.add(userCard);
                 }
-            } else {
-                System.out.println("Get Data Failed");
-                TextView info = (TextView) findViewById(R.id.friend_apply_info);
-                info.setVisibility(View.VISIBLE);
             }
+        }
+        else {
+            System.out.println("Get Data Failed");
+            TextView info = (TextView) findViewById(R.id.friend_apply_info);
+            info.setVisibility(View.VISIBLE);
         }
 
         View rootView = findViewById(R.id.friend_apply_rootview);
