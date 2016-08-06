@@ -22,14 +22,10 @@ public class AddMemoryBookActivity extends AppCompatActivity {
     private Button BtnUpload;
     private Button BtnCancle;
     private Switch BtnPublic;
-    private ImageView PicView;
     private EditText Content;
     private String MemContent;
     private Boolean Sharable;
     private String userName;
-    private String croppedName;
-    private Uri imageUri;
-    private Bitmap cropped;
     private int res_id;
 
     private final static ServerUrl url = new ServerUrl();
@@ -44,11 +40,11 @@ public class AddMemoryBookActivity extends AppCompatActivity {
         //Receive Data from last activity
         Bundle bundle = this.getIntent().getExtras();
         userName = bundle.getString("userName");
+        res_id = bundle.getInt("res_id");
 
         BtnUpload = (Button) findViewById(R.id.btn_upload);
         BtnCancle = (Button) findViewById(R.id.btn_cancle);
         BtnPublic = (Switch) findViewById(R.id.btn_public);
-        PicView = (ImageView) findViewById(R.id.pic_view);
         Content = (EditText) findViewById(R.id.edit_area);
 
         BtnCancle.setOnClickListener(mListener);
@@ -103,6 +99,5 @@ public class AddMemoryBookActivity extends AppCompatActivity {
     public void set_share() {
         Sharable = BtnPublic.getShowText();
     }
-
 
 }

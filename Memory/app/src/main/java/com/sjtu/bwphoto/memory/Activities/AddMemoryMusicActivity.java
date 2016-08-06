@@ -17,7 +17,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sjtu.bwphoto.memory.Class.Resource.Resource;
 import com.sjtu.bwphoto.memory.Class.RestUtil;
 import com.sjtu.bwphoto.memory.Class.ServerUrl;
-import com.sjtu.bwphoto.memory.Class.Util.Util_Cropper.Songresult;
+import com.sjtu.bwphoto.memory.Class.Resource.Songresult;
 import com.sjtu.bwphoto.memory.R;
 
 import java.io.BufferedReader;

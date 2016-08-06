@@ -1,4 +1,4 @@
-package com.sjtu.bwphoto.memory.Class.Util.Util_Cropper;
+package com.sjtu.bwphoto.memory.Class.Resource;
 
 import java.util.ArrayList;
 

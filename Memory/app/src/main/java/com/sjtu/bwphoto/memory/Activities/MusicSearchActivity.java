@@ -10,7 +10,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -18,7 +17,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sjtu.bwphoto.memory.Class.Resource.Musichash;
 import com.sjtu.bwphoto.memory.Class.RestUtil;
 import com.sjtu.bwphoto.memory.Class.ServerUrl;
-import com.sjtu.bwphoto.memory.Class.Util.Util_Cropper.Songresult;
+import com.sjtu.bwphoto.memory.Class.Resource.Songresult;
 import com.sjtu.bwphoto.memory.R;
 
 import java.io.BufferedReader;

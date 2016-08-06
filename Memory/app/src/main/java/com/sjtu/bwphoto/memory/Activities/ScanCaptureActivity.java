@@ -1,6 +1,11 @@
 package com.sjtu.bwphoto.memory.Activities;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.Vector;
 
 import android.app.Activity;
@@ -23,9 +28,12 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.Result;
+import com.sjtu.bwphoto.memory.Class.Resource.Bookdb;
 import com.sjtu.bwphoto.memory.Class.Resource.Bookisbn;
+import com.sjtu.bwphoto.memory.Class.Resource.Songresult;
 import com.sjtu.bwphoto.memory.Class.RestUtil;
 import com.sjtu.bwphoto.memory.Class.ServerUrl;
 import com.sjtu.bwphoto.memory.R;
@@ -131,39 +139,76 @@ public class ScanCaptureActivity extends Activity implements Callback {
     public void handleDecode(Result result, Bitmap barcode) {
         inactivityTimer.onActivity();
         playBeepSoundAndVibrate();
-        String resultString = result.getText();
+        final String resultString = result.getText();
         System.out.println("Scan result : "+resultString);
         if (resultString.equals("")) {
             Toast.makeText(ScanCaptureActivity.this, "Scan failed!", Toast.LENGTH_SHORT).show();
         }else {
-            //Intent resultIntent = new Intent();
-            //resultIntent.setClass(ScanCaptureActivity.this, ScanActivity.class);
-            //Bundle bundle = new Bundle();
-            //bundle.putString("result", resultString);
-            //bundle.putParcelable("bitmap", barcode);
-            //bundle.putString("userName", userName);
-            //resultIntent.putExtras(bundle);
-            //System.out.println("Scan result : "+resultString);
-            //this.setResult(RESULT_OK, resultIntent);
-            //startActivity(resultIntent);
             Toast.makeText(ScanCaptureActivity.this, "Scan Success!", Toast.LENGTH_SHORT).show();
             Bookisbn isbn = new Bookisbn();
             isbn.setResource_id(res_id);
             isbn.setISBN(resultString);
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    synchronized (this) {
+                        String httpdouban = "https://api.douban.com/v2/book/isbn/:" + resultString;
+                        Bookdb book = getbook(httpdouban);
+                        String imageurl = book.getImage();
+                        System.out.println("Book image path : " + imageurl);
+                        // wait to upload
+                    }
+                }
+            }).start();
             String serverresult = RestUtil.postForObject(url.url+"/resources/"+res_id+"/book/"+resultString, isbn, String.class);
             System.out.println(serverresult);
             if (serverresult.contains("success")) {
                 System.out.println("Book upload success !!!");
                 Intent resultIntent = new Intent();
-                resultIntent.setClass(ScanCaptureActivity.this, MainActivity.class);
+                resultIntent.setClass(ScanCaptureActivity.this, AddMemoryBookActivity.class);
                 Bundle bundle = new Bundle();
                 bundle.putString("userName", userName);
+                bundle.putInt("res_id",res_id);
                 resultIntent.putExtras(bundle);
                 startActivity(resultIntent);
             }
             else System.out.println("Book upload fail !!!");
         }
         ScanCaptureActivity.this.finish();
+    }
+
+    public Bookdb getbook(String httpUrl){
+        Bookdb book = new Bookdb();
+        BufferedReader reader = null;
+        StringBuffer sbf = new StringBuffer();
+        String result = new String();
+        try {
+            URL url = new URL(httpUrl);
+            HttpURLConnection connection = (HttpURLConnection) url
+                    .openConnection();
+            connection.setRequestMethod("GET");
+            connection.connect();
+            InputStream is = connection.getInputStream();
+            reader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
+            String strRead = null;
+            while ((strRead = reader.readLine()) != null) {
+                sbf.append(strRead);
+                sbf.append("\r\n");
+            }
+            reader.close();
+            result = sbf.toString();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        System.out.println("Dou Ban result : " + result);
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            book = objectMapper.readValue(result, Bookdb.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("Book : read json error");
+        }
+        return book;
     }
 
     private void initCamera(SurfaceHolder surfaceHolder) {
