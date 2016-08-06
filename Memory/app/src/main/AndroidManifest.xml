@@ -14,9 +14,7 @@
     <uses-feature
         android:name="android.hardware.camera"
         android:required="true" />
-
-    <uses-feature
-        android:name="android.hardware.camera.autofocus"/>
+    <uses-feature android:name="android.hardware.camera.autofocus" />
 
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -44,10 +42,10 @@
         <activity android:name=".Activities.RegisterActivity" />
         <activity android:name=".Activities.FirstActivity" />
         <activity android:name=".Activities.AddMemoryActivity" />
-
         <activity android:name=".Activities.CommentActivity" />
         <activity android:name=".Activities.CropperActivity" />
         <activity android:name=".Activities.FriendApplyListActivity" />
+
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
@@ -55,7 +53,8 @@
         <activity android:name=".Activities.AddMemoryMusicActivity" />
         <activity android:name=".Activities.MusicSearchActivity" />
         <activity android:name=".Activities.ScanActivity" />
-        <activity android:name=".Activities.ScanCaptureActivity"></activity>
+        <activity android:name=".Activities.ScanCaptureActivity" />
+        <activity android:name=".Activities.AddMemoryBookActivity"></activity>
     </application>
 
 </manifest>

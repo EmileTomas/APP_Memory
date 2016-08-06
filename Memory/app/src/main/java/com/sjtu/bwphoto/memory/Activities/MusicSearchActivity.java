@@ -15,6 +15,9 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sjtu.bwphoto.memory.Class.Resource.Musichash;
+import com.sjtu.bwphoto.memory.Class.RestUtil;
+import com.sjtu.bwphoto.memory.Class.ServerUrl;
 import com.sjtu.bwphoto.memory.Class.Util.Util_Cropper.Songresult;
 import com.sjtu.bwphoto.memory.R;
 
@@ -34,7 +37,11 @@ public class MusicSearchActivity extends AppCompatActivity {
     private Button BtnBack;
     private ListView ListResult;
     private ArrayList<String> list_result = new ArrayList<String>();
+    private ArrayList<String> list_hash = new ArrayList<String>();
     private Songresult song;
+    private int res_id;
+    private String croppedName;
+    private final static ServerUrl url = new ServerUrl();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +53,8 @@ public class MusicSearchActivity extends AppCompatActivity {
         //Receive Data from last activity
         Bundle bundle = this.getIntent().getExtras();
         userName = bundle.getString("userName");
+        res_id = bundle.getInt("res_id");
+        croppedName = bundle.getString("croppedName");
 
         SongName = (EditText) findViewById(R.id.song_name);
         BtnSearch = (Button) findViewById(R.id.search);
@@ -75,7 +84,28 @@ public class MusicSearchActivity extends AppCompatActivity {
     AdapterView.OnItemClickListener mListener2 = new AdapterView.OnItemClickListener() {
         public void onItemClick(AdapterView<?> parent, View view, int position,
                                 long id) {
-            Toast.makeText(MusicSearchActivity.this,"no api no write hhh",Toast.LENGTH_SHORT).show();
+            if(id == -1) {
+                // 点击的是headerView或者footerView
+                return;
+            }
+            int realPosition=(int)id;
+            // 响应代码
+            String hash = list_hash.get(realPosition);
+            System.out.println("Music Search select hash : "+ hash);
+            Musichash mhash = new Musichash();
+            mhash.setResource_id(res_id);
+            mhash.setHashcode(hash);
+            String result = RestUtil.postForObject(url.url+"/resources/"+res_id+"/music/"+hash, mhash, String.class);
+            System.out.println("Music Search upload hash result: "+ result);
+            Toast.makeText(MusicSearchActivity.this,"Add Music success",Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(MusicSearchActivity.this, AddMemoryActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putString("userName", userName);
+            bundle.putString("croppedName", croppedName);
+            bundle.putInt("res_id", res_id);
+            intent.putExtras(bundle);
+            startActivity(intent);
+            MusicSearchActivity.this.finish();
         }
     };
 
@@ -109,6 +139,7 @@ public class MusicSearchActivity extends AppCompatActivity {
                             System.out.println("music hash: " + hash);
                             System.out.println("music name: " + name);
                             list_result.add(name);
+                            list_hash.add(hash);
                         }
                     } catch (IOException e) {
                         e.printStackTrace();

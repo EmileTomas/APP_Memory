@@ -15,18 +15,25 @@ import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.Toast;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sjtu.bwphoto.memory.Class.Resource.Resource;
 import com.sjtu.bwphoto.memory.Class.RestUtil;
 import com.sjtu.bwphoto.memory.Class.ServerUrl;
+import com.sjtu.bwphoto.memory.Class.Util.Util_Cropper.Songresult;
 import com.sjtu.bwphoto.memory.R;
 
+import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 public class AddMemoryActivity extends Activity {
     private Button BtnUpload;
     private Button BtnCancle;
+    private Button BtnMusic;
     private Switch BtnPublic;
     private ImageView PicView;
     private ImageView FullView;
@@ -38,6 +45,7 @@ public class AddMemoryActivity extends Activity {
     private Uri imageUri;
     private Bitmap cropped;
     private int res_id;
+    private Songresult song = new Songresult();
 
     private final static ServerUrl url = new ServerUrl();
 
@@ -69,6 +77,7 @@ public class AddMemoryActivity extends Activity {
 
         BtnUpload = (Button) findViewById(R.id.btn_upload);
         BtnCancle = (Button) findViewById(R.id.btn_cancle);
+        BtnMusic = (Button) findViewById(R.id.add_music);
         BtnPublic = (Switch) findViewById(R.id.btn_public);
         PicView = (ImageView) findViewById(R.id.pic_view);
         FullView = (ImageView) findViewById(R.id.view_full);
@@ -76,6 +85,7 @@ public class AddMemoryActivity extends Activity {
 
         BtnCancle.setOnClickListener(mListener);
         BtnUpload.setOnClickListener(mListener);
+        BtnMusic.setOnClickListener(mListener);
 
         PicView.setImageBitmap(cropped);
         //注册OnlongClick监听器
@@ -97,6 +107,9 @@ public class AddMemoryActivity extends Activity {
                     break;
                 case R.id.btn_public:
                     set_share();
+                    break;
+                case R.id.add_music:
+                    add_music();
                     break;
             }
         }
@@ -133,6 +146,68 @@ public class AddMemoryActivity extends Activity {
 
     public void set_share() {
         Sharable = BtnPublic.getShowText();
+    }
+
+    public void add_music() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                String httpUrl = "http://apis.baidu.com/geekery/music/query";
+                String httpArg = "s=%E5%8D%81%E5%B9%B4&size=10&page=1";
+                String jsonResult = request(httpUrl, httpArg);
+                if (jsonResult != null) System.out.println("add_music:json result down line");
+                System.out.println("Music result :"+jsonResult);
+                try{
+                    ObjectMapper objectMapper = new ObjectMapper();
+                    song = objectMapper.readValue(jsonResult, Songresult.class);
+                    String s = song.getData().getData().get(0).getHash();
+                    if(s==null)System.out.println("s is null!!!!!!!!!!");
+                    if(s!=null)System.out.println("s is not null!!!!!!!!!!");
+                    System.out.println(s);
+                } catch (IOException e){
+                    e.printStackTrace();
+                    System.out.println("AddMemoryMusic:164error");
+                }
+            }
+        }).start();
+        Intent intent = new Intent(AddMemoryActivity.this, MusicSearchActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString("userName", userName);
+        bundle.putString("croppedName", croppedName);
+        bundle.putInt("res_id", res_id);
+        intent.putExtras(bundle);
+        startActivity(intent);
+        AddMemoryActivity.this.finish();
+    }
+
+    public static String request(String httpUrl, String httpArg) {
+        BufferedReader reader = null;
+        String result = null;
+        StringBuffer sbf = new StringBuffer();
+        httpUrl = httpUrl + "?" + httpArg;
+        System.out.println("AddMusicMemory : "+httpUrl);
+
+        try {
+            URL url = new URL(httpUrl);
+            HttpURLConnection connection = (HttpURLConnection) url
+                    .openConnection();
+            connection.setRequestMethod("GET");
+            // 填入apikey到HTTP header
+            connection.setRequestProperty("apikey", "fad22d042fecdcc0be3244f57faa757f");
+            connection.connect();
+            InputStream is = connection.getInputStream();
+            reader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
+            String strRead = null;
+            while ((strRead = reader.readLine()) != null) {
+                sbf.append(strRead);
+                sbf.append("\r\n");
+            }
+            reader.close();
+            result = sbf.toString();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
     }
 
     //长按图片放大

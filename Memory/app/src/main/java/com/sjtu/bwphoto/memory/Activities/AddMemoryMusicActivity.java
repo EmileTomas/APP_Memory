@@ -165,6 +165,7 @@ public class AddMemoryMusicActivity extends AppCompatActivity {
         Intent intent = new Intent(AddMemoryMusicActivity.this, MusicSearchActivity.class);
         Bundle bundle = new Bundle();
         bundle.putString("userName", userName);
+        bundle.putInt("res_id", res_id);
         intent.putExtras(bundle);
         startActivity(intent);
         AddMemoryMusicActivity.this.finish();

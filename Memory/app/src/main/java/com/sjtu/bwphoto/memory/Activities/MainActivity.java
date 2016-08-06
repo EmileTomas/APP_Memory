@@ -5,8 +5,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.Calendar;
 
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -40,6 +45,8 @@ import com.sjtu.bwphoto.memory.Fragement.PersonalFragment;
 import com.sjtu.bwphoto.memory.Fragement.RecentFragment;
 import com.sjtu.bwphoto.memory.Fragement.RecommendFragment;
 import com.sjtu.bwphoto.memory.R;
+
+import org.springframework.core.io.FileSystemResource;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -274,10 +281,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
      * Scan bar code
      */
     public void scan() {
-        Toast.makeText(MainActivity.this,"Scan Button clicked",Toast.LENGTH_LONG).show();
+        //Toast.makeText(MainActivity.this,"Scan Button clicked",Toast.LENGTH_LONG).show();
+        //获取resource id
+        System.out.println(url.url + "/resources");
+        resource = RestUtil.postForObject(url.url + "/resources", null, Resource.class);
+        res_id = resource.getId();
+        System.out.println("MainActivity: Resource id get, " + res_id);
         Intent intent = new Intent(MainActivity.this,ScanCaptureActivity.class);
         Bundle bundle = new Bundle();
         bundle.putString("userName", user_name);
+        bundle.putInt("res_id", res_id);
         intent.putExtras(bundle);
         startActivity(intent);
         MainActivity.this.finish();
@@ -287,10 +300,37 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
      * Get music
      */
     public void getMusic() {
+        //获取resource id
+        System.out.println(url.url + "/resources");
+        resource = RestUtil.postForObject(url.url + "/resources", null, Resource.class);
+        res_id = resource.getId();
+        System.out.println("MainActivity: Resource id get, " + res_id);
+        //default iamge
+        System.out.println(url.url+"/resources/"+res_id+"/image");
+        String croppedName = "music.jpg";
+        File file = new File("/sdcard/DCIM/Camera/", croppedName);
+        croppedName = "/sdcard/DCIM/Camera/"+croppedName;
+        try {
+            FileInputStream out = new FileInputStream(file);
+            out.close();
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        String result = RestUtil.uploadFile(url.url+"/resources/"+res_id+"/image", new FileSystemResource(file), fileName,String.class);
+        if (result.contains("success")){
+            System.out.println("Add music: default image upload success!!!");
+        }
+        else System.out.println("Add music: default image upload fail!!!");
         //Toast.makeText(MainActivity.this,"Music Button clicked",Toast.LENGTH_LONG).show();
-        Intent intent = new Intent(MainActivity.this,AddMemoryMusicActivity.class);
+        Intent intent = new Intent(MainActivity.this,MusicSearchActivity.class);
         Bundle bundle = new Bundle();
         bundle.putString("userName", user_name);
+        bundle.putString("croppedName", croppedName);
+        bundle.putInt("res_id",res_id);
         intent.putExtras(bundle);
         startActivity(intent);
         MainActivity.this.finish();

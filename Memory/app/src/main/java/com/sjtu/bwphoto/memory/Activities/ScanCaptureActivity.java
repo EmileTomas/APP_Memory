@@ -25,6 +25,9 @@ import android.widget.Toast;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.Result;
+import com.sjtu.bwphoto.memory.Class.Resource.Bookisbn;
+import com.sjtu.bwphoto.memory.Class.RestUtil;
+import com.sjtu.bwphoto.memory.Class.ServerUrl;
 import com.sjtu.bwphoto.memory.R;
 
 import zxing.camera.CameraManager;
@@ -48,6 +51,8 @@ public class ScanCaptureActivity extends Activity implements Callback {
     private static final float BEEP_VOLUME = 0.10f;
     private boolean vibrate;
     private String userName;
+    private int res_id;
+    private final static ServerUrl url = new ServerUrl();
 
     /** Called when the activity is first created. */
     @Override
@@ -63,6 +68,7 @@ public class ScanCaptureActivity extends Activity implements Callback {
         //Receive Data from last activity
         Bundle bundle = this.getIntent().getExtras();
         userName = bundle.getString("userName");
+        res_id = bundle.getInt("res_id");
 
         Button mButtonBack = (Button) findViewById(R.id.button_back);
         mButtonBack.setOnClickListener(new OnClickListener() {
@@ -141,12 +147,21 @@ public class ScanCaptureActivity extends Activity implements Callback {
             //this.setResult(RESULT_OK, resultIntent);
             //startActivity(resultIntent);
             Toast.makeText(ScanCaptureActivity.this, "Scan Success!", Toast.LENGTH_SHORT).show();
-            Intent resultIntent = new Intent();
-            resultIntent.setClass(ScanCaptureActivity.this, MainActivity.class);
-            Bundle bundle = new Bundle();
-            bundle.putString("userName", userName);
-            resultIntent.putExtras(bundle);
-            startActivity(resultIntent);
+            Bookisbn isbn = new Bookisbn();
+            isbn.setResource_id(res_id);
+            isbn.setISBN(resultString);
+            String serverresult = RestUtil.postForObject(url.url+"/resources/"+res_id+"/book/"+resultString, isbn, String.class);
+            System.out.println(serverresult);
+            if (serverresult.contains("success")) {
+                System.out.println("Book upload success !!!");
+                Intent resultIntent = new Intent();
+                resultIntent.setClass(ScanCaptureActivity.this, MainActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putString("userName", userName);
+                resultIntent.putExtras(bundle);
+                startActivity(resultIntent);
+            }
+            else System.out.println("Book upload fail !!!");
         }
         ScanCaptureActivity.this.finish();
     }
