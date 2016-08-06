@@ -271,7 +271,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
      * Choose photo from album
      */
     public void getPic() {
-        Toast.makeText(MainActivity.this,"Album Button clicked",Toast.LENGTH_LONG).show();
+        //获取resource id
+        System.out.println(url.url + "/resources");
+        resource = RestUtil.postForObject(url.url + "/resources", null, Resource.class);
+        res_id = resource.getId();
+        System.out.println("MainActivity: Resource id get, " + res_id);
+        //Toast.makeText(MainActivity.this,"Album Button clicked",Toast.LENGTH_LONG).show();
         Intent albumIntent = new Intent(Intent.ACTION_PICK, null);
         albumIntent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
         startActivityForResult(albumIntent, ALBUM_REQUEST_CODE);
@@ -357,7 +362,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
 
             case ALBUM_REQUEST_CODE:
-                if (requestCode == RESULT_OK) {
                     if (data == null) {
                         System.out.println("MainActivity album result : data == null");
                         return;
@@ -370,13 +374,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
                     cursor.moveToFirst();
                     String path = cursor.getString(column_index);
-                    System.out.println("main acti path:" + path);
+                    System.out.println("main activity album path:" + path);
                     bundle.putString("fileName", path);
                     bundle.putString("userName", user_name);
+                    bundle.putInt("res_id", res_id);
                     intent.putExtras(bundle);
                     startActivity(intent);
                     MainActivity.this.finish();
-                }
                 break;
 
             case Scan_REQUEST_CODE:

@@ -77,6 +77,9 @@ public class CropperActivity extends Activity {
         fileName = bundle.getString("fileName");
         userName = bundle.getString("userName");
         res_id = bundle.getInt("res_id");
+        System.out.println("Cropper : filename is "+fileName);
+        System.out.println("Cropper : username is "+userName);
+        System.out.println("Cropper : resource id is "+res_id);
 
         //通用路径----------------------------failed
 //        imageUri = this.getIntent().getData();
