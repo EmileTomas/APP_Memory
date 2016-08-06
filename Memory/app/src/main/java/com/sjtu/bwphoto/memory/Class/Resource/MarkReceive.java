@@ -12,6 +12,7 @@ import java.sql.Timestamp;
 @JsonInclude(JsonInclude.Include.NON_NULL)  //如果null就不生成
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class MarkReceive {
+
     @JsonProperty
     long id;
 
@@ -19,13 +20,13 @@ public class MarkReceive {
     long item_id;
 
     @JsonProperty
-    String this_name;
+    String thisUser;
 
     @JsonProperty
     String content;
 
     @JsonProperty
-    Timestamp timestamp;
+    Timestamp time;
 
     @JsonProperty
     int mark_on_id;
@@ -46,12 +47,12 @@ public class MarkReceive {
         this.item_id = item_id;
     }
 
-    public String getThis_name() {
-        return this_name;
+    public String getThisUser() {
+        return thisUser;
     }
 
-    public void setThis_name(String this_name) {
-        this.this_name = this_name;
+    public void setThisUser(String thisUser) {
+        this.thisUser = thisUser;
     }
 
     public String getContent() {
@@ -62,12 +63,12 @@ public class MarkReceive {
         this.content = content;
     }
 
-    public Timestamp getTimestamp() {
-        return timestamp;
+    public Timestamp getTime() {
+        return time;
     }
 
-    public void setTimestamp(Timestamp timestamp) {
-        this.timestamp = timestamp;
+    public void setTime(Timestamp time) {
+        this.time = time;
     }
 
     public int getMark_on_id() {
@@ -77,6 +78,9 @@ public class MarkReceive {
     public void setMark_on_id(int mark_on_id) {
         this.mark_on_id = mark_on_id;
     }
+
+
+
 
 
 }

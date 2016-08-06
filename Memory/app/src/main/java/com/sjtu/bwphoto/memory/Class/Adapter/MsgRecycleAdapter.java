@@ -63,6 +63,7 @@ public class MsgRecycleAdapter extends RecyclerView.Adapter<MsgRecycleAdapter.Ca
     private LayoutInflater inflater;
     private View mainActivityView;
     private int pageNumber;
+    private int itemPosition;
     private Activity mainActivity;
     Song song = new Song();
 
@@ -251,6 +252,7 @@ public class MsgRecycleAdapter extends RecyclerView.Adapter<MsgRecycleAdapter.Ca
                 commentBox.requestFocus();
                 FAB.setVisibility(View.INVISIBLE);
                 imm.showSoftInput(commentBox, 0);
+                itemPosition=holder.getAdapterPosition();
             }
         });
 
@@ -259,7 +261,8 @@ public class MsgRecycleAdapter extends RecyclerView.Adapter<MsgRecycleAdapter.Ca
         commentSendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final Msg msg = Cards.get(holder.getAdapterPosition());
+
+                final Msg msg = Cards.get(itemPosition);
                 String text = commentBox.getText().toString();
                 commentBox.setText("");
                 commentView.setVisibility(View.GONE);
@@ -272,7 +275,10 @@ public class MsgRecycleAdapter extends RecyclerView.Adapter<MsgRecycleAdapter.Ca
                 //Send Message here
                 Timestamp timestamp = new Timestamp(System.currentTimeMillis());
                 String markURL = msg.getImageUrl().replace("image", "marks");
+
                 MarkCreate markCreate = new MarkCreate(text, timestamp);
+                System.out.println("Create a mark on "+ markURL);
+
                 String result = RestUtil.postForObject(markURL, markCreate, String.class);
                 System.out.println(result);
             }
@@ -282,11 +288,13 @@ public class MsgRecycleAdapter extends RecyclerView.Adapter<MsgRecycleAdapter.Ca
         holder.detail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final Msg msg = Cards.get(holder.getAdapterPosition());
+                int number=holder.getAdapterPosition();
+                final Msg msg = Cards.get(number);
                 Intent intent = new Intent(mainActivity, CommentActivity.class);
                 Bundle bundle = new Bundle();
                 System.out.println("Position is " + holder.getAdapterPosition());
                 CommentIntent commentIntent = new CommentIntent(msg.getResourceId(),msg.getPosterAccount(), msg.getImageUrl(), msg.getMusicHash(), msg.getContent());
+                System.out.println("Comment intent"+msg.getResourceId()+"and "+msg.getImageUrl());
                 bundle.putSerializable("commentIntent", commentIntent);
                 intent.putExtras(bundle);
                 mainActivity.startActivity(intent);

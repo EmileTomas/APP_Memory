@@ -25,9 +25,9 @@ public class FriendRequestAdapter extends RecyclerView.Adapter<FriendRequestAdap
     private final static ServerUrl url = new ServerUrl();
     private View rootView;
     private LayoutInflater inflater;
-    private ArrayList<FriendRequestCard> friendRequestList;
+    private ArrayList<UserCard> friendRequestList;
 
-    public FriendRequestAdapter(View rootView, ArrayList<FriendRequestCard> friendRequestList) {
+    public FriendRequestAdapter(View rootView, ArrayList<UserCard> friendRequestList) {
         this.rootView = rootView;
 
         this.friendRequestList = friendRequestList;
@@ -50,11 +50,11 @@ public class FriendRequestAdapter extends RecyclerView.Adapter<FriendRequestAdap
         requestCardHolder.acceptButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final FriendRequestCard friendRequestCard = friendRequestList.get(requestCardHolder.getAdapterPosition());
+                final UserCard userCard = friendRequestList.get(requestCardHolder.getAdapterPosition());
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        String result = RestUtil.postForObject(url.url + "/friends/make/" + friendRequestCard.getName(), null, String.class);
+                        String result = RestUtil.postForObject(url.url + "/friends/make/" + userCard.getName(), null, String.class);
                         //Send Accept here
                         System.out.println(result);
                     }
@@ -67,7 +67,7 @@ public class FriendRequestAdapter extends RecyclerView.Adapter<FriendRequestAdap
         requestCardHolder.deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final FriendRequestCard friendRequestCard = friendRequestList.get(requestCardHolder.getAdapterPosition());
+                final UserCard userCard = friendRequestList.get(requestCardHolder.getAdapterPosition());
                 //Haven't response to this request yet, then refuse
                 if (requestCardHolder.acceptButton.getVisibility() == View.VISIBLE) {
                     new Thread(new Runnable() {
@@ -108,10 +108,10 @@ public class FriendRequestAdapter extends RecyclerView.Adapter<FriendRequestAdap
 
     @Override
     public void onBindViewHolder(final RequestCardHolder holder, final int position) {
-        final FriendRequestCard friendRequestCard = friendRequestList.get(position);
+        final UserCard userCard = friendRequestList.get(position);
 
-        holder.content.setText(friendRequestCard.getContent());
-        holder.name.setText(friendRequestCard.getName());
+        holder.content.setText(userCard.getContent());
+        holder.name.setText(userCard.getName());
 
         //Set profile
         DisplayImageOptions options = new DisplayImageOptions.Builder()
@@ -122,7 +122,7 @@ public class FriendRequestAdapter extends RecyclerView.Adapter<FriendRequestAdap
                 .bitmapConfig(Bitmap.Config.RGB_565)
                 .extraForDownloader(RestUtil.getAuth())
                 .build();
-        ImageLoader.getInstance().displayImage(friendRequestCard.getProfile(), holder.profile, options);
+        ImageLoader.getInstance().displayImage(userCard.getProfile(), holder.profile, options);
 
     }
 }

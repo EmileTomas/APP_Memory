@@ -45,7 +45,7 @@
         <activity android:name=".Activities.CommentActivity" />
         <activity android:name=".Activities.CropperActivity" />
         <activity android:name=".Activities.FriendApplyListActivity" />
-
+        <activity android:name=".Activities.FriendListActivty"/>
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
@@ -54,7 +54,7 @@
         <activity android:name=".Activities.MusicSearchActivity" />
         <activity android:name=".Activities.ScanActivity" />
         <activity android:name=".Activities.ScanCaptureActivity" />
-        <activity android:name=".Activities.AddMemoryBookActivity"></activity>
+        <activity android:name=".Activities.AddMemoryBookActivity" />
     </application>
 
 </manifest>
