@@ -203,7 +203,7 @@ public class RecentFragment extends Fragment implements SwipeRefreshLayout.OnRef
 
         ResourceList resources;
         resources = RestUtil.getForObject(url.url + "/resources/latest", ResourceList.class);
-        String temp = RestUtil.getForObject(url.url + "/resources", String.class);
+        String temp = RestUtil.getForObject(url.url + "/resources/latest", String.class);
         System.out.println("ddaddd" + temp);
         if (resources != null) {
             Memory memory;

@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -22,7 +23,6 @@ import de.hdodenhof.circleimageview.CircleImageView;
  * Created by Administrator on 2016/8/5.
  */
 public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.FriendCardHolder>{
-
     private final static ServerUrl url = new ServerUrl();
     private View rootView;
     private LayoutInflater inflater;
@@ -57,6 +57,9 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Fr
                         @Override
                         public void run() {
                             //Delete the friend
+                            String result=RestUtil.deleteForOject(url.url+"/friends/"+friendCardHolder.name.getText(),String.class);
+                            System.out.println("Delete music result"+result);
+
                         }
                     }).start();
 
