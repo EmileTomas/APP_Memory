@@ -203,7 +203,7 @@ public class RecommendFragment extends Fragment implements SwipeRefreshLayout.On
                 memory = RestUtil.getForObject(url.url + "/resources/" + resource.getId() + "/words", Memory.class);
                 imageId = url.url + "/resources/" + resource.getId() + "/image";
 
-                card = new Msg(resource.getId(),resource.getName(), memory.getContent(), Integer.toString(memory.getTimestamp()), imageId, "c23d025ee9ece593abd96d7b97db97b4");
+                card = new Msg(resource.getId(),resource.getName(), memory.getContent(), "", imageId, "c23d025ee9ece593abd96d7b97db97b4");
                 Cards.add(0, card);
                 System.out.println(url.url + "/resources/" + resources.get(i).getId() + "/words");
                 System.out.println(imageId);
