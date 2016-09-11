@@ -191,7 +191,7 @@ public class RecommendFragment extends Fragment implements SwipeRefreshLayout.On
         Cards.clear();
 
         ResourceList resources;
-        resources = RestUtil.getForObject(url.url + "/resources/latest", ResourceList.class);
+        resources = RestUtil.getForObject(url.url + "/resources/friends", ResourceList.class);
 
         if (resources != null) {
             Memory memory;

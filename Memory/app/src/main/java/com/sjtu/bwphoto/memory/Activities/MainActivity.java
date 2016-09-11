@@ -148,7 +148,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         list_tab = new ArrayList<>();
         list_tab.add("Recent");
         list_tab.add("Personal");
-        list_tab.add("Recommend");
+        list_tab.add("Friends");
         //set tabs
         tabLayout.addTab(tabLayout.newTab().setText(list_tab.get(0)));
         tabLayout.addTab(tabLayout.newTab().setText(list_tab.get(1)));
@@ -608,6 +608,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             startActivity(intent);
         }
 
+        else if (id==R.id.nav_recommendfriendlist){
+            Intent intent = new Intent(MainActivity.this, RecommendFriendListActivity.class);
+            startActivity(intent);
+        }
         return true;
     }
 
