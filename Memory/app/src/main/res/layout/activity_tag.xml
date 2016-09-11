@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.sjtu.bwphoto.memory.Activities.TagActivity">
+
+    <!--Title-->
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/btn_back"
+        android:layout_alignParentTop="true"
+        android:text="Tag"
+        android:gravity="center"
+        android:textAlignment="center"
+        android:textSize="20sp"
+        android:textColor="@color/ivory"
+        android:background="@color/cornflowerblue"/>
+
+    <Button
+        android:id="@+id/btn_back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:text="Back"
+        android:textSize="12sp"
+        android:textColor="@color/ivory"
+        android:background="@drawable/shape_nocolor"
+        style="?android:attr/borderlessButtonStyle"/>
+
+    <LinearLayout
+        android:id="@+id/search_area"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:weightSum = "5"
+        android:layout_below="@+id/title"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/tag"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"
+            android:layout_marginTop="20dip"
+            android:layout_marginLeft="10dip"
+            android:layout_gravity="left"/>
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/confirm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/title"
+        android:layout_alignParentRight="true"
+        android:text="确定"
+        android:textColor="@color/cornflowerblue"
+        android:background="@drawable/shape_nocolor"
+        style="?android:attr/borderlessButtonStyle"
+        android:layout_marginTop="10dip"
+        android:layout_marginLeft="5dip"
+        android:textSize="15sp"/>
+
+    <Button
+        android:id="@+id/tag1"
+        android:layout_width="60dip"
+        android:layout_height="100dip"
+        android:layout_below="@+id/search_area"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="10dip"
+        android:layout_marginTop="10dip"
+        android:text="怀旧"
+        android:textColor="@color/cornflowerblue"
+        android:background="@drawable/tagbg"
+        style="?android:attr/borderlessButtonStyle"
+        android:textSize="12sp"/>
+
+    <Button
+        android:id="@+id/tag2"
+        android:layout_width="60dip"
+        android:layout_height="100dip"
+        android:layout_below="@+id/search_area"
+        android:layout_toRightOf="@+id/tag1"
+        android:layout_marginLeft="10dip"
+        android:layout_marginTop="10dip"
+        android:text="想念"
+        android:textColor="@color/cornflowerblue"
+        android:background="@drawable/tagbg"
+        style="?android:attr/borderlessButtonStyle"
+        android:textSize="12sp"/>
+
+</RelativeLayout>

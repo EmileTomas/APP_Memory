@@ -129,6 +129,7 @@ public class AddMemoryActivity extends Activity {
         Intent intent = new Intent(AddMemoryActivity.this, MainActivity.class);
         Bundle bundle = new Bundle();
         bundle.putString("userName",userName);
+//        bundle.putInt("res_id",res_id);
         intent.putExtras(bundle);
         startActivity(intent);
         AddMemoryActivity.this.finish();
@@ -145,6 +146,17 @@ public class AddMemoryActivity extends Activity {
 
     public void set_share() {
         Sharable = BtnPublic.getShowText();
+        System.out.println("Sharable : " + Sharable);
+        if (Sharable) {
+            String result = RestUtil.getForObject(url.url + "/resources/" + res_id + "/public", String.class);
+            System.out.println("Public result: " + result);
+            Toast.makeText(AddMemoryActivity.this, "Set public", Toast.LENGTH_SHORT).show();
+        }
+        else{
+            String result = RestUtil.getForObject(url.url + "/resources/" + res_id + "/private", String.class);
+            System.out.println("Private result: " + result);
+            Toast.makeText(AddMemoryActivity.this, "Set private", Toast.LENGTH_SHORT).show();
+        }
     }
 
     public void add_music() {

@@ -2,6 +2,7 @@ package com.sjtu.bwphoto.memory.Activities;
 
 import android.app.Service;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 
@@ -23,6 +24,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.format.DateFormat;
 import android.util.Log;
@@ -36,6 +38,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.sjtu.bwphoto.memory.Class.Resource.Emotion;
 import com.sjtu.bwphoto.memory.Class.Resource.Resource;
 import com.sjtu.bwphoto.memory.Class.RestUtil;
 import com.sjtu.bwphoto.memory.Class.ServerUrl;
@@ -70,6 +73,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private int res_id;  // resource id
     private String fileName;  // file name
     private Uri imageUri;  // image path
+    private int emotion;
 
     private final static ServerUrl url = new ServerUrl();
 
@@ -179,7 +183,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         findViewById(R.id.cameraFAB).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                System.out.println("camera button clicked !");
+//                System.out.println("camera button clicked !");
                 takePic();
             }
         });
@@ -188,7 +192,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         findViewById(R.id.albumFAB).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                System.out.println("album button clicked !");
+//                System.out.println("album button clicked !");
                 getPic();
             }
         });
@@ -197,7 +201,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         findViewById(R.id.bcodeFAB).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                System.out.println("scan button clicked !");
+//                System.out.println("scan button clicked !");
                 scan();
             }
         });
@@ -206,7 +210,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         findViewById(R.id.bmusicFAB).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                System.out.println("music button clicked !");
+//                System.out.println("music button clicked !");
                 getMusic();
             }
         });
@@ -221,16 +225,52 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void takePic() {
         //获取resource id
         System.out.println(url.url + "/resources");
-        resource = RestUtil.postForObject(url.url + "/resources", null, Resource.class);
-        res_id = resource.getId();
-        System.out.println("MainActivity: Resource id get, " + res_id);
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        new AlertDialog.Builder(MainActivity.this)
+                .setTitle("请选择")
+                .setIcon(android.R.drawable.ic_dialog_info)
+                .setSingleChoiceItems(new String[]{"悲伤", "孤独", "震撼", "美妙", "开心","幸福"}, 0,
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                System.out.println(" SingleChoiceItems listener !!!!!! ");
+                                emotion = which;
+                            }
+                        }
+                )
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        System.out.println(" PosChoiceItems listener !!!!!! ");
+                        dialog.dismiss();
+                        System.out.println("Get Emotion : " + emotion);
+                        Emotion emo = new Emotion();
+                        emo.setType(1);
+                        emo.setEmotion(emotion);
+                        resource = RestUtil.postForObject(url.url + "/resources", emo, Resource.class);
+                        res_id = resource.getId();
+                        System.out.println("MainActivity: Resource id get, " + res_id);
+                        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
-        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-            //生成文件名
-            new DateFormat();
-            String name = DateFormat.format("yyyyMMdd_hhmmss", Calendar.getInstance(Locale.CHINA)) + ".jpg";
-            System.out.println("Image name formed: " + name);
+                        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+                            //生成文件名
+                            new DateFormat();
+                            String name = DateFormat.format("yyyyMMdd_hhmmss", Calendar.getInstance(Locale.CHINA)) + ".jpg";
+                            System.out.println("Image name formed: " + name);
+                            //----------------store in /sdcard/DCIM/Camera-------------------
+                            //通过指定路径存储访问，需传送fileName，res_id，user_name到下一个activity
+                            fileName = "/sdcard/DCIM/Camera/" + name;
+                            if (isSDCardCanUse()) {
+                                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(new File(fileName)));
+                                takePictureIntent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
+                                startActivityForResult(takePictureIntent, CAMERA_REQUEST_CODE);
+                            } else {
+                                Toast.makeText(MainActivity.this, "没有SD卡", Toast.LENGTH_LONG).show();
+                            }
+                            //---------------------------------------------------------------
+                        }
+                    }
+                })
+                .setNegativeButton("取消", null)
+                .show();
+
 
             //------------------------通用位置---------------------failed
             //通过sd卡根目录存储访问，需传送imageUri，res_id，user_name到下一个activity
@@ -252,19 +292,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 //                Toast.makeText(MainActivity.this, "没有SD卡", Toast.LENGTH_LONG).show();
 //            }
             //---------------------------------------------------------------
-
-            //----------------store in /sdcard/DCIM/Camera-------------------
-            //通过指定路径存储访问，需传送fileName，res_id，user_name到下一个activity
-            fileName = "/sdcard/DCIM/Camera/" + name;
-            if (isSDCardCanUse()) {
-                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(new File(fileName)));
-                takePictureIntent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
-                startActivityForResult(takePictureIntent, CAMERA_REQUEST_CODE);
-            } else {
-                Toast.makeText(MainActivity.this, "没有SD卡", Toast.LENGTH_LONG).show();
-            }
-            //---------------------------------------------------------------
-        }
     }
 
     /*
@@ -273,13 +300,35 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void getPic() {
         //获取resource id
         System.out.println(url.url + "/resources");
-        resource = RestUtil.postForObject(url.url + "/resources", null, Resource.class);
-        res_id = resource.getId();
-        System.out.println("MainActivity: Resource id get, " + res_id);
-        //Toast.makeText(MainActivity.this,"Album Button clicked",Toast.LENGTH_LONG).show();
-        Intent albumIntent = new Intent(Intent.ACTION_PICK, null);
-        albumIntent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
-        startActivityForResult(albumIntent, ALBUM_REQUEST_CODE);
+        new AlertDialog.Builder(MainActivity.this)
+                .setTitle("请选择")
+                .setIcon(android.R.drawable.ic_dialog_info)
+                .setSingleChoiceItems(new String[]{"悲伤", "孤独", "震撼", "美妙", "开心","幸福"}, 0,
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                System.out.println(" SingleChoiceItems listener !!!!!! ");
+                                emotion = which;
+                            }
+                        }
+                )
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                        System.out.println(" PosChoiceItems listener !!!!!! ");
+                            System.out.println("Get Emotion : " + emotion);
+                            Emotion emo = new Emotion();
+                            emo.setType(1);
+                            emo.setEmotion(emotion);
+                            resource = RestUtil.postForObject(url.url + "/resources", emo, Resource.class);
+                            res_id = resource.getId();
+                            System.out.println("MainActivity: Resource id get, " + res_id);
+                            //Toast.makeText(MainActivity.this,"Album Button clicked",Toast.LENGTH_LONG).show();
+                            Intent albumIntent = new Intent(Intent.ACTION_PICK, null);
+                            albumIntent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
+                            startActivityForResult(albumIntent, ALBUM_REQUEST_CODE);
+                        }
+                })
+                .setNegativeButton("取消", null)
+                .show();
     }
 
     /*
@@ -289,16 +338,38 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         //Toast.makeText(MainActivity.this,"Scan Button clicked",Toast.LENGTH_LONG).show();
         //获取resource id
         System.out.println(url.url + "/resources");
-        resource = RestUtil.postForObject(url.url + "/resources", null, Resource.class);
-        res_id = resource.getId();
-        System.out.println("MainActivity: Resource id get, " + res_id);
-        Intent intent = new Intent(MainActivity.this,ScanCaptureActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putString("userName", user_name);
-        bundle.putInt("res_id", res_id);
-        intent.putExtras(bundle);
-        startActivity(intent);
-        MainActivity.this.finish();
+        new AlertDialog.Builder(MainActivity.this)
+                .setTitle("请选择")
+                .setIcon(android.R.drawable.ic_dialog_info)
+                .setSingleChoiceItems(new String[]{"悲伤", "孤独", "震撼", "美妙", "开心","幸福"}, 0,
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                System.out.println(" SingleChoiceItems listener !!!!!! ");
+                                emotion = which;
+                            }
+                        }
+                )
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        System.out.println(" PosChoiceItems listener !!!!!! ");
+                        System.out.println("Get Emotion : " + emotion);
+                        Emotion emo = new Emotion();
+                        emo.setType(1);
+                        emo.setEmotion(emotion);
+                        resource = RestUtil.postForObject(url.url + "/resources", emo, Resource.class);
+                        res_id = resource.getId();
+                        System.out.println("MainActivity: Resource id get, " + res_id);
+                        Intent intent = new Intent(MainActivity.this,ScanCaptureActivity.class);
+                        Bundle bundle = new Bundle();
+                        bundle.putString("userName", user_name);
+                        bundle.putInt("res_id", res_id);
+                        intent.putExtras(bundle);
+                        startActivity(intent);
+                        MainActivity.this.finish();
+                    }
+                })
+                .setNegativeButton("取消", null)
+                .show();
     }
 
     /*
@@ -307,38 +378,79 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void getMusic() {
         //获取resource id
         System.out.println(url.url + "/resources");
-        resource = RestUtil.postForObject(url.url + "/resources", null, Resource.class);
-        res_id = resource.getId();
-        System.out.println("MainActivity: Resource id get, " + res_id);
-        //default iamge
-        System.out.println(url.url+"/resources/"+res_id+"/image");
-        String croppedName = "music.jpg";
-        File file = new File("/sdcard/DCIM/Camera/", croppedName);
-        croppedName = "/sdcard/DCIM/Camera/"+croppedName;
-        try {
-            FileInputStream out = new FileInputStream(file);
-            out.close();
-        } catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        String result = RestUtil.uploadFile(url.url+"/resources/"+res_id+"/image", new FileSystemResource(file), fileName,String.class);
-        if (result.contains("success")){
-            System.out.println("Add music: default image upload success!!!");
-        }
-        else System.out.println("Add music: default image upload fail!!!");
-        //Toast.makeText(MainActivity.this,"Music Button clicked",Toast.LENGTH_LONG).show();
-        Intent intent = new Intent(MainActivity.this,MusicSearchActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putString("userName", user_name);
-        bundle.putString("croppedName", croppedName);
-        bundle.putInt("res_id",res_id);
-        intent.putExtras(bundle);
-        startActivity(intent);
-        MainActivity.this.finish();
+        new AlertDialog.Builder(MainActivity.this)
+                .setTitle("请选择")
+                .setIcon(android.R.drawable.ic_dialog_info)
+                .setSingleChoiceItems(new String[]{"悲伤", "孤独", "震撼", "美妙", "开心","幸福"}, 0,
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                System.out.println(" SingleChoiceItems listener !!!!!! ");
+                                emotion = which;
+                            }
+                        }
+                )
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        System.out.println(" PosChoiceItems listener !!!!!! ");
+                        System.out.println("Get Emotion : " + emotion);
+                        Emotion emo = new Emotion();
+                        emo.setType(1);
+                        emo.setEmotion(emotion);
+                        resource = RestUtil.postForObject(url.url + "/resources", emo, Resource.class);
+                        res_id = resource.getId();
+                        System.out.println("MainActivity: Resource id get, " + res_id);
+                        //default iamge
+                        System.out.println(url.url+"/resources/"+res_id+"/image");
+                        String croppedName = "music.jpg";
+                        File file = new File("/sdcard/DCIM/Camera/", croppedName);
+                        croppedName = "/sdcard/DCIM/Camera/"+croppedName;
+                        try {
+                            FileInputStream out = new FileInputStream(file);
+                            out.close();
+                        } catch (FileNotFoundException e) {
+                            e.printStackTrace();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        String result = RestUtil.uploadFile(url.url+"/resources/"+res_id+"/image", new FileSystemResource(file), fileName,String.class);
+                        if (result.contains("success")){
+                            System.out.println("Add music: default image upload success!!!");
+                        }
+                        else System.out.println("Add music: default image upload fail!!!");
+                        //Toast.makeText(MainActivity.this,"Music Button clicked",Toast.LENGTH_LONG).show();
+                        Intent intent = new Intent(MainActivity.this,MusicSearchActivity.class);
+                        Bundle bundle = new Bundle();
+                        bundle.putString("userName", user_name);
+                        bundle.putString("croppedName", croppedName);
+                        bundle.putInt("res_id",res_id);
+                        intent.putExtras(bundle);
+                        startActivity(intent);
+                        MainActivity.this.finish();
+                    }
+                })
+                .setNegativeButton("取消", null)
+                .show();
+    }
+
+    protected void getEmo() {
+        new AlertDialog.Builder(this)
+                .setTitle("请选择")
+                .setIcon(android.R.drawable.ic_dialog_info)
+                .setSingleChoiceItems(new String[]{"悲伤", "孤独", "震撼", "美妙", "开心","幸福"}, 0,
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                emotion = which;
+                            }
+                        }
+                )
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        emotion = which;
+                        dialog.dismiss();
+                    }
+                })
+                .setNegativeButton("取消", null)
+                .show();
     }
 
     /*

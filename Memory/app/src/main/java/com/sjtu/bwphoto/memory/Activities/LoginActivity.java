@@ -1,8 +1,10 @@
 package com.sjtu.bwphoto.memory.Activities;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.StrictMode;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -28,6 +30,9 @@ public class LoginActivity extends Activity {
     private Button mRegisterButton;
     //服务器地址
     private final static ServerUrl url = new ServerUrl();
+
+    private String userName = new String();
+    private String userPwd = new String();
 
     /*
     * Called when the activity is first created.
@@ -81,8 +86,8 @@ public class LoginActivity extends Activity {
     public void login() {
         if (isUserNameAndPwdValid()) {
             //获取输入 包装为User对象 传到服务器
-            String userName = mAccount.getText().toString().trim();
-            String userPwd = mPwd.getText().toString().trim();
+            userName = mAccount.getText().toString().trim();
+            userPwd = mPwd.getText().toString().trim();
             User mUser = new User(userName,userPwd);
             System.out.println(url.url+"/login");
             String result = RestUtil.postForObject(url.url+"/login", mUser, String.class);
@@ -98,12 +103,35 @@ public class LoginActivity extends Activity {
             //处理服务器返回结果
             if (result.contains("success")) {
                 Toast.makeText(this, getString(R.string.login_sucess), Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putString("userName",userName);
-                intent.putExtras(bundle);
 
-                startActivity(intent);
+                Handler handler = new Handler();
+                Runnable mTasks = new Runnable() {
+                    public void run() {
+                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                        Bundle bundle = new Bundle();
+                        bundle.putString("userName",userName);
+                        intent.putExtras(bundle);
+                        startActivity(intent);
+                    }
+                };
+                final ProgressDialog myDialog = ProgressDialog.show(LoginActivity.this, "正在连接服务器...", "加载中,请稍后...", true, true);
+//                new Thread() {
+//                    public void run() {
+//                        try{
+//                            sleep(5000);
+//                        }catch(InterruptedException e){
+//                            e.printStackTrace();
+//                        }
+//                        myDialog.dismiss();
+//                    }}.start();
+                handler.post(mTasks);
+
+
+//                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+//                Bundle bundle = new Bundle();
+//                bundle.putString("userName",userName);
+//                intent.putExtras(bundle);
+//                startActivity(intent);
                 LoginActivity.this.finish();
 
             }
@@ -143,4 +171,5 @@ public class LoginActivity extends Activity {
     protected void onPause() {
         super.onPause();
     }
+
 }

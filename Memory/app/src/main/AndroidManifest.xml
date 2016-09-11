@@ -26,6 +26,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+
         <activity android:name=".Activities.WelcomeActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -45,7 +46,8 @@
         <activity android:name=".Activities.CommentActivity" />
         <activity android:name=".Activities.CropperActivity" />
         <activity android:name=".Activities.FriendApplyListActivity" />
-        <activity android:name=".Activities.FriendListActivty"/>
+        <activity android:name=".Activities.FriendListActivty" />
+
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
@@ -55,6 +57,8 @@
         <activity android:name=".Activities.ScanActivity" />
         <activity android:name=".Activities.ScanCaptureActivity" />
         <activity android:name=".Activities.AddMemoryBookActivity" />
+        <activity android:name=".Activities.TagActivity" />
+        <activity android:name=".Activities.PairActivity"></activity>
     </application>
 
 </manifest>

@@ -74,7 +74,6 @@ public class MusicSearchActivity extends AppCompatActivity {
                     back();
                     break;
                 case R.id.result:
-                    Toast.makeText(MusicSearchActivity.this,"no api no write hhh",Toast.LENGTH_SHORT).show();
                     break;
             }
         }
