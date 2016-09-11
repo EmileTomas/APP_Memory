@@ -1,8 +1,10 @@
 package com.sjtu.bwphoto.memory.Activities;
 
+import android.Manifest;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 
 import java.io.FileInputStream;
@@ -19,7 +21,9 @@ import android.os.Message;
 import android.provider.MediaStore;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
@@ -122,6 +126,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
      * initial_widget()
      */
     private void initial_widget() {
+        askCameraPermission();
         menuMultipleActions = (FloatingActionsMenu) findViewById(R.id.menuFAB); // Floating Action Button
         tabLayout = (TabLayout) findViewById(R.id.tablayout);
         viewPager = (ViewPager) findViewById(R.id.pager);
@@ -485,6 +490,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Intent intent = new Intent(MainActivity.this, FriendListActivty.class);
             startActivity(intent);
         }
+        else if(id==R.id.nav_remoteSource){
+            Intent intent=new Intent(MainActivity.this,LocalServerActivity.class);
+            intent.putExtra("userAccount",getUserAccount());
+            startActivity(intent);
+        }
 
         return true;
     }
@@ -501,4 +511,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         }
     };
+
+    private void askCameraPermission(){
+        if(ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)!= PackageManager.PERMISSION_GRANTED){
+            //Explain?
+            if(ActivityCompat.shouldShowRequestPermissionRationale(this,Manifest.permission.CAMERA)){
+                System.out.println("Print info");
+            }
+            else{
+                ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.CAMERA},10001);
+            }
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if(requestCode==10001){
+            if(grantResults[0]==PackageManager.PERMISSION_GRANTED){
+                System.out.println("perimision OK!");
+            }
+        }
+    }
 }

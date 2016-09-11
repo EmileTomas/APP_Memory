@@ -55,6 +55,7 @@
         <activity android:name=".Activities.ScanActivity" />
         <activity android:name=".Activities.ScanCaptureActivity" />
         <activity android:name=".Activities.AddMemoryBookActivity" />
+        <activity android:name=".Activities.LocalServerActivity"/>
     </application>
 
 </manifest>
