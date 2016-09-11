@@ -233,7 +233,7 @@ public class RecommendFragment extends Fragment implements SwipeRefreshLayout.On
     //This function will be called only when Cards is not empty
     private void intialView() {
         final LinearLayoutManager layoutManager = new LinearLayoutManager(rootView.getContext());
-        msgRecycleAdapter = new MsgRecycleAdapter(Cards, rootView, mainActivity, RecommendPage);
+        msgRecycleAdapter = new MsgRecycleAdapter(Cards, rootView.getContext(), mainActivity, RecommendPage);
         recyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view_recommend);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(layoutManager);

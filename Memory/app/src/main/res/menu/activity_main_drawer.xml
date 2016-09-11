@@ -11,6 +11,11 @@
             android:id="@+id/nav_notify"
             android:icon="@drawable/nav_notify"
             android:title="好友请求" />
+        <item
+            android:id="@+id/nav_remoteSource"
+            android:icon="@drawable/nav_remote_source"
+            android:title="本地服务器"/>
+
     </group>
 
 </menu>

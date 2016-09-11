@@ -2,9 +2,11 @@ package com.sjtu.bwphoto.memory.Class.Adapter;
 
 import android.app.Activity;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.media.AudioManager;
+import android.media.Image;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Message;
@@ -25,6 +27,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.sjtu.bwphoto.memory.Activities.CommentActivity;
+import com.sjtu.bwphoto.memory.Activities.LocalServerActivity;
 import com.sjtu.bwphoto.memory.Activities.MainActivity;
 import com.sjtu.bwphoto.memory.Class.Resource.CommentIntent;
 import com.sjtu.bwphoto.memory.Class.Resource.MarkCreate;
@@ -48,16 +51,20 @@ import androidviewhover.BlurLayout;
  * Created by Administrator on 2016/7/4.
  */
 public class MsgRecycleAdapter extends RecyclerView.Adapter<MsgRecycleAdapter.CardViewHolder> {
+    //PageNumber
     private final int RecentPage = 0;
     private final int PersonalPage = 1;
     private final int RecommendPage = 2;
+    //Handler
     private final int VISIBLE = 0;
     private final int APPLY_SUCCESS = 1;
     private final int APPLY_FAIL = 2;
     private final int SET_SONG_TITLE = 3;
-    private final int COMMENT_SUCCESS=4;
-    private final int COMMENT_FAIL=5;
-
+    private final int COMMENT_SUCCESS = 4;
+    private final int COMMENT_FAIL = 5;
+    //Mode
+    private final int NORMAL = 0;
+    private final int LOCAL = 1;
 
     private static MediaPlayer mediaplayer = new MediaPlayer();
     private final static ServerUrl url = new ServerUrl();
@@ -66,19 +73,31 @@ public class MsgRecycleAdapter extends RecyclerView.Adapter<MsgRecycleAdapter.Ca
     private View mainActivityView;
     private int pageNumber;
     private int itemPosition;
-    private Activity mainActivity;
-    Song song = new Song();
+    private Activity rootActivity;
+    private int mode = NORMAL;
+    private Song song = new Song();
+    private Context rootViewContext;
+
 
     private FloatingActionsMenu FAB;
 
 
-    public MsgRecycleAdapter(List<Msg> Cards, View rootView, MainActivity mainActivity, int pageNumber) {
+    public MsgRecycleAdapter(List<Msg> Cards, Context rootViewContext, MainActivity mainActivity, int pageNumber) {
         this.Cards = Cards;
-        this.mainActivity = mainActivity;
+        this.rootActivity = mainActivity;
+        this.rootViewContext=rootViewContext;
         this.mainActivityView = mainActivity.getMainActivityRootView();
-        inflater = LayoutInflater.from(rootView.getContext());
+        inflater = LayoutInflater.from(rootViewContext);
         FAB = (FloatingActionsMenu) this.mainActivityView.findViewById(R.id.menuFAB);
         this.pageNumber = pageNumber;
+    }
+
+    public MsgRecycleAdapter(List<Msg> Cards, Context rootViewContext, LocalServerActivity localServerActivity) {
+        this.rootActivity=localServerActivity;
+        this.mode = LOCAL;
+        this.Cards = Cards;
+        inflater = LayoutInflater.from(rootViewContext);
+        this.rootViewContext=rootViewContext;
     }
 
     @Override
@@ -124,10 +143,11 @@ public class MsgRecycleAdapter extends RecyclerView.Adapter<MsgRecycleAdapter.Ca
 
     @Override
     public CardViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+
         View view = inflater.inflate(R.layout.card_item, null);
         View hover = inflater.inflate(R.layout.card_hover, null);
-        final CardViewHolder holder = new CardViewHolder(view, hover);
 
+        final CardViewHolder holder = new CardViewHolder(view, hover);
 
         BlurLayout mSampleLayout = (BlurLayout) view.findViewById(R.id.blur_layout);
 
@@ -187,7 +207,6 @@ public class MsgRecycleAdapter extends RecyclerView.Adapter<MsgRecycleAdapter.Ca
             }
         });
 
-
         //Music Button
         hover.findViewById(R.id.music).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -212,7 +231,8 @@ public class MsgRecycleAdapter extends RecyclerView.Adapter<MsgRecycleAdapter.Ca
 
 
         //setting the add_friend button
-        if (pageNumber == RecentPage) {
+
+        if (mode == NORMAL && pageNumber == RecentPage) {
             ImageView add_friend = (ImageView) hover.findViewById(R.id.add_friend);
             mSampleLayout.addChildAppearAnimator(hover, R.id.add_friend, Techniques.FadeIn);
             mSampleLayout.addChildDisappearAnimator(hover, R.id.add_friend, Techniques.FadeOut);
@@ -242,81 +262,90 @@ public class MsgRecycleAdapter extends RecyclerView.Adapter<MsgRecycleAdapter.Ca
             add_friend.setVisibility(View.GONE);
         }
 
-        //setting the comment button
-        final InputMethodManager imm;
-        final EditText commentBox = (EditText) mainActivityView.findViewById(R.id.commentBox);
-        final LinearLayout commentView = (LinearLayout) mainActivityView.findViewById(R.id.commentView);
-        imm = (InputMethodManager) commentBox.getContext().getSystemService(Service.INPUT_METHOD_SERVICE);
-        hover.findViewById(R.id.comment).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                commentView.setVisibility(View.VISIBLE);
-                commentBox.requestFocus();
-                FAB.setVisibility(View.INVISIBLE);
-                imm.showSoftInput(commentBox, 0);
-                itemPosition=holder.getAdapterPosition();
-            }
-        });
+        if (mode == NORMAL) {
 
-        //Send Button
-        final Button commentSendButton = (Button) mainActivityView.findViewById(R.id.sendButton);
-        commentSendButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+            //setting the comment button
+            final InputMethodManager imm;
+            final EditText commentBox = (EditText) mainActivityView.findViewById(R.id.commentBox);
+            final LinearLayout commentView = (LinearLayout) mainActivityView.findViewById(R.id.commentView);
+            imm = (InputMethodManager) commentBox.getContext().getSystemService(Service.INPUT_METHOD_SERVICE);
+            hover.findViewById(R.id.comment).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    commentView.setVisibility(View.VISIBLE);
+                    commentBox.requestFocus();
+                    FAB.setVisibility(View.INVISIBLE);
+                    imm.showSoftInput(commentBox, 0);
+                    itemPosition = holder.getAdapterPosition();
+                }
+            });
 
-                final Msg msg = Cards.get(itemPosition);
-                final String text = commentBox.getText().toString();
-                commentBox.setText("");
-                commentView.setVisibility(View.GONE);
-                imm.hideSoftInputFromWindow(commentBox.getWindowToken(), 0);
 
-                Message postmessage = new Message();
-                postmessage.what = VISIBLE;
-                mHandler.sendMessageDelayed(postmessage, 250);
+            //setting the Send Button
+            final Button commentSendButton = (Button) mainActivityView.findViewById(R.id.sendButton);
+            commentSendButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
 
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        //Send Message here
-                        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-                        String markURL = msg.getImageUrl().replace("image", "marks");
+                    final Msg msg = Cards.get(itemPosition);
+                    final String text = commentBox.getText().toString();
+                    commentBox.setText("");
+                    commentView.setVisibility(View.GONE);
+                    imm.hideSoftInputFromWindow(commentBox.getWindowToken(), 0);
 
-                        MarkCreate markCreate = new MarkCreate(text, timestamp);
-                        System.out.println("Create a mark on "+ markURL);
+                    Message postmessage = new Message();
+                    postmessage.what = VISIBLE;
+                    mHandler.sendMessageDelayed(postmessage, 250);
 
-                        String result = RestUtil.postForObject(markURL, markCreate, String.class);
-                        System.out.println(result);
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            //Send Message here
+                            Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+                            String markURL = msg.getImageUrl().replace("image", "marks");
 
-                        Message postmessage = new Message();
-                        if (result.contains("success")) {
-                            postmessage.what = COMMENT_SUCCESS;
-                            mHandler.sendMessage(postmessage);
+                            MarkCreate markCreate = new MarkCreate(text, timestamp);
+                            System.out.println("Create a mark on " + markURL);
 
-                        } else {
-                            postmessage.what = COMMENT_FAIL;
-                            mHandler.sendMessage(postmessage);
+                            String result = RestUtil.postForObject(markURL, markCreate, String.class);
+                            System.out.println(result);
+
+                            Message postmessage = new Message();
+                            if (result.contains("success")) {
+                                postmessage.what = COMMENT_SUCCESS;
+                                mHandler.sendMessage(postmessage);
+
+                            } else {
+                                postmessage.what = COMMENT_FAIL;
+                                mHandler.sendMessage(postmessage);
+                            }
+
                         }
+                    }).start();
 
-                    }
-                }).start();
+                }
+            });
 
-            }
-        });
+
+        } else {
+            ImageView comment = (ImageView) hover.findViewById(R.id.comment);
+            comment.setVisibility(View.GONE);
+        }
 
 
         holder.detail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                int number=holder.getAdapterPosition();
+                int number = holder.getAdapterPosition();
                 final Msg msg = Cards.get(number);
-                Intent intent = new Intent(mainActivity, CommentActivity.class);
+                Intent intent = new Intent(rootActivity, CommentActivity.class);
                 Bundle bundle = new Bundle();
                 System.out.println("Position is " + holder.getAdapterPosition());
-                CommentIntent commentIntent = new CommentIntent(msg.getResourceId(),msg.getPosterAccount(), msg.getImageUrl(), msg.getMusicHash(), msg.getContent());
-                System.out.println("Comment intent"+msg.getResourceId()+"and "+msg.getImageUrl());
+                CommentIntent commentIntent = new CommentIntent(msg.getResourceId(), msg.getPosterAccount(), msg.getImageUrl(), msg.getMusicHash(), msg.getContent());
+                System.out.println("Comment intent" + msg.getResourceId() + "and " + msg.getImageUrl());
                 bundle.putSerializable("commentIntent", commentIntent);
                 intent.putExtras(bundle);
-                mainActivity.startActivity(intent);
+                rootViewContext.startActivity(intent);
             }
         });
 
@@ -397,10 +426,10 @@ public class MsgRecycleAdapter extends RecyclerView.Adapter<MsgRecycleAdapter.Ca
                     songTitle.setText(title);
                     break;
                 case COMMENT_SUCCESS:
-                    Toast.makeText(MainActivity.mainActivityContext,"评论成功",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.mainActivityContext, "评论成功", Toast.LENGTH_SHORT).show();
                     break;
                 case COMMENT_FAIL:
-                    Toast.makeText(MainActivity.mainActivityContext,"评论失败",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.mainActivityContext, "评论失败", Toast.LENGTH_SHORT).show();
                     break;
 
             }

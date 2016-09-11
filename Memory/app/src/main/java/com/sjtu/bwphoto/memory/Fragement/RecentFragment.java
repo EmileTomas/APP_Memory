@@ -202,9 +202,10 @@ public class RecentFragment extends Fragment implements SwipeRefreshLayout.OnRef
         Cards.clear();
 
         ResourceList resources;
-        resources = RestUtil.getForObject(url.url + "/resources/latest", ResourceList.class);
         String temp = RestUtil.getForObject(url.url + "/resources/latest", String.class);
         System.out.println("ddaddd" + temp);
+        resources = RestUtil.getForObject(url.url + "/resources/latest", ResourceList.class);
+
         if (resources != null) {
             Memory memory;
             Msg card;
@@ -245,7 +246,7 @@ public class RecentFragment extends Fragment implements SwipeRefreshLayout.OnRef
     //This function will be called only when Cards is not empty
     private void intialView() {
         final LinearLayoutManager layoutManager = new LinearLayoutManager(rootView.getContext());
-        msgRecycleAdapter = new MsgRecycleAdapter(Cards, rootView, mainActivity, RecentPage);
+        msgRecycleAdapter = new MsgRecycleAdapter(Cards, rootView.getContext(), mainActivity, RecentPage);
         recyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view_recent);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(layoutManager);

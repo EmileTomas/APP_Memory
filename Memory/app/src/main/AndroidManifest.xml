@@ -57,8 +57,12 @@
         <activity android:name=".Activities.ScanActivity" />
         <activity android:name=".Activities.ScanCaptureActivity" />
         <activity android:name=".Activities.AddMemoryBookActivity" />
+<<<<<<< HEAD
         <activity android:name=".Activities.TagActivity" />
         <activity android:name=".Activities.PairActivity"></activity>
+=======
+        <activity android:name=".Activities.LocalServerActivity"/>
+>>>>>>> 3bc9936eb29afb62f7f80c55b89c65b0827cd5ef
     </application>
 
 </manifest>
