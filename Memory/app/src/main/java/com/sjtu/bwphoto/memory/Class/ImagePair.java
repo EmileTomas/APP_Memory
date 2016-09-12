@@ -46,7 +46,7 @@ public class ImagePair {
         * because it is needed to reduce the high frequencies.
         */
 //        img = resize(img, size, size);
-        Bitmap.createScaledBitmap(img, 120, 120, false);
+        img = Bitmap.createScaledBitmap(img, size, size, true);
 
        /* 2. Reduce color.
         * The image is reduced to a grayscale just to further simplify
@@ -57,6 +57,8 @@ public class ImagePair {
 
         double[][] vals = new double[size][size];
 
+        System.out.println("img.getWidth():"+img.getWidth());
+        System.out.println(img.getHeight());
         for (int x = 0; x < img.getWidth(); x++) {
             for (int y = 0; y < img.getHeight(); y++) {
                 vals[x][y] = getBlue(img, x, y);

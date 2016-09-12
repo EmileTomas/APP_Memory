@@ -112,6 +112,10 @@ public class RegisterActivity extends Activity {
             Toast.makeText(this, getString(R.string.age_empty),
                     Toast.LENGTH_SHORT).show();
             return false;
+        } else if (mEmail.getText().toString().trim().contains("@") == false) {
+            Toast.makeText(this, getString(R.string.email_invalid),
+                    Toast.LENGTH_SHORT).show();
+            return false;
         } else if (mBirth.getText().toString().trim().equals("")) {
             Toast.makeText(this, getString(R.string.birth_empty),
                     Toast.LENGTH_SHORT).show();

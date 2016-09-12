@@ -157,6 +157,7 @@
             android:layout_marginRight="1.0dip"
             android:gravity="center"
             android:inputType="text"
+            android:hint="YYYY-MM-DD"
             android:textColor="@color/ivory"
             android:maxLength="10"
             android:paddingLeft="45.0sp"

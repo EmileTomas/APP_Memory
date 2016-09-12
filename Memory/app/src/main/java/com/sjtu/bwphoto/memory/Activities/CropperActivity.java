@@ -20,8 +20,11 @@ import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import com.sjtu.bwphoto.memory.Class.ImagePair;
+import com.sjtu.bwphoto.memory.Class.Resource.ImageHash;
 import com.sjtu.bwphoto.memory.Class.RestUtil;
 import com.sjtu.bwphoto.memory.Class.ServerUrl;
 import com.sjtu.bwphoto.memory.Class.Util.CropImageView;
@@ -234,14 +237,13 @@ public class CropperActivity extends Activity {
                     out.flush();
                     out.close();
                 } catch (FileNotFoundException e) {
-                    // TODO Auto-generated catch block
                     e.printStackTrace();
                 } catch (IOException e) {
-                    // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
 
                 System.out.println(url.url+"/resources/"+res_id+"/image");
+
                 String result = RestUtil.uploadFile(url.url+"/resources/"+res_id+"/image", new FileSystemResource(file), fileName,String.class);
                 //String result = RestUtil.uploadFile(url.url+"/resources/"+res_id+"/image", new FileSystemResource(output), croppedName,String.class);
                 System.out.println(result);
@@ -249,6 +251,26 @@ public class CropperActivity extends Activity {
                     System.out.println("CropperActivity: upload cropped image Success !");
                 else
                     System.out.println("CropperActivity: upload cropped image Fail !");
+
+                ImagePair imgPair = new ImagePair();
+                ImageHash imageHash = new ImageHash();
+                String imgHash = new String();
+                try {
+                    if (file == null) System.out.println("Get Image Hash : File is empty !!!!!!!!!!");
+                    imgHash = imgPair.getHash(new FileInputStream(file));
+                }catch(Exception e){
+                    e.printStackTrace();
+                }
+                System.out.println("Get Image Hash : " + imgHash);
+                imageHash.setResource_id(res_id);
+                imageHash.setHash(imgHash);
+                result = RestUtil.postForObject(url.url+"/resources/"+res_id+"/imghash/"+imgHash, imageHash, String.class);
+                System.out.println("Get Image Hash : " + result);
+
+                result = RestUtil.getForObject(url.url+"/imghash",  String.class);
+                System.out.println("Get Image Hash      : " + result);
+                Toast.makeText(CropperActivity.this, "Image pair succeed", Toast.LENGTH_SHORT).show();
+
                 Intent intent = new Intent(CropperActivity.this, AddMemoryActivity.class);
                 Bundle bundle = new Bundle();
                 bundle.putString("userName",userName);
