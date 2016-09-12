@@ -120,6 +120,7 @@ public class AddMemoryActivity extends Activity {
         resource.setContent(MemContent);
         resource.setId(res_id);
         String result = RestUtil.postForObject(url.url+"/resources/"+res_id+"/words", resource, String.class);
+//        String result2 = RestUtil.getForObject(url.url + "/resources/" + res_id + "/public", String.class);
         System.out.println(url.url+"/resources/"+res_id+"/words");
         if (result.contains("success")) {
             System.out.println("upload word Success!!!!!");
@@ -146,7 +147,7 @@ public class AddMemoryActivity extends Activity {
 
     public void set_share() {
         Sharable = BtnPublic.getShowText();
-        System.out.println("Sharable : " + Sharable);
+        /*System.out.println("Sharable : " + Sharable);
         if (Sharable) {
             String result = RestUtil.getForObject(url.url + "/resources/" + res_id + "/public", String.class);
             System.out.println("Public result: " + result);
@@ -157,6 +158,8 @@ public class AddMemoryActivity extends Activity {
             System.out.println("Private result: " + result);
             Toast.makeText(AddMemoryActivity.this, "Set private", Toast.LENGTH_SHORT).show();
         }
+        */
+        String result = RestUtil.getForObject(url.url + "/resources/" + res_id + "/public", String.class);
     }
 
     public void add_music() {

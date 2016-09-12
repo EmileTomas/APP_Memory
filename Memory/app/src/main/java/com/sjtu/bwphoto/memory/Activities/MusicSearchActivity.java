@@ -82,20 +82,20 @@ public class MusicSearchActivity extends AppCompatActivity {
     AdapterView.OnItemClickListener mListener2 = new AdapterView.OnItemClickListener() {
         public void onItemClick(AdapterView<?> parent, View view, int position,
                                 long id) {
-            if(id == -1) {
+            if (id == -1) {
                 // 点击的是headerView或者footerView
                 return;
             }
-            int realPosition=(int)id;
+            int realPosition = (int) id;
             // 响应代码
             String hash = list_hash.get(realPosition);
-            System.out.println("Music Search select hash : "+ hash);
+            System.out.println("Music Search select hash : " + hash);
             Musichash mhash = new Musichash();
             mhash.setResource_id(res_id);
             mhash.setHashcode(hash);
-            String result = RestUtil.postForObject(url.url+"/resources/"+res_id+"/music/"+hash, mhash, String.class);
-            System.out.println("Music Search upload hash result: "+ result);
-            Toast.makeText(MusicSearchActivity.this,"Add Music success",Toast.LENGTH_SHORT).show();
+            String result = RestUtil.postForObject(url.url + "/resources/" + res_id + "/music/" + hash, mhash, String.class);
+            System.out.println("Music Search upload hash result: " + result);
+            Toast.makeText(MusicSearchActivity.this, "Add Music success", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(MusicSearchActivity.this, AddMemoryActivity.class);
             Bundle bundle = new Bundle();
             bundle.putString("userName", userName);
@@ -117,35 +117,30 @@ public class MusicSearchActivity extends AppCompatActivity {
     }
 
     public void search() {
-        song_name =  SongName.getText().toString().trim();
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                synchronized (this) {
-                    String httpUrl = "http://apis.baidu.com/geekery/music/query";
-                    String httpArg = "s=" + song_name + "&size=10&page=1";
-                    String jsonResult = request(httpUrl, httpArg);
-                    if (jsonResult != null) System.out.println("jsonResult != null");
-                    try {
-                        ObjectMapper objectMapper = new ObjectMapper();
-                        song = objectMapper.readValue(jsonResult, Songresult.class);
-                        for (int i = 0; i < song.getData().getData().size(); ++i) {
-                            String hash = song.getData().getData().get(i).getHash();
-                            String name = song.getData().getData().get(i).getFilename();
-                            if (hash == null) System.out.println("song hash is null!!!!!!!!!!");
-                            if (name == null) System.out.println("song name is null!!!!!!!!!!");
-                            System.out.println("music hash: " + hash);
-                            System.out.println("music name: " + name);
-                            list_result.add(name);
-                            list_hash.add(hash);
-                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                        System.out.println("SearchMusic:IOerror");
-                    }
-                }
+        song_name = SongName.getText().toString().trim();
+
+        String httpUrl = "http://apis.baidu.com/geekery/music/query";
+        String httpArg = "s=" + song_name + "&size=10&page=1";
+        String jsonResult = request(httpUrl, httpArg);
+        if (jsonResult != null) System.out.println("jsonResult != null");
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            song = objectMapper.readValue(jsonResult, Songresult.class);
+            for (int i = 0; i < song.getData().getData().size(); ++i) {
+                String hash = song.getData().getData().get(i).getHash();
+                String name = song.getData().getData().get(i).getFilename();
+                if (hash == null) System.out.println("song hash is null!!!!!!!!!!");
+                if (name == null) System.out.println("song name is null!!!!!!!!!!");
+                System.out.println("music hash: " + hash);
+                System.out.println("music name: " + name);
+                list_result.add(name);
+                list_hash.add(hash);
             }
-        }).start();
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("SearchMusic:IOerror");
+        }
+
         if (list_result == null) System.out.println("list result is null!!!!!!!!!!");
         ListResult = new ListView(this);
         ListResult.setOnItemClickListener(mListener2);
@@ -159,7 +154,7 @@ public class MusicSearchActivity extends AppCompatActivity {
         String result = null;
         StringBuffer sbf = new StringBuffer();
         httpUrl = httpUrl + "?" + httpArg;
-        System.out.println("SearchMusic : "+httpUrl);
+        System.out.println("SearchMusic : " + httpUrl);
 
         try {
             URL url = new URL(httpUrl);

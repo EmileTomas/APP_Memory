@@ -253,6 +253,7 @@ public class RecentFragment extends Fragment implements SwipeRefreshLayout.OnRef
         recyclerView.setAdapter(msgRecycleAdapter);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
 
+        /*
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
@@ -272,7 +273,7 @@ public class RecentFragment extends Fragment implements SwipeRefreshLayout.OnRef
                 lastVisibleItem = layoutManager.findLastVisibleItemPosition();
             }
         });
-
+*/
 
     }
 

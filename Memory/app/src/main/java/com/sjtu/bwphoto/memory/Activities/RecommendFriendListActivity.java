@@ -23,7 +23,7 @@ import java.util.ArrayList;
  */
 public class RecommendFriendListActivity extends AppCompatActivity {
     private static final ServerUrl url = new ServerUrl();
-    private RecommendFriendList RecommendFriendList;
+    private RecommendFriendList RecommendFriendList=new RecommendFriendList();
     private FriendRequestAdapter adapter;
     private ArrayList<UserCard> userCards = new ArrayList<UserCard>();
     private RecyclerView recyclerView;
@@ -37,7 +37,7 @@ public class RecommendFriendListActivity extends AppCompatActivity {
         RecommendFriendList = RestUtil.getForObject(url.url + "/recommend/user", RecommendFriendList.class);
         String temp = RestUtil.getForObject(url.url + "/recommend/user", String.class);
         System.out.println(temp);
-        if (RecommendFriendList.size()!=0) {
+        if (RecommendFriendList!=null) {
             System.out.println("Get Data");
             UserCard userCard;
             if (RecommendFriendList.size() != 0) {

@@ -16,6 +16,7 @@ import java.util.Calendar;
 
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Message;
@@ -113,6 +114,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setContentView(R.layout.activity_main);
         mainActivityContext=this;
 
+        askPermision();
         //Receive Data from last activity
         Bundle bundle = this.getIntent().getExtras();
         user_name = bundle.getString("userName");
@@ -370,7 +372,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         bundle.putInt("res_id", res_id);
                         intent.putExtras(bundle);
                         startActivity(intent);
-                        MainActivity.this.finish();
                     }
                 })
                 .setNegativeButton("取消", null)
@@ -384,7 +385,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         //获取resource id
         System.out.println(url.url + "/resources");
         new AlertDialog.Builder(MainActivity.this)
-                .setTitle("请选择")
+                .setTitle("此时的心情")
                 .setIcon(android.R.drawable.ic_dialog_info)
                 .setSingleChoiceItems(new String[]{"悲伤", "孤独", "震撼", "美妙", "开心","幸福"}, 0,
                         new DialogInterface.OnClickListener() {
@@ -430,7 +431,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         bundle.putInt("res_id",res_id);
                         intent.putExtras(bundle);
                         startActivity(intent);
-                        MainActivity.this.finish();
                     }
                 })
                 .setNegativeButton("取消", null)
@@ -648,5 +648,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 System.out.println("perimision OK!");
             }
         }
+    }
+
+    private void askPermision(){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                    //Explain?
+                    if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CAMERA)) {
+                        System.out.println("Print info");
+                    } else {
+                        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA,Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.MOUNT_UNMOUNT_FILESYSTEMS,Manifest.permission.READ_PHONE_STATE,Manifest.permission.READ_EXTERNAL_STORAGE}, 10001);
+                    }
+                }
+            }
     }
 }

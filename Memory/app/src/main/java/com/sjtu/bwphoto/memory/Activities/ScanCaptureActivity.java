@@ -17,6 +17,7 @@ import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.os.Vibrator;
 import android.view.SurfaceHolder;
 import android.view.SurfaceHolder.Callback;
@@ -31,6 +32,7 @@ import android.widget.Toast;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.Result;
+import com.sjtu.bwphoto.memory.Class.Resource.BookUrl;
 import com.sjtu.bwphoto.memory.Class.Resource.Bookdb;
 import com.sjtu.bwphoto.memory.Class.Resource.Bookisbn;
 import com.sjtu.bwphoto.memory.Class.Resource.Songresult;
@@ -61,8 +63,11 @@ public class ScanCaptureActivity extends Activity implements Callback {
     private String userName;
     private int res_id;
     private final static ServerUrl url = new ServerUrl();
+    private String imageurl;
 
-    /** Called when the activity is first created. */
+    /**
+     * Called when the activity is first created.
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -133,51 +138,63 @@ public class ScanCaptureActivity extends Activity implements Callback {
 
     /**
      * 处理扫描结果
+     *
      * @param result
      * @param barcode
      */
     public void handleDecode(Result result, Bitmap barcode) {
+
         inactivityTimer.onActivity();
         playBeepSoundAndVibrate();
         final String resultString = result.getText();
-        System.out.println("Scan result : "+resultString);
+        System.out.println("Scan result : " + resultString);
         if (resultString.equals("")) {
             Toast.makeText(ScanCaptureActivity.this, "Scan failed!", Toast.LENGTH_SHORT).show();
-        }else {
+        } else {
             Toast.makeText(ScanCaptureActivity.this, "Scan Success!", Toast.LENGTH_SHORT).show();
-            Bookisbn isbn = new Bookisbn();
-            isbn.setResource_id(res_id);
-            isbn.setISBN(resultString);
+
             new Thread(new Runnable() {
                 @Override
                 public void run() {
                     synchronized (this) {
+                        Bookisbn isbn = new Bookisbn();
+                        isbn.setResource_id(res_id);
+                        isbn.setISBN(resultString);
+
                         String httpdouban = "https://api.douban.com/v2/book/isbn/:" + resultString;
                         Bookdb book = getbook(httpdouban);
-                        String imageurl = book.getImage();
+                        imageurl = new String(book.getImage());
                         System.out.println("Book image path : " + imageurl);
                         // wait to upload
+
+                        BookUrl bookUrl = new BookUrl();
+                        bookUrl.setUrl(imageurl);
+                        System.out.println(imageurl);
+                        String serverresult = RestUtil.postForObject(url.url + "/resources/" + res_id + "/book/" + resultString, isbn, String.class);
+                        String serverresult2 = RestUtil.postForObject(url.url + "/books/" + resultString , bookUrl, String.class);
+                        System.out.println(serverresult);
+                        System.out.println(serverresult2);
+                        if (serverresult.contains("success")) {
+                            System.out.println("Book upload success !!!");
+                            Intent resultIntent = new Intent();
+                            resultIntent.setClass(ScanCaptureActivity.this, AddMemoryBookActivity.class);
+                            Bundle bundle = new Bundle();
+                            bundle.putString("userName", userName);
+                            bundle.putInt("res_id", res_id);
+                            resultIntent.putExtras(bundle);
+                            startActivity(resultIntent);
+                        } else System.out.println("Book upload fail !!!");
+                        ScanCaptureActivity.this.finish();
                     }
                 }
             }).start();
-            String serverresult = RestUtil.postForObject(url.url+"/resources/"+res_id+"/book/"+resultString, isbn, String.class);
-            System.out.println(serverresult);
-            if (serverresult.contains("success")) {
-                System.out.println("Book upload success !!!");
-                Intent resultIntent = new Intent();
-                resultIntent.setClass(ScanCaptureActivity.this, AddMemoryBookActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putString("userName", userName);
-                bundle.putInt("res_id",res_id);
-                resultIntent.putExtras(bundle);
-                startActivity(resultIntent);
-            }
-            else System.out.println("Book upload fail !!!");
         }
-        ScanCaptureActivity.this.finish();
+
     }
 
-    public Bookdb getbook(String httpUrl){
+
+
+    public Bookdb getbook(String httpUrl) {
         Bookdb book = new Bookdb();
         BufferedReader reader = null;
         StringBuffer sbf = new StringBuffer();
@@ -303,5 +320,7 @@ public class ScanCaptureActivity extends Activity implements Callback {
             mediaPlayer.seekTo(0);
         }
     };
+
+
 
 }
