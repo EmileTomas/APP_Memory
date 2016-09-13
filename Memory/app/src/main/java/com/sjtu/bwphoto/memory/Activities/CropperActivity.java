@@ -24,6 +24,7 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.sjtu.bwphoto.memory.Class.ImagePair;
+import com.sjtu.bwphoto.memory.Class.Resource.HashList;
 import com.sjtu.bwphoto.memory.Class.Resource.ImageHash;
 import com.sjtu.bwphoto.memory.Class.RestUtil;
 import com.sjtu.bwphoto.memory.Class.ServerUrl;
@@ -41,6 +42,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 
@@ -270,6 +272,14 @@ public class CropperActivity extends Activity {
                 result = RestUtil.getForObject(url.url+"/imghash",  String.class);
                 System.out.println("Get Image Hash      : " + result);
                 Toast.makeText(CropperActivity.this, "Image pair succeed", Toast.LENGTH_SHORT).show();
+
+//                HashList list = new HashList();
+//                list.setList(RestUtil.getForObject(url.url+"/imghash",  ArrayList.class));
+//                int imgcount = 0;
+//                for (int i = 0; i < list.getList().size(); i++){
+//                    if (imgPair.distance(list.getList().get(i).getHash(),imgHash) < 64) imgcount++;
+//                }
+//                Toast.makeText(CropperActivity.this, imgcount+" pair", Toast.LENGTH_SHORT).show();
 
                 Intent intent = new Intent(CropperActivity.this, AddMemoryActivity.class);
                 Bundle bundle = new Bundle();

@@ -44,7 +44,7 @@ public class Edison
 		// try to connect to edison
 		try
 		{
-			soc = new Socket("10.189.83.69", this.port);
+			soc = new Socket("192.168.1.3", this.port);
 		}catch (Exception e)
 		{
 			soc = null;

@@ -6,6 +6,6 @@ package com.sjtu.bwphoto.memory.Class;
 public class ServerUrl {
     public String url;
     public ServerUrl(){
-        url = "http://59.78.41.183:80";
+        url = "http://192.168.1.10:80";
     }
 }
